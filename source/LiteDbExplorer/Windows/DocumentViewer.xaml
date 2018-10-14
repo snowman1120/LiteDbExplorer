@@ -102,6 +102,8 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Button DockPanel.Dock="Right" Tag="{Binding Name}" Click="RemoveButton_Click" ToolTip="Remove Item"
+                                                Style="{StaticResource MaterialDesignFlatButton}"
+                                                Padding="4" Height="32" Width="32"
                                                 Visibility="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InvertableBooleanToVisibilityConverter}, ConverterParameter=Inverted}">
                                             <Image Source="/Images/deleteitem.png" Width="16" Height="16"/>
                                         </Button>

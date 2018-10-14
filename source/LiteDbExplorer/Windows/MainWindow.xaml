@@ -3,13 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:LiteDbExplorer"
         xmlns:converters="clr-namespace:LiteDbExplorer.Converters"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
         mc:Ignorable="d"
         Title="LiteDB Explorer" Width="1024" Height="740" 
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
         WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip"
         Closed="Window_Closed" Loaded="WindowMain_Loaded"
         LocationChanged="WindowMain_LocationChanged" SizeChanged="WindowMain_SizeChanged"
         Name="WindowMain">
@@ -18,7 +27,7 @@
         <converters:EnumConverter x:Key="EnumConverter" />
         <converters:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
     </Window.Resources>
-    
+
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenCommand_Executed" CanExecute="OpenCommand_CanExecute" />
         <CommandBinding Command="New" Executed="NewCommand_Executed" CanExecute="NewCommand_CanExecute" />
@@ -41,7 +50,7 @@
         <CommandBinding Command="local:Commands.FindNext" Executed="FindNextCommand_Executed" CanExecute="FindNextCommand_CanExecute" />
         <CommandBinding Command="local:Commands.FindPrevious" Executed="FindPreviousCommand_Executed" CanExecute="FindPreviousCommand_CanExecute" />
     </Window.CommandBindings>
-    
+
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
@@ -57,7 +66,7 @@
                 </MenuItem>
                 <MenuItem Header="Recent files" Name="MenuRecentItems" ItemsSource="{Binding Path=PathDefinitions.RecentFiles, ElementName=WindowMain}">
                     <ItemsControl.ItemContainerStyle>
-                        <Style TargetType="MenuItem">
+                        <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
                             <Setter Property="Tag" Value="{Binding}" />
                             <Setter Property="Header" Value="{Binding}" />
                             <EventSetter Event="Click" Handler="RecentMenuItem_Click" />
@@ -125,124 +134,123 @@
             </MenuItem>
         </Menu>
 
-        <ToolBarTray DockPanel.Dock="Top">
-            <ToolBar>
-                <Button Name="ButtonOpen" Command="Open" ContextMenuService.IsEnabled="False">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Images/opendb.png" Margin="0,0,5,0" />
-                            <Border Background="Transparent" BorderThickness="1" PreviewMouseLeftButtonDown="RecentItemMoreBorder_MouseLeftButtonDown">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="BorderBrush" Value="Gray" />
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="False">
-                                                <Setter Property="BorderBrush" Value="Transparent" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                                <Path Margin="4" VerticalAlignment="Center" Width="6" Fill="#FF527DB5" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "/>
-                            </Border>
-                        </StackPanel>
-                    </Button.Content>
-                    <Button.ContextMenu>
-                        <ContextMenu ItemsSource="{Binding Path=ItemsSource, Source={x:Reference Name=MenuRecentItems}}" >
-                            <ContextMenu.ItemContainerStyle>
-                                <Style TargetType="MenuItem">
-                                    <Setter Property="Tag" Value="{Binding}" />
-                                    <EventSetter Event="Click" Handler="RecentMenuItem_Click" />
-                                </Style>
-                            </ContextMenu.ItemContainerStyle>
-                        </ContextMenu>
-                    </Button.ContextMenu>
-                </Button>
-                <Separator />
-                <Button Command="local:Commands.Add">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="/Images/createitem.png"/>
-                        <TextBlock Text="Add"  VerticalAlignment="Center" Margin="2,0,5,0" FontSize="16"/>
-                    </StackPanel>
-                </Button>
-                <Button Command="local:Commands.Edit">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="/Images/updateitem.png" />
-                        <TextBlock Text="Edit" VerticalAlignment="Center"  Margin="2,0,5,0" FontSize="16"/>
-                    </StackPanel>
-                </Button>
-                <Button Command="local:Commands.Remove">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="/Images/deleteitem.png" />
-                        <TextBlock Text="Delete" VerticalAlignment="Center"  Margin="2,0,5,0" FontSize="16"/>
-                    </StackPanel>
-                </Button>
-                <Button Command="local:Commands.Export">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="/Images/export.png" />
-                        <TextBlock Text="Export" VerticalAlignment="Center"  Margin="2,0,5,0" FontSize="16"/>
-                    </StackPanel>
-                </Button>
-                <Separator />
-                <Button Command="local:Commands.RefreshCollection">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="/Images/refresh.png" />
-                        <TextBlock Text="Refresh" VerticalAlignment="Center"  Margin="2,0,5,0" FontSize="16"/>
-                    </StackPanel>
-                </Button>
-            </ToolBar>
-        </ToolBarTray>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Name="statusTextPrimary" />
+            </StatusBarItem>
+        </StatusBar>
 
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="{Binding Path=Settings.MainSplitterSize, Mode=TwoWay, Source={x:Static Application.Current}, Converter={StaticResource DoubleToGridLengthConverter}}" />
                 <ColumnDefinition Width="4" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="4" />
+                <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
 
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
 
             <DockPanel Grid.Column="0" AllowDrop="True" 
                        Background="Transparent" Drop="LeftPanel_Drop">
-                <Border Name="DockSearch" DockPanel.Dock="Top" BorderThickness="1,1,1,0" BorderBrush="{Binding BorderBrush, ElementName=TreeDatabasese}">
-                    <StackPanel>
-                        <DockPanel Margin="5,5,5,0">
-                            <Button FontFamily="Marlett" Content="r" Padding="2" DockPanel.Dock="Right" Name="ButtonCloseSearch" Click="ButtonCloseSearch_Click"
-                                    VerticalContentAlignment="Center" FontWeight="ExtraBold"/>
-                            <TextBlock Text="Search" VerticalAlignment="Center" />
-                        </DockPanel>
-                        <Grid Margin="5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
 
-                            <TextBox Grid.Column="0" Grid.Row="0" Name="TextSearch" Margin="5">
-                                <TextBox.InputBindings>
-                                    <KeyBinding Key="Return" Command="local:Commands.FindNext" />
-                                </TextBox.InputBindings>
-                            </TextBox>
-                            <CheckBox Grid.Column="0" Grid.Row="1" Name="CheckSearchCase" 
+                <ToolBarTray DockPanel.Dock="Top">
+                    <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}">
+                        <ToolBar.Resources>
+                            <ResourceDictionary>
+                                <Style TargetType="Image">
+                                    <Setter Property="Height" Value="18"/>
+                                    <Setter Property="Width" Value="18"/>
+                                </Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontFamily" Value="{StaticResource MaterialDesignFont}"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
+                                    <Setter Property="FontSize" Value="15"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="5,0,5,0"/>
+                                </Style>
+                                <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                                    <Setter Property="Padding" Value="10"/>
+                                </Style>
+                            </ResourceDictionary>
+                        </ToolBar.Resources>
+                        <Button Name="ButtonOpen" Command="Open" ContextMenuService.IsEnabled="False">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="/Images/opendb.png" Margin="0,0,5,0"/>
+                                    <Border Background="Transparent" Margin="5,0,0,0" BorderThickness="1" PreviewMouseLeftButtonDown="RecentItemMoreBorder_MouseLeftButtonDown">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="BorderBrush" Value="Gray" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="False">
+                                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Path Margin="4" VerticalAlignment="Center" Width="6" Fill="#FF527DB5" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "/>
+                                    </Border>
+                                </StackPanel>
+                            </Button.Content>
+                            <Button.ContextMenu>
+                                <ContextMenu ItemsSource="{Binding Path=ItemsSource, Source={x:Reference Name=MenuRecentItems}}" >
+                                    <ContextMenu.ItemContainerStyle>
+                                        <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                                            <Setter Property="Tag" Value="{Binding}" />
+                                            <EventSetter Event="Click" Handler="RecentMenuItem_Click" />
+                                        </Style>
+                                    </ContextMenu.ItemContainerStyle>
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                        </Button>
+                    </ToolBar>
+                </ToolBarTray>
+
+                <Border Name="DockSearch" DockPanel.Dock="Top" BorderThickness="1,1,1,0" BorderBrush="{Binding BorderBrush, ElementName=TreeDatabasese}">
+                    <materialDesign:Card Margin="10">
+                        <StackPanel>
+                            <DockPanel Margin="10,5,10,0">
+                                <Button FontFamily="Marlett" Content="r" Padding="2" 
+                                    DockPanel.Dock="Right" Name="ButtonCloseSearch" Click="ButtonCloseSearch_Click"
+                                    VerticalContentAlignment="Center" FontWeight="ExtraBold"
+                                    Style="{StaticResource MaterialDesignFlatButton}"/>
+                                <TextBlock Text="Search" FontWeight="Bold" VerticalAlignment="Center" />
+                            </DockPanel>
+                            <Grid Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <TextBox Grid.Column="0" Grid.Row="0" Name="TextSearch" Margin="5">
+                                    <TextBox.InputBindings>
+                                        <KeyBinding Key="Return" Command="local:Commands.FindNext" />
+                                    </TextBox.InputBindings>
+                                </TextBox>
+                                <CheckBox Grid.Column="0" Grid.Row="1" Name="CheckSearchCase" 
                                       Content="Match case" VerticalContentAlignment="Center" Margin="5"/>
 
-                            <Button Grid.Column="1" Grid.Row="0" Content="Find Next" Margin="5"
+                                <Button Grid.Column="1" Grid.Row="0" Content="Find Next" Margin="5"
                                     Command="local:Commands.FindNext" />
-                            <Button Grid.Column="1" Grid.Row="1" Content="Find Previous" Margin="5"
+                                <Button Grid.Column="1" Grid.Row="1" Content="Find Previous" Margin="5"
                                     Command="local:Commands.FindPrevious" />
-                        </Grid>
-                    </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </materialDesign:Card>
                 </Border>
 
-                <TreeView Name="TreeDatabasese" DockPanel.Dock="Top" Padding="0,5,0,5"
+                <TreeView Name="TreeDatabasese" DockPanel.Dock="Top"
                           SelectedItemChanged="TreeDatabasese_SelectedItemChanged"
                           ItemsSource="{Binding Databases, RelativeSource={RelativeSource AncestorType=Window}}">
                     <TreeView.Resources>
-                        <Style TargetType="TreeViewItem">
+                        <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItemFullRow}">
                             <Setter Property="IsExpanded" Value="True" />
                             <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
                         </Style>
@@ -275,7 +283,7 @@
                                 <TextBlock Text="{Binding Name}" Padding="5"/>
                             </StackPanel>
                         </HierarchicalDataTemplate>
-                        <DataTemplate DataType="{x:Type local:CollectionReference}">                        
+                        <DataTemplate DataType="{x:Type local:CollectionReference}">
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.ContextMenu>
                                     <ContextMenu>
@@ -283,7 +291,7 @@
                                         <MenuItem Command="local:Commands.RenameCollection"/>
                                         <MenuItem Command="local:Commands.DropCollection"/>
                                     </ContextMenu>
-                                </StackPanel.ContextMenu>                            
+                                </StackPanel.ContextMenu>
                                 <ContentPresenter Content="{Binding}">
                                     <ContentPresenter.Resources>
                                         <DataTemplate DataType="{x:Type local:FileCollectionReference}">
@@ -300,10 +308,118 @@
                     </TreeView.Resources>
                 </TreeView>
 
-                <Border BorderBrush="{Binding BorderBrush, ElementName=TreeDatabasese}" BorderThickness="1,0,1,1" DockPanel.Dock="Top" Padding="0,5,0,5"
+            </DockPanel>
+
+            <DockPanel Grid.Column="2">
+                <ToolBarTray DockPanel.Dock="Top">
+                    <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}">
+                        <ToolBar.Resources>
+                            <ResourceDictionary>
+                                <Style TargetType="Image">
+                                    <Setter Property="Height" Value="16"/>
+                                    <Setter Property="Width" Value="16"/>
+                                </Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontFamily" Value="{StaticResource MaterialDesignFont}"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
+                                    <Setter Property="FontSize" Value="15"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="5,0,5,0"/>
+                                    <Setter Property="FontWeight" Value="Regular"/>
+                                </Style>
+                                <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                                    <Setter Property="Padding" Value="10"/>
+                                </Style>
+                            </ResourceDictionary>
+                        </ToolBar.Resources>
+                        <Button Command="local:Commands.Add">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Images/createitem.png" />
+                                <TextBlock Text="Add"  VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Command="local:Commands.Edit">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Images/updateitem.png" />
+                                <TextBlock Text="Edit" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Command="local:Commands.Remove">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Images/deleteitem.png"/>
+                                <TextBlock Text="Delete" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Command="local:Commands.Export">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Images/export.png"/>
+                                <TextBlock Text="Export" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Separator />
+                        <Button Command="local:Commands.RefreshCollection">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Images/refresh.png"/>
+                                <TextBlock Text="Refresh" VerticalAlignment="Center"  />
+                            </StackPanel>
+                        </Button>
+                    </ToolBar>
+                </ToolBarTray>
+
+                <ListView Name="ListCollectionData" Visibility="Collapsed"
+                      MouseDoubleClick="ListCollectionData_MouseDoubleClick"
+                      SelectionChanged="ListCollectionData_SelectionChanged">
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="local:Commands.Add">
+                                <MenuItem.Icon>
+                                    <Image Source="/Images/createitem.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="local:Commands.Edit">
+                                <MenuItem.Icon>
+                                    <Image Source="/Images/updateitem.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="local:Commands.Remove">
+                                <MenuItem.Icon>
+                                    <Image Source="/Images/deleteitem.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="local:Commands.Export">
+                                <MenuItem.Icon>
+                                    <Image Source="/Images/export.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Command="Copy">
+                                <MenuItem.Icon>
+                                    <Image Source="/Images/copy.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="Paste">
+                                <MenuItem.Icon>
+                                    <Image Source="/Images/paste.png" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                    <ListView.View>
+                        <GridView x:Name="GridCollectionData" />
+                    </ListView.View>
+                </ListView>
+            </DockPanel>
+
+            <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" />
+
+            <DockPanel Grid.Column="4">
+                <Border BorderBrush="{Binding BorderBrush, ElementName=TreeDatabasese}" 
+                        BorderThickness="0" DockPanel.Dock="Top" Padding="0"
                         Name="BorderDocPreview" Visibility="Collapsed">
                     <DockPanel DockPanel.Dock="Top">
-                        <TextBlock Text="Document Preview" Padding="5,0,5,0" DockPanel.Dock="Top"/>   
+                        <Border DockPanel.Dock="Top" MinHeight="40" Background="{DynamicResource MaterialDesignToolBarBackground}" Padding="10,0">
+                            <TextBlock Text="Document Preview" FontWeight="Bold" VerticalAlignment="Center"/>
+                        </Border>
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top">
                             <ItemsControl Name="ItemsDocPreview" Margin="5,0,5,0">
                                 <ItemsControl.ItemsPanel>
@@ -313,13 +429,13 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid>
+                                        <Grid MinHeight="32">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition SharedSizeGroup="ColumnOne" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{Binding Name}" TextAlignment="Right" Margin="3"/>
-                                            <ContentPresenter Content="{Binding EditControl}" Margin="3" Grid.Column="1"/>
+                                            <TextBlock Text="{Binding Name}" TextAlignment="Right" Margin="3,11,6,3" VerticalAlignment="Top"/>
+                                            <ContentPresenter Content="{Binding EditControl}" Margin="3" Grid.Column="1" MinHeight="32" VerticalAlignment="Top" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -328,62 +444,19 @@
                     </DockPanel>
                 </Border>
 
-                <Border BorderBrush="{Binding BorderBrush, ElementName=TreeDatabasese}" BorderThickness="1,0,1,1" DockPanel.Dock="Top" Padding="0,5,0,5"
+                <Border BorderBrush="{Binding BorderBrush, ElementName=TreeDatabasese}" 
+                        BorderThickness="1,0,1,1" DockPanel.Dock="Top" Padding="0,5,0,5"
                         Name="BorderFilePreview" Visibility="Collapsed">
                     <DockPanel DockPanel.Dock="Top">
-                        <TextBlock Text="File Preview" Padding="5,0,5,0" DockPanel.Dock="Top"/>                       
+                        
+                        <Border DockPanel.Dock="Top" MinHeight="40" Background="{DynamicResource MaterialDesignToolBarBackground}" Padding="10,0">
+                            <TextBlock Text="File Preview" FontWeight="Bold" VerticalAlignment="Center"/>
+                        </Border>
                         <controls:FileView x:Name="FilePreview" DockPanel.Dock="Top"/>
                     </DockPanel>
                 </Border>
             </DockPanel>
-
-            <ListView Grid.Column="2" Name="ListCollectionData" Visibility="Collapsed"
-                      MouseDoubleClick="ListCollectionData_MouseDoubleClick"
-                      SelectionChanged="ListCollectionData_SelectionChanged">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="Height" Value="25"/>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Command="local:Commands.Add">
-                            <MenuItem.Icon>
-                                <Image Source="/Images/createitem.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Command="local:Commands.Edit">
-                            <MenuItem.Icon>
-                                <Image Source="/Images/updateitem.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Command="local:Commands.Remove">
-                            <MenuItem.Icon>
-                                <Image Source="/Images/deleteitem.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Command="local:Commands.Export">
-                            <MenuItem.Icon>
-                                <Image Source="/Images/export.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator />
-                        <MenuItem Command="Copy">
-                            <MenuItem.Icon>
-                                <Image Source="/Images/copy.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Command="Paste">
-                            <MenuItem.Icon>
-                                <Image Source="/Images/paste.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </ListView.ContextMenu>
-                <ListView.View>
-                    <GridView x:Name="GridCollectionData" />
-                </ListView.View>
-            </ListView>
         </Grid>
+
     </DockPanel>
 </Window>

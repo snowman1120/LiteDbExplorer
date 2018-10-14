@@ -53,7 +53,10 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <DockPanel Margin="5">
-                            <Button DockPanel.Dock="Right" Tag="{Binding Value}" Click="ButtonRemove_Click" Margin="5,0,0,0" ToolTip="Remove Item"
+                            <Button DockPanel.Dock="Right" Tag="{Binding Value}" 
+                                    Click="ButtonRemove_Click" Margin="5,0,0,0" ToolTip="Remove Item"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    Padding="4" Height="32" Width="32"
                                     Visibility="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InvertableBooleanToVisibilityConverter}, ConverterParameter=Inverted}">
                                 <Image Source="/Images/deleteitem.png" Width="16"/>
                             </Button>

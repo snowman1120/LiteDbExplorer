@@ -1,24 +1,20 @@
-﻿using LiteDB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using LiteDbExplorer.Converters;
+using LiteDB;
 using Xceed.Wpf.Toolkit;
-using System.Windows.Controls.Primitives;
-using System.ComponentModel;
 
 namespace LiteDbExplorer.Controls
 {
     public class BsonValueEditor
     {
-        public static FrameworkElement GetBsonValueEditor(string bindingPath, BsonValue bindingValue, object bindingSource, bool readOnly)
+        public static FrameworkElement GetBsonValueEditor(
+            string bindingPath, BsonValue bindingValue,
+            object bindingSource, bool readOnly, string keyName)
         {
-            var binding = new Binding()
+            var binding = new Binding
             {
                 Path = new PropertyPath(bindingPath),
                 Source = bindingSource,
@@ -29,7 +25,7 @@ namespace LiteDbExplorer.Controls
 
             if (bindingValue.IsArray)
             {
-                var button = new Button()
+                /*var button = new Button
                 {
                     Content = "Array"
                 };
@@ -49,32 +45,33 @@ namespace LiteDbExplorer.Controls
                     }
                 };
 
-                return button;
-            }
-            else if (bindingValue.IsBoolean)
-            {
-                var check = new CheckBox()
+                return button;*/
+                var arrayValue = bindingValue as BsonArray;
+
+                var contentView = new LazyContentView
                 {
-                    IsEnabled = !readOnly
+                    LoadButton =
+                    {
+                        Content = $"[Array] {arrayValue?.Count} {keyName}"
+                    }
                 };
 
-                check.SetBinding(ToggleButton.IsCheckedProperty, binding);
-                return check;
-            }
-            else if (bindingValue.IsDateTime)
-            {
-                var datePicker = new DateTimePicker()
+                contentView.LoadButton.Click += (s, a) =>
                 {
-                    TextAlignment = TextAlignment.Left,
-                    IsReadOnly = readOnly
+                    if (contentView.ContentLoaded) return;
+
+                    arrayValue = bindingValue as BsonArray;
+                    var control = new ArrayViewerControl(arrayValue, readOnly);
+                    control.CloseRequested += (sender, args) => { contentView.Content = null; };
+                    contentView.Content = control;
                 };
 
-                datePicker.SetBinding(DateTimePicker.ValueProperty, binding);
-                return datePicker;
+                return contentView;
             }
-            else if (bindingValue.IsDocument)
+
+            if (bindingValue.IsDocument)
             {
-                var button = new Button()
+                /*var button = new Button
                 {
                     Content = "Document"
                 };
@@ -89,74 +86,156 @@ namespace LiteDbExplorer.Controls
                     window.ShowDialog();
                 };
 
-                return button;
+                return button;*/
+                var contentView = new LazyContentView
+                {
+                    LoadButton =
+                    {
+                        Content = $"[Document] {keyName}"
+                    }
+                };
+
+                contentView.LoadButton.Click += (s, a) =>
+                {
+                    if (contentView.ContentLoaded) return;
+
+                    var bsonDocument = bindingValue as BsonDocument;
+                    var control = new DocumentViewerControl(bsonDocument, readOnly);
+                    control.CloseRequested += (sender, args) => { contentView.Content = null; };
+
+                    contentView.Content = control;
+                };
+
+                return contentView;
             }
-            else if (bindingValue.IsDouble)
+
+            if (bindingValue.IsBoolean)
             {
-                var numberEditor = new DoubleUpDown()
+                var check = new CheckBox
+                {
+                    IsEnabled = !readOnly,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 0, 0, 0)
+                };
+
+                check.SetBinding(ToggleButton.IsCheckedProperty, binding);
+                return check;
+            }
+
+            if (bindingValue.IsDateTime)
+            {
+                var datePicker = new DateTimePicker
                 {
                     TextAlignment = TextAlignment.Left,
-                    IsReadOnly = readOnly
+                    IsReadOnly = readOnly,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 0, 0, 0)
+                };
+
+                datePicker.SetBinding(DateTimePicker.ValueProperty, binding);
+
+                /*var datePicker = new DatePicker
+                {
+                    SelectedDateFormat = DatePickerFormat.Long,
+                    IsEnabled = !readOnly
+                };
+
+                datePicker.SetBinding(DatePicker.SelectedDateProperty, binding);*/
+
+                return datePicker;
+            }
+
+            if (bindingValue.IsDouble)
+            {
+                var numberEditor = new DoubleUpDown
+                {
+                    TextAlignment = TextAlignment.Left,
+                    IsReadOnly = readOnly,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 0, 0, 0)
                 };
 
                 numberEditor.SetBinding(DoubleUpDown.ValueProperty, binding);
                 return numberEditor;
             }
-            else if (bindingValue.IsInt32)
+
+            if (bindingValue.IsInt32)
             {
-                var numberEditor = new IntegerUpDown()
+                var numberEditor = new IntegerUpDown
                 {
                     TextAlignment = TextAlignment.Left,
-                    IsReadOnly = readOnly
+                    IsReadOnly = readOnly,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 0, 0, 0)
                 };
 
                 numberEditor.SetBinding(IntegerUpDown.ValueProperty, binding);
+
+                /*var numberEditor = new SpinControl
+                {
+                    IsEnabled = !readOnly
+                };
+
+                numberEditor.SetBinding(SpinControl.ValueProperty, binding);*/
+
                 return numberEditor;
             }
-            else if (bindingValue.IsInt64)
+
+            if (bindingValue.IsInt64)
             {
-                var numberEditor = new LongUpDown()
+                var numberEditor = new LongUpDown
                 {
                     TextAlignment = TextAlignment.Left,
-                    IsReadOnly = readOnly
+                    IsReadOnly = readOnly,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 0, 0, 0)
                 };
 
                 numberEditor.SetBinding(LongUpDown.ValueProperty, binding);
                 return numberEditor;
             }
-            else if (bindingValue.IsString)
+
+            if (bindingValue.IsString)
             {
-                var stringEditor = new TextBox()
+                var stringEditor = new TextBox
                 {
                     IsReadOnly = readOnly,
-                    AcceptsReturn = true
+                    AcceptsReturn = true,
+                    VerticalAlignment = VerticalAlignment.Center,
                 };
 
                 stringEditor.SetBinding(TextBox.TextProperty, binding);
                 return stringEditor;
             }
-            else if (bindingValue.IsBinary)
+
+            if (bindingValue.IsBinary)
             {
-                var text = new TextBlock()
+                var text = new TextBlock
                 {
-                    Text = "[Binary Data]"
+                    Text = "[Binary Data]",
+                    VerticalAlignment = VerticalAlignment.Center,
                 };
 
                 return text;
             }
-            else if (bindingValue.IsObjectId)
+
+            if (bindingValue.IsObjectId)
             {
-                var text = new TextBlock()
+                var text = new TextBox
                 {
                     Text = bindingValue.AsString,
-                    IsEnabled = false
+                    IsReadOnly = true,
+                    VerticalAlignment = VerticalAlignment.Center,
                 };
 
                 return text;
             }
-            else
+
             {
-                var stringEditor = new TextBox();
+                var stringEditor = new TextBox
+                {
+                    VerticalAlignment = VerticalAlignment.Center,
+                };
                 stringEditor.SetBinding(TextBox.TextProperty, binding);
                 return stringEditor;
             }

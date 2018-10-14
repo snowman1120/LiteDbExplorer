@@ -792,7 +792,13 @@ namespace LiteDbExplorer
             for (int i = 0; i < document.LiteDocument.Keys.Count; i++)
             {
                 var key = document.LiteDocument.Keys.ElementAt(i);
-                var valueEdit = BsonValueEditor.GetBsonValueEditor(string.Format("[{0}]", key), document.LiteDocument[key], document.LiteDocument, true);
+                var valueEdit = BsonValueEditor.GetBsonValueEditor(
+                    $"[{key}]", 
+                    document.LiteDocument[key], 
+                    document.LiteDocument, 
+                    true,
+                    key
+                );
                 controls.Add(new DocumentFieldData(key, valueEdit));
             }
 
