@@ -13,6 +13,10 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Blue.xaml" />
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.TreeViewFullRow.xaml"/>
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.ListView.xaml"/>
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.ButtonChrome.xaml"/>
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.ButtonSpinner.xaml"/>
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.NumericUpDown.xaml"/>
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.DateTimePicker.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

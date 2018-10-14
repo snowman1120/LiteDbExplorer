@@ -1,0 +1,173 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+
+    <Geometry x:Key="UpArrowGeometry">M 0,3 C0,3 0,4 0,4 0,4 3,4 3,4 3,4 3,3 3,3 3,3 4,3 4,3 4,3 4,4 4,4 4,4 7,4 7,4 7,4 7,3 7,3 7,3 6,3 6,3 6,3 6,2 6,2 6,2 5,2 5,2 5,2 5,1 5,1 5,1 4,1 4,1 4,1 4,0 4,0 4,0 3,0 3,0 3,0 3,1 3,1 3,1 2,1 2,1 2,1 2,2 2,2 2,2 1,2 1,2 1,2 1,3 1,3 1,3 0,3 0,3 z</Geometry>
+    <Geometry x:Key="DownArrowGeometry">M 0,1 C0,1 0,0 0,0 0,0 3,0 3,0 3,0 3,1 3,1 3,1 4,1 4,1 4,1 4,0 4,0 4,0 7,0 7,0 7,0 7,1 7,1 7,1 6,1 6,1 6,1 6,2 6,2 6,2 5,2 5,2 5,2 5,3 5,3 5,3 4,3 4,3 4,3 4,4 4,4 4,4 3,4 3,4 3,4 3,3 3,3 3,3 2,3 2,3 2,3 2,2 2,2 2,2 1,2 1,2 1,2 1,1 1,1 1,1 0,1 0,1 z</Geometry>
+
+    <DataTemplate x:Key="IncreaseGlyphNormalKey">
+        <Path Width="7"
+              Height="4"
+              Data="{StaticResource UpArrowGeometry}"
+              Fill="{DynamicResource PrimaryHueMidBrush}"
+              SnapsToDevicePixels="True"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Focusable="False" />
+    </DataTemplate>
+    <DataTemplate x:Key="IncreaseGlyphDisabledKey">
+        <Path Width="7"
+              Height="4"
+              Data="{StaticResource UpArrowGeometry}"
+              Fill="{DynamicResource PrimaryHueMidBrush}"
+              SnapsToDevicePixels="True"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Focusable="False" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="DecreaseGlyphNormalKey">
+        <Path Width="7"
+              Height="4"
+              Data="{StaticResource DownArrowGeometry}"
+              Fill="{DynamicResource PrimaryHueMidBrush}"
+              SnapsToDevicePixels="True"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Focusable="False" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="DecreaseGlyphDisabledKey">
+        <Path Width="7"
+              Height="4"
+              Data="{StaticResource DownArrowGeometry}"
+              Fill="{DynamicResource PrimaryHueMidBrush}"
+              SnapsToDevicePixels="True"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Focusable="False" />
+    </DataTemplate>
+
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+    <Style x:Key="MaterialDesignSpinnerButton"
+           BasedOn="{StaticResource {x:Type RepeatButton}}"
+           TargetType="{x:Type RepeatButton}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Height" Value="Auto"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ButtonBase}">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}" x:Name="border" CornerRadius="0"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <materialDesign:Ripple Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" Focusable="False"    
+                                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        Padding="{TemplateBinding Padding}" 
+                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Button.IsDefaulted" Value="true">
+                            <!--Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/-->
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource MaterialDesignFlatButtonClick}" />
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource MaterialDesignFlatButtonClick}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Opacity" Value="0.23"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type xctk:ButtonSpinner}">
+        <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ItemBorder}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="IsTabStop" Value="True" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type xctk:ButtonSpinner}">
+                    <Border x:Name="Border" SnapsToDevicePixels="True" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition x:Name="firstContentColumn" Width="*" />
+                                <ColumnDefinition x:Name="secondContentColumn" Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False"
+                                              Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+                            <Grid x:Name="gridContent" Grid.Column="1"
+                                  Visibility="{TemplateBinding ShowButtonSpinner, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <RepeatButton x:Name="PART_IncreaseButton"
+                                              Style="{StaticResource MaterialDesignSpinnerButton}"
+                                              IsTabStop="{TemplateBinding IsTabStop}"
+                                              ContentTemplate="{StaticResource IncreaseGlyphNormalKey}"/>
+
+                                <RepeatButton x:Name="PART_DecreaseButton"
+                                              Style="{StaticResource MaterialDesignSpinnerButton}"
+                                              Grid.Row="1"
+                                              IsTabStop="{TemplateBinding IsTabStop}"
+                                              ContentTemplate="{StaticResource DecreaseGlyphNormalKey}" />
+
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="PART_IncreaseButton" Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_IncreaseButton" Property="ContentTemplate"
+                                    Value="{StaticResource IncreaseGlyphDisabledKey}" />
+                        </Trigger>
+                        <Trigger SourceName="PART_DecreaseButton" Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_DecreaseButton" Property="ContentTemplate"
+                                    Value="{StaticResource DecreaseGlyphDisabledKey}" />
+                        </Trigger>
+                        <Trigger Property="ButtonSpinnerLocation"
+                                 Value="Left">
+                            <Setter TargetName="firstContentColumn"
+                                    Property="Width"
+                                    Value="Auto" />
+                            <Setter TargetName="secondContentColumn"
+                                    Property="Width"
+                                    Value="*" />
+                            <Setter TargetName="contentPresenter"
+                                    Property="Grid.Column"
+                                    Value="1" />
+                            <Setter TargetName="gridContent"
+                                    Property="Grid.Column"
+                                    Value="0" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

@@ -25,6 +25,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using MaterialDesignThemes.Wpf;
 
 namespace LiteDbExplorer
 {
@@ -106,6 +107,7 @@ namespace LiteDbExplorer
         }
 
         private DatabaseReference selectedDatabase;
+        
         public DatabaseReference SelectedDatabase
         {
             get
@@ -130,6 +132,7 @@ namespace LiteDbExplorer
         public MainWindow()
         {
             InitializeComponent();
+
             positionManager = new WindowPositionHandler(this, "Main");
 
             Task.Factory.StartNew(() =>
@@ -574,12 +577,14 @@ namespace LiteDbExplorer
 
             foreach (var item in SelectedCollection.Items.Skip(skipIndex + 1))
             {
-                if (ItemMatchesSearch(TextSearch.Text, item, (bool)CheckSearchCase.IsChecked))
+                if (ItemMatchesSearch(TextSearch.Text, item, CheckSearchCase.IsChecked ?? false))
                 {
                     SelectDocumentInView(item);
                     return;
                 }
             }
+            
+            MainSnackbar.MessageQueue.Enqueue($"No results for '{TextSearch.Text}'.");
         }
         #endregion FindNext Command
 
