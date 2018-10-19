@@ -823,7 +823,8 @@ namespace LiteDbExplorer
 
         private void RecentMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var path = (sender as MenuItem).Tag as string;
+            var path = (sender as FrameworkElement)?.Tag as string;
+
             OpenDatabase(path);
         }
 

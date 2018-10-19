@@ -7,7 +7,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:converters="clr-namespace:LiteDbExplorer.Converters"
         mc:Ignorable="d"
-        Title="Array Editor" Height="400" Width="300"
+        Title="Array Editor" Height="300" Width="400"
         WindowStartupLocation="CenterOwner">
 
     <Window.Resources>
@@ -18,13 +18,13 @@
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
             <Button Name="ButtonClose" Content="Close" IsCancel="True"
                     Click="ButtonCancel_Click" Visibility="Collapsed"
-                    DockPanel.Dock="Right" Width="60" Padding="5" Margin="5"/>
+                    DockPanel.Dock="Right" MinWidth="85" Padding="5" Margin="5"/>
             <Button Name="ButtonCancel" Content="Cancel" IsCancel="True"
                     Click="ButtonCancel_Click"
-                    DockPanel.Dock="Right" Width="60" Padding="5" Margin="5"/>
+                    DockPanel.Dock="Right" MinWidth="85" Padding="5" Margin="5"/>
             <Button Name="ButtonOK" Content="OK"
                     Click="ButtonOK_Click"
-                    DockPanel.Dock="Right" Width="60" Padding="5" Margin="5"/>
+                    DockPanel.Dock="Right" MinWidth="85" Padding="5" Margin="5"/>
             <xctk:DropDownButton Margin="5" DockPanel.Dock="Left" Name="ButtonAddItem">
                 <xctk:DropDownButton.Content>
                     <StackPanel Orientation="Horizontal">

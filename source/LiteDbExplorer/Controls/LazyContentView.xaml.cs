@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace LiteDbExplorer.Controls
 {
@@ -10,8 +12,14 @@ namespace LiteDbExplorer.Controls
         public LazyContentView()
         {
             InitializeComponent();
-        }
 
+            ButtonClose.IsEnabled = false;
+
+            ContentPresenter.DataContextChanged += ContentPresenterOnDataContextChanged;
+
+            ButtonClose.Click += ButtonCloseOnClick;
+        }
+        
         public bool ContentLoaded => ContentPresenter.Content != null;
 
         public new object Content
@@ -19,5 +27,29 @@ namespace LiteDbExplorer.Controls
             get => ContentPresenter.Content;
             set => ContentPresenter.Content = value;
         }
+
+
+        private void ContentPresenterOnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            InvalidateCloseButton();
+        }
+
+        private void ButtonCloseOnClick(object sender, RoutedEventArgs e)
+        {
+            if (ContentPresenter.Content is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+
+            ContentPresenter.Content = null;
+
+            InvalidateCloseButton();            
+        }
+
+        public void InvalidateCloseButton()
+        {
+            ButtonClose.IsEnabled = ContentPresenter.Content != null;
+        }
+
     }
 }

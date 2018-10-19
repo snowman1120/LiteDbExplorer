@@ -7,6 +7,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
         xmlns:converters="clr-namespace:LiteDbExplorer.Converters"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Document Editor" Width="600" Height="600" 
         WindowStartupLocation="CenterOwner"
@@ -28,11 +29,40 @@
                     DockPanel.Dock="Right" Width="60" Padding="5" Margin="5"/>
             <Button Name="ButtonCancel" Content="Cancel" IsCancel="True"
                     Click="ButtonCancel_Click"
-                    DockPanel.Dock="Right" Width="60" Padding="5" Margin="5"/>
+                    DockPanel.Dock="Right" Padding="5" Margin="5"
+                    MinWidth="85"/>
             <Button Name="ButtonOK" Content="OK"
                     Click="ButtonOK_Click"
-                    DockPanel.Dock="Right" Width="60" Padding="5" Margin="5"/>
-            <xctk:DropDownButton Margin="5" DockPanel.Dock="Left" x:Name="DropNewField">
+                    DockPanel.Dock="Right" Padding="5" Margin="5"
+                    MinWidth="85"/>
+
+            <materialDesign:PopupBox Margin="5" DockPanel.Dock="Left" x:Name="DropNewField" 
+                                     materialDesign:RippleAssist.IsDisabled="True">
+                <materialDesign:PopupBox.ToggleContent>
+                    <materialDesign:Card Height="32"
+                                         Background="{DynamicResource PrimaryHueMidBrush}"
+                                         Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                                         materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                                         Padding="16,4">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Images/addfield.png" Width="16" VerticalAlignment="Center"/>
+                            <TextBlock Text="Add Field" Margin="6,0,0,0" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </materialDesign:Card>
+                </materialDesign:PopupBox.ToggleContent>
+                <StackPanel Margin="8,0,0,0">
+                    <MenuItem Header="String" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Boolean" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Double" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Int32" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Int64" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="DateTime" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Array" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Document" Click="NewFieldMenuItem_Click" />
+                </StackPanel>
+            </materialDesign:PopupBox>
+
+            <!--<xctk:DropDownButton Margin="5" DockPanel.Dock="Left" x:Name="DropNewField">
                 <xctk:DropDownButton.Content>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Images/addfield.png" Width="16"/>
@@ -51,7 +81,7 @@
                         <MenuItem Header="Document" Click="NewFieldMenuItem_Click" />
                     </ItemsControl>
                 </xctk:DropDownButton.DropDownContent>
-            </xctk:DropDownButton>
+            </xctk:DropDownButton>-->
             <Canvas/>
         </DockPanel>
         
@@ -66,9 +96,11 @@
             </Grid.RowDefinitions>
             
             <Button Name="ButtonPrev" FontFamily="Marlett" Content="3" Grid.Column="0" Grid.Row="0" Margin="5" Height="100"
-                    Command="local:DocumentViewer.PreviousItem"/>
+                    Command="local:DocumentViewer.PreviousItem"
+                    Style="{StaticResource MaterialDesignFlatButton}"/>
             <Button Name="ButtonNext" FontFamily="Marlett" Content="4" Grid.Column="2" Grid.Row="0" Margin="5" Height="100"
-                    Command="local:DocumentViewer.NextItem"/>
+                    Command="local:DocumentViewer.NextItem"
+                    Style="{StaticResource MaterialDesignFlatButton}"/>
             <DockPanel Grid.Column="1" Grid.Row="0">
                 <ListView Name="ListItems" SizeChanged="ItemsField_SizeChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         BorderThickness="0" DockPanel.Dock="Top">

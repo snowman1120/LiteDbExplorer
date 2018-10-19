@@ -176,29 +176,32 @@
                                 </Style>
                             </ResourceDictionary>
                         </ToolBar.Resources>
-                        <Button Name="ButtonOpen" Command="Open" ContextMenuService.IsEnabled="False">
+                        <Button Name="ButtonOpen" Command="Open" ContextMenuService.IsEnabled="False" Padding="0">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="/Images/opendb.png" Margin="0,0,5,0"/>
-                                    <Border Background="Transparent" Margin="5,0,0,0" BorderThickness="1" PreviewMouseLeftButtonDown="RecentItemMoreBorder_MouseLeftButtonDown">
+                                    <Image Source="/Images/opendb.png" Margin="10"/>
+                                    <Border Background="{DynamicResource MaterialDesignToolBarBackground}" Width="1"/>
+                                    <Border Background="Transparent" Padding="3,0" BorderThickness="1" PreviewMouseLeftButtonDown="RecentItemMoreBorder_MouseLeftButtonDown">
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="BorderBrush" Value="Gray" />
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignDivider}" />
+                                                        <Setter Property="Background" Value="{DynamicResource MaterialDesignDivider}" />
                                                     </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="False">
                                                         <Setter Property="BorderBrush" Value="Transparent" />
+                                                        <Setter Property="Background" Value="Transparent" />
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Border.Style>
-                                        <Path Margin="4" VerticalAlignment="Center" Width="6" Fill="#FF527DB5" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "/>
+                                        <Path Margin="4" VerticalAlignment="Center" Width="6" Fill="{DynamicResource MaterialDesignBody}" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "/>
                                     </Border>
                                 </StackPanel>
                             </Button.Content>
                             <Button.ContextMenu>
-                                <ContextMenu ItemsSource="{Binding Path=ItemsSource, Source={x:Reference Name=MenuRecentItems}}" >
+                                <ContextMenu ItemsSource="{Binding Path=ItemsSource, Source={x:Reference Name=MenuRecentItems}}">
                                     <ContextMenu.ItemContainerStyle>
                                         <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
                                             <Setter Property="Tag" Value="{Binding}" />
@@ -208,45 +211,17 @@
                                 </ContextMenu>
                             </Button.ContextMenu>
                         </Button>
+                        <!--<materialDesign:PopupBox>
+                            <ItemsControl ItemsSource="{Binding Path=ItemsSource, Source={x:Reference Name=MenuRecentItems}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Content="{Binding}" Tag="{Binding}" Click="RecentMenuItem_Click"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </materialDesign:PopupBox>-->
                     </ToolBar>
                 </ToolBarTray>
-
-                <!--<Border Name="DockSearch" DockPanel.Dock="Top" BorderThickness="1,1,1,0" BorderBrush="{Binding BorderBrush, ElementName=TreeDatabasese}">
-                    <materialDesign:Card Margin="10">
-                        <StackPanel>
-                            <DockPanel Margin="10,5,10,0">
-                                <Button FontFamily="Marlett" Content="r" Padding="2" 
-                                    DockPanel.Dock="Right" Name="ButtonCloseSearch" Click="ButtonCloseSearch_Click"
-                                    VerticalContentAlignment="Center" FontWeight="ExtraBold"
-                                    Style="{StaticResource MaterialDesignFlatButton}"/>
-                                <TextBlock Text="Search" FontWeight="Bold" VerticalAlignment="Center" />
-                            </DockPanel>
-                            <Grid Margin="5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <TextBox Grid.Column="0" Grid.Row="0" Name="TextSearch" Margin="5">
-                                    <TextBox.InputBindings>
-                                        <KeyBinding Key="Return" Command="local:Commands.FindNext" />
-                                    </TextBox.InputBindings>
-                                </TextBox>
-                                <CheckBox Grid.Column="0" Grid.Row="1" Name="CheckSearchCase" 
-                                      Content="Match case" VerticalContentAlignment="Center" Margin="5"/>
-
-                                <Button Grid.Column="1" Grid.Row="0" Content="Find Next" Margin="5"
-                                    Command="local:Commands.FindNext" />
-                                <Button Grid.Column="1" Grid.Row="1" Content="Find Previous" Margin="5"
-                                    Command="local:Commands.FindPrevious" />
-                            </Grid>
-                        </StackPanel>
-                    </materialDesign:Card>
-                </Border>-->
 
                 <TreeView Name="TreeDatabasese" DockPanel.Dock="Top"
                           SelectedItemChanged="TreeDatabasese_SelectedItemChanged"
@@ -368,7 +343,7 @@
                     </ToolBar>
                 </ToolBarTray>
 
-                <Border Name="DockSearch" DockPanel.Dock="Top" BorderThickness="1,1,1,0" BorderBrush="{Binding BorderBrush, ElementName=TreeDatabasese}">
+                <Border Name="DockSearch" DockPanel.Dock="Top">
                     <materialDesign:Card Margin="10">
                         <StackPanel>
                             <DockPanel Margin="10,5,10,0">
