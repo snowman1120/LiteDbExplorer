@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Blue.xaml" />
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.TreeViewFullRow.xaml"/>
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.ButtonEntry.xaml"/>
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.ListView.xaml"/>
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.ButtonChrome.xaml"/>
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.ButtonSpinner.xaml"/>

@@ -16,7 +16,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Border x:Name="boxBottomLine" Grid.Row="0" BorderThickness="0,0,0,1"
+        <Border x:Name="boxBottomLine" Grid.Row="0" BorderThickness="0,0,0,0"
                 BorderBrush="{DynamicResource MaterialDesignTextBoxBorder}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -24,16 +24,13 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Button x:Name="LoadButton"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        HorizontalContentAlignment="Left"
-                        Padding="4,0" Height="28" Margin="-3,2,0,0"
-                        FontWeight="Normal" />
+                        Style="{StaticResource MaterialDesignEntryButton}" />
                 <Button Grid.Column="1" FontFamily="Marlett" 
-                        Padding="4,0" Height="28" Width="28" Margin="-3,2,0,0"
                         Content="r"
                         DockPanel.Dock="Right" Name="ButtonClose"
-                        VerticalContentAlignment="Center" FontWeight="ExtraBold"
-                        Style="{StaticResource MaterialDesignFlatButton}" />
+                        HorizontalContentAlignment="Center" FontWeight="ExtraBold"
+                        Padding="8,2"
+                        Style="{StaticResource MaterialDesignEntryButton}" />
             </Grid>
         </Border>
 

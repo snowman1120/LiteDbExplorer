@@ -129,6 +129,8 @@
     <Compile Include="Controls\LazyContentView.xaml.cs">
       <DependentUpon>LazyContentView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PackIcon.cs" />
+    <Compile Include="Controls\StyleKit.cs" />
     <Compile Include="Converters\BsonValueToNetValueConverter.cs" />
     <Compile Include="Converters\DoubleToGridLengthConverter .cs" />
     <Compile Include="Converters\EnumConverter.cs" />
@@ -175,6 +177,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\MaterialDesignTheme.ButtonChrome.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\MaterialDesignTheme.ButtonEntry.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -310,6 +316,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\file-table.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

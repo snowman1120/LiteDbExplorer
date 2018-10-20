@@ -8,9 +8,16 @@ using Xceed.Wpf.Toolkit;
 
 namespace LiteDbExplorer.Controls
 {
+    public enum BsonEditorExpandMode
+    {
+        Inline,
+        Window
+    }
+
     public class BsonValueEditor
     {
         public static FrameworkElement GetBsonValueEditor(
+            BsonEditorExpandMode expandMode,
             string bindingPath, BsonValue bindingValue,
             object bindingSource, bool readOnly, string keyName)
         {
@@ -25,29 +32,35 @@ namespace LiteDbExplorer.Controls
 
             if (bindingValue.IsArray)
             {
-                /*var button = new Button
-                {
-                    Content = "Array"
-                };
-
-                button.Click += (s, a) =>
-                {
-                    var arrayValue = bindingValue as BsonArray;
-                    var window = new Windows.ArrayViewer(arrayValue, readOnly)
-                    {
-                        Owner = Application.Current.MainWindow
-                    };
-
-                    if (window.ShowDialog() == true)
-                    {
-                        arrayValue.Clear();
-                        arrayValue.AddRange(window.EditedItems);
-                    }
-                };
-
-                return button;*/
                 var arrayValue = bindingValue as BsonArray;
 
+                if (expandMode == BsonEditorExpandMode.Window)
+                {
+                    var button = new Button
+                    {
+                        Content = "Array",
+                        Style = StyleKit.MaterialDesignEntryButtonStyle
+                    };
+
+                    button.Click += (s, a) =>
+                    {
+                        arrayValue = bindingValue as BsonArray;
+                        var window = new Windows.ArrayViewer(arrayValue, readOnly)
+                        {
+                            Owner = Application.Current.MainWindow,
+                            Height = 500
+                        };
+
+                        if (window.ShowDialog() == true)
+                        {
+                            arrayValue.Clear();
+                            arrayValue.AddRange(window.EditedItems);
+                        }
+                    };
+
+                    return button;
+                }
+                
                 var contentView = new LazyContentView
                 {
                     LoadButton =
@@ -71,22 +84,28 @@ namespace LiteDbExplorer.Controls
 
             if (bindingValue.IsDocument)
             {
-                /*var button = new Button
+                if (expandMode == BsonEditorExpandMode.Window)
                 {
-                    Content = "Document"
-                };
-
-                button.Click += (s, a) =>
-                {
-                    var window = new Windows.DocumentViewer(bindingValue as BsonDocument, readOnly)
+                    var button = new Button
                     {
-                        Owner = Application.Current.MainWindow
+                        Content = "Document",
+                        Style = StyleKit.MaterialDesignEntryButtonStyle
                     };
 
-                    window.ShowDialog();
-                };
+                    button.Click += (s, a) =>
+                    {
+                        var window = new Windows.DocumentViewer(bindingValue as BsonDocument, readOnly)
+                        {
+                            Owner = Application.Current.MainWindow,
+                            Height = 500
+                        };
 
-                return button;*/
+                        window.ShowDialog();
+                    };
+
+                    return button;
+                }
+                
                 var contentView = new LazyContentView
                 {
                     LoadButton =

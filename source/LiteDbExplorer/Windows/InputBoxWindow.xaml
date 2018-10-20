@@ -11,16 +11,18 @@
         WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded">
     <DockPanel>
-        <TextBlock Name="TextMessage" DockPanel.Dock="Top" Margin="7"/>
-        <TextBox Name="TextText" Text="" DockPanel.Dock="Top" Margin="7"/>
+        <TextBlock Name="TextMessage" DockPanel.Dock="Top" Margin="15,8"/>
+        <TextBox Name="TextText" Text="" DockPanel.Dock="Top" Margin="15,8"/>
 
-        <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
-            <Button Name="ButtonCancel" Content="Cancel" IsCancel="True"
+        <DockPanel DockPanel.Dock="Bottom" LastChildFill="False" Margin="5,0">
+            <Button Name="ButtonCancel" Content="CANCEL" IsCancel="True"
                     Click="ButtonCancel_Click"
-                    DockPanel.Dock="Right" Width="60" Padding="3" Margin="5"/>
+                    DockPanel.Dock="Right" MinWidth="80" Margin="10"
+                    Style="{StaticResource MaterialDesignFlatButton}"/>
             <Button Name="ButtonOK" Content="OK" IsDefault="True"
                     Click="ButtonOK_Click"
-                    DockPanel.Dock="Right" Width="60" Padding="3" Margin="5"/>
+                    DockPanel.Dock="Right" MinWidth="80" Margin="10"
+                    Style="{StaticResource MaterialDesignFlatButton}"/>
         </DockPanel>
     </DockPanel>
 </Window>

@@ -5,19 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LiteDbExplorer.Windows"
         mc:Ignorable="d"
-        Title="Select value type" Width="200"
+        Title="Select value type" Width="260" ResizeMode="CanResize"
         SizeToContent="Height" WindowStartupLocation="CenterOwner">
     <DockPanel>
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
-            <Button Name="ButtonCancel" Content="Cancel" IsCancel="True"
+            <Button Name="ButtonCancel" Content="CANCEL" IsCancel="True"
                     Click="ButtonCancel_Click"
-                    DockPanel.Dock="Right" Width="60" Padding="5" Margin="5"/>
+                    DockPanel.Dock="Right" MinWidth="80" Margin="10"
+                    Style="{StaticResource MaterialDesignFlatButton}"/>
+
             <Button Name="ButtonOK" Content="OK"
                     Click="ButtonOK_Click"
-                    DockPanel.Dock="Right" Width="60" Padding="5" Margin="5"/>
+                    DockPanel.Dock="Right" MinWidth="80" Margin="10"
+                    Style="{StaticResource MaterialDesignFlatButton}"/>
         </DockPanel>
 
-        <ComboBox Margin="5" SelectedIndex="0">
+        <ComboBox Margin="10" SelectedIndex="0">
             <ComboBoxItem Content="String" />
             <ComboBoxItem Content="Boolean" />
             <ComboBoxItem Content="Double" />

@@ -118,7 +118,7 @@ namespace LiteDbExplorer.Controls
                 Value = value
             };
             var keyName = value.Type.ToString();
-            var valueEdit = BsonValueEditor.GetBsonValueEditor("Value", value, arrayItem, IsReadOnly, keyName);
+            var valueEdit = BsonValueEditor.GetBsonValueEditor(BsonEditorExpandMode.Inline, "Value", value, arrayItem, IsReadOnly, keyName);
             arrayItem.Control = valueEdit;
             return arrayItem;
         }

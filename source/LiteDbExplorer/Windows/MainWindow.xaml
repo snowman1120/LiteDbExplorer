@@ -10,18 +10,18 @@
         xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
         mc:Ignorable="d"
         Title="LiteDB Explorer" Width="1024" Height="740" 
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip"
+        Closed="Window_Closed" Loaded="WindowMain_Loaded"
+        LocationChanged="WindowMain_LocationChanged" SizeChanged="WindowMain_SizeChanged"
+        Name="WindowMain"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}"
-        WindowStartupLocation="CenterScreen"
-        ResizeMode="CanResizeWithGrip"
-        Closed="Window_Closed" Loaded="WindowMain_Loaded"
-        LocationChanged="WindowMain_LocationChanged" SizeChanged="WindowMain_SizeChanged"
-        Name="WindowMain">
+        FontFamily="{DynamicResource MaterialDesignFont}">
 
     <Window.Resources>
         <converters:EnumConverter x:Key="EnumConverter" />
@@ -223,17 +223,15 @@
                     </ToolBar>
                 </ToolBarTray>
 
-                <TreeView Name="TreeDatabasese" DockPanel.Dock="Top"
+                <TreeView Name="TreeDatabase" DockPanel.Dock="Top"
                           SelectedItemChanged="TreeDatabasese_SelectedItemChanged"
                           ItemsSource="{Binding Databases, RelativeSource={RelativeSource AncestorType=Window}}">
                     <TreeView.Resources>
                         <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItemFullRow}">
                             <Setter Property="IsExpanded" Value="True" />
                             <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
-                        </Style>
-                        <HierarchicalDataTemplate DataType="{x:Type local:DatabaseReference}" ItemsSource="{Binding Collections}">
-                            <StackPanel Orientation="Horizontal" ToolTip="{Binding Location}">
-                                <StackPanel.ContextMenu>
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
                                     <ContextMenu>
                                         <MenuItem Command="local:Commands.AddFile">
                                             <MenuItem.Icon>
@@ -255,9 +253,16 @@
                                         <Separator/>
                                         <MenuItem Command="Close"/>
                                     </ContextMenu>
-                                </StackPanel.ContextMenu>
-                                <Image Source="/Images/database.png" Width="16" RenderOptions.BitmapScalingMode="Linear"/>
-                                <TextBlock Text="{Binding Name}" Padding="5"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                        <HierarchicalDataTemplate DataType="{x:Type local:DatabaseReference}" ItemsSource="{Binding Collections}">
+                            <StackPanel Orientation="Horizontal" ToolTip="{Binding Location}">
+                                <materialDesign:PackIcon Kind="Database" Height="20" Width="20" Margin="-1,0,0,0" VerticalAlignment="Center" Foreground="#089910"/>
+                                <TextBlock Text="{Binding Name}" Padding="8,4"
+                                           FontSize="14" FontWeight="Regular" 
+                                           FontFamily="{StaticResource MaterialDesignFont}"
+                                           Foreground="{DynamicResource MaterialDesignBody}"/>
                             </StackPanel>
                         </HierarchicalDataTemplate>
                         <DataTemplate DataType="{x:Type local:CollectionReference}">
@@ -272,14 +277,17 @@
                                 <ContentPresenter Content="{Binding}">
                                     <ContentPresenter.Resources>
                                         <DataTemplate DataType="{x:Type local:FileCollectionReference}">
-                                            <Image Source="/Images/files.png"/>
+                                            <Image Source="/Images/file-table.png"/>
                                         </DataTemplate>
                                         <DataTemplate DataType="{x:Type local:CollectionReference}">
-                                            <Image Source="/Images/table.png"/>
+                                            <Image Source="/Images/table.png" Height="16"/>
                                         </DataTemplate>
                                     </ContentPresenter.Resources>
                                 </ContentPresenter>
-                                <TextBlock Text="{Binding Name}" Padding="5"/>
+                                <TextBlock Text="{Binding Name}" Padding="8,4"
+                                           FontSize="14" FontWeight="Regular" 
+                                           FontFamily="{StaticResource MaterialDesignFont}"
+                                           Foreground="{DynamicResource MaterialDesignBody}"/>
                             </StackPanel>
                         </DataTemplate>
                     </TreeView.Resources>
@@ -427,7 +435,7 @@
             <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" />
 
             <DockPanel Grid.Column="4">
-                <Border BorderBrush="{Binding BorderBrush, ElementName=TreeDatabasese}" 
+                <Border BorderBrush="{Binding BorderBrush, ElementName=TreeDatabase}" 
                         BorderThickness="0" DockPanel.Dock="Top" Padding="0"
                         Name="BorderDocPreview" Visibility="Collapsed">
                     <DockPanel DockPanel.Dock="Top">
@@ -458,7 +466,7 @@
                     </DockPanel>
                 </Border>
 
-                <Border BorderBrush="{Binding BorderBrush, ElementName=TreeDatabasese}" 
+                <Border BorderBrush="{Binding BorderBrush, ElementName=TreeDatabase}" 
                         BorderThickness="1,0,1,1" DockPanel.Dock="Top" Padding="0,5,0,5"
                         Name="BorderFilePreview" Visibility="Collapsed">
                     <DockPanel DockPanel.Dock="Top">

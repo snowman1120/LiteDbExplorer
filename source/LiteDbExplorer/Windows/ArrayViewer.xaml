@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:LiteDbExplorer.Windows"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:converters="clr-namespace:LiteDbExplorer.Converters"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Array Editor" Height="300" Width="400"
+        Title="Array Editor" Height="500" Width="640"
         WindowStartupLocation="CenterOwner">
 
     <Window.Resources>
@@ -16,20 +17,49 @@
 
     <DockPanel>
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
-            <Button Name="ButtonClose" Content="Close" IsCancel="True"
+            
+            <Button Name="ButtonClose" Content="CLOSE" IsCancel="True"
                     Click="ButtonCancel_Click" Visibility="Collapsed"
-                    DockPanel.Dock="Right" MinWidth="85" Padding="5" Margin="5"/>
-            <Button Name="ButtonCancel" Content="Cancel" IsCancel="True"
+                    DockPanel.Dock="Right" MinWidth="85" Margin="10"
+                    Style="{StaticResource MaterialDesignFlatButton}"/>
+            <Button Name="ButtonCancel" Content="CANCEL" IsCancel="True"
                     Click="ButtonCancel_Click"
-                    DockPanel.Dock="Right" MinWidth="85" Padding="5" Margin="5"/>
+                    DockPanel.Dock="Right" MinWidth="85" Margin="10"
+                    Style="{StaticResource MaterialDesignFlatButton}"/>
             <Button Name="ButtonOK" Content="OK"
                     Click="ButtonOK_Click"
-                    DockPanel.Dock="Right" MinWidth="85" Padding="5" Margin="5"/>
-            <xctk:DropDownButton Margin="5" DockPanel.Dock="Left" Name="ButtonAddItem">
+                    DockPanel.Dock="Right" MinWidth="85" Margin="10"
+                    Style="{StaticResource MaterialDesignFlatButton}"/>
+
+            <materialDesign:PopupBox Margin="10" DockPanel.Dock="Left" x:Name="ButtonAddItem">
+                <materialDesign:PopupBox.ToggleContent>
+                    <materialDesign:Card Height="32"
+                                         Foreground="{DynamicResource PrimaryHueMidBrush}"
+                                         materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                         Padding="16,4">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Images/addfield.png" Width="16" VerticalAlignment="Center"/>
+                            <TextBlock Text="ADD ITEM" Margin="6,0,0,0" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </materialDesign:Card>
+                </materialDesign:PopupBox.ToggleContent>
+                <StackPanel Margin="0">
+                    <MenuItem Header="String" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Boolean" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Double" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Int32" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Int64" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="DateTime" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Array" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Document" Click="NewFieldMenuItem_Click" />
+                </StackPanel>
+            </materialDesign:PopupBox>
+
+            <!--<xctk:DropDownButton Margin="5" DockPanel.Dock="Left" Name="ButtonAddItem">
                 <xctk:DropDownButton.Content>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Images/addfield.png" Width="16"/>
-                        <TextBlock Text="Add Item" Margin="5,0,0,0"/>
+                        <TextBlock Text="ADD ITEM" Margin="5,0,0,0"/>
                     </StackPanel>
                 </xctk:DropDownButton.Content>
                 <xctk:DropDownButton.DropDownContent>
@@ -44,10 +74,12 @@
                         <MenuItem Header="Document" Click="NewFieldMenuItem_Click" />
                     </ItemsControl>
                 </xctk:DropDownButton.DropDownContent>
-            </xctk:DropDownButton>
+            </xctk:DropDownButton>-->
+
             <Canvas/>
         </DockPanel>
 
+        <Border DockPanel.Dock="Bottom" Height="1" BorderThickness="0,0,0,1" BorderBrush="{StaticResource MaterialDesignDivider}"/>
         <ScrollViewer DockPanel.Dock="Top" Padding="5" VerticalScrollBarVisibility="Auto">
             <ItemsControl Name="ItemsItems">
                 <ItemsControl.ItemTemplate>

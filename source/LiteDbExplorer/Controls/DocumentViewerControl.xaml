@@ -21,15 +21,19 @@
 
     <DockPanel>
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
-            <Button Name="ButtonClose" Content="Close" IsCancel="True"
+            <Button Name="ButtonClose" Content="CLOSE" IsCancel="True"
                     Click="ButtonCancel_Click" Visibility="Collapsed"
-                    DockPanel.Dock="Right" Width="60" Padding="5" Margin="5"/>
-            <Button Name="ButtonCancel" Content="Cancel" IsCancel="True"
+                    DockPanel.Dock="Right" MinWidth="80" Margin="10"
+                    Style="{StaticResource MaterialDesignFlatButton}" />
+            <Button Name="ButtonCancel" Content="CANCEL" IsCancel="True"
                     Click="ButtonCancel_Click"
-                    DockPanel.Dock="Right" Width="60" Padding="5" Margin="5"/>
+                    DockPanel.Dock="Right" MinWidth="80" Margin="10"
+                    Style="{StaticResource MaterialDesignFlatButton}" />
             <Button Name="ButtonOK" Content="OK"
                     Click="ButtonOK_Click"
-                    DockPanel.Dock="Right" Width="60" Padding="5" Margin="5"/>
+                    DockPanel.Dock="Right" MinWidth="80" Margin="10"
+                    Style="{StaticResource MaterialDesignFlatButton}" />
+
             <xctk:DropDownButton Margin="5" DockPanel.Dock="Left" x:Name="DropNewField">
                 <xctk:DropDownButton.Content>
                     <StackPanel Orientation="Horizontal">

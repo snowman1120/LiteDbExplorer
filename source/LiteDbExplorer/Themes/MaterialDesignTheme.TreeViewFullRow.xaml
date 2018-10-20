@@ -20,7 +20,7 @@
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
         <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="Padding" Value="0,4,8,4" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource MaterialDesignTreeViewItemFocusVisual}"/>
         <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type TreeView}}}"/>
         <Setter Property="Template">
@@ -125,27 +125,27 @@
 
                         <materialDesign:ScaleHost x:Name="ScaleHost" />
 
-                        <ToggleButton x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" 
+                        <ToggleButton Grid.Row="0" Grid.Column="0" x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" 
                                       Style="{StaticResource MaterialDesignExpandCollapseToggleStyle}"
                                       Foreground="{TemplateBinding Foreground}"
-                                      Margin="8 0 8 0"
+                                      Margin="6,0,6,0"
                                       VerticalAlignment="Center"/>
 
                         <Border x:Name="MouseOverBorder"
-                                Grid.Column="0" Grid.ColumnSpan="3"
+                                Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"
                                 IsHitTestVisible="False"
                                 SnapsToDevicePixels="true"
                                 Opacity="0"
                                 Background="{TemplateBinding Foreground, Converter={StaticResource BrushRoundConverter}}"/>
 
                         <Border x:Name="SelectedBorder"
-                                Grid.Column="0" Grid.ColumnSpan="3"
+                                Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"
                                 IsHitTestVisible="False"
                                 SnapsToDevicePixels="true"
                                 Opacity="0"
                                 Background="{TemplateBinding Foreground, Converter={StaticResource BrushRoundConverter}}"/>
 
-                        <Grid Grid.Column="1" Grid.ColumnSpan="2" x:Name="ContentGrid" Background="Transparent">
+                        <Grid Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" x:Name="ContentGrid" Background="Transparent">
                             <materialDesign:Ripple Feedback="{TemplateBinding Foreground, Converter={StaticResource BrushRoundConverter}}"
                                         Focusable="False"
                                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
@@ -167,7 +167,7 @@
 
                         <StackPanel Grid.Column="0" Grid.Row="2"
                                     x:Name="ItemsPanel"
-                                    Margin="-16 0 0 0"
+                                    Margin="-16,0,0,0"
                                     Grid.ColumnSpan="3">
                             <StackPanel.Height>
                                 <MultiBinding Converter="{StaticResource MathMlpMultipleConverter}">

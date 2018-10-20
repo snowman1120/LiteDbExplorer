@@ -109,7 +109,7 @@ namespace LiteDbExplorer.Windows
                 Value = value
             };
             var keyName = value.Type.ToString();
-            var valueEdit = BsonValueEditor.GetBsonValueEditor("Value", value, arrayItem, IsReadOnly, keyName);
+            var valueEdit = BsonValueEditor.GetBsonValueEditor(BsonEditorExpandMode.Window, "Value", value, arrayItem, IsReadOnly, keyName);
             arrayItem.Control = valueEdit;
             return arrayItem;
         }
@@ -118,7 +118,8 @@ namespace LiteDbExplorer.Windows
         {
             var menuItem = sender as MenuItem;
             BsonValue newValue;
-            ButtonAddItem.IsOpen = false;
+            // ButtonAddItem.IsOpen = false;
+            ButtonAddItem.IsPopupOpen = false;
 
             switch (menuItem.Header as string)
             {

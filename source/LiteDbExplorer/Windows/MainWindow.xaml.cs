@@ -751,15 +751,14 @@ namespace LiteDbExplorer
                 return;
             }
 
-            if (e.NewValue is CollectionReference)
+            if (e.NewValue is CollectionReference collection)
             {
-                var collection = e.NewValue as CollectionReference;
                 SelectedCollection = collection;
                 SelectedDatabase = collection.Database;
             }
-            else if (e.NewValue is DatabaseReference)
+            else if (e.NewValue is DatabaseReference reference)
             {
-                SelectedDatabase = e.NewValue as DatabaseReference;
+                SelectedDatabase = reference;
             }
             else
             {
@@ -798,6 +797,7 @@ namespace LiteDbExplorer
             {
                 var key = document.LiteDocument.Keys.ElementAt(i);
                 var valueEdit = BsonValueEditor.GetBsonValueEditor(
+                    BsonEditorExpandMode.Inline,
                     $"[{key}]", 
                     document.LiteDocument[key], 
                     document.LiteDocument, 

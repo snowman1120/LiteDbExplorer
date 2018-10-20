@@ -123,7 +123,7 @@ namespace LiteDbExplorer.Controls
         private DocumentFieldData NewField(string key, bool readOnly)
         {
             var valueEdit =
-                BsonValueEditor.GetBsonValueEditor($"[{key}]", currentDocument[key], currentDocument, readOnly, key);
+                BsonValueEditor.GetBsonValueEditor(BsonEditorExpandMode.Inline, $"[{key}]", currentDocument[key], currentDocument, readOnly, key);
             return new DocumentFieldData(key, valueEdit);
         }
 
