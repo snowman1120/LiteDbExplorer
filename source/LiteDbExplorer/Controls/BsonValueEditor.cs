@@ -153,14 +153,6 @@ namespace LiteDbExplorer.Controls
 
                 datePicker.SetBinding(DateTimePicker.ValueProperty, binding);
 
-                /*var datePicker = new DatePicker
-                {
-                    SelectedDateFormat = DatePickerFormat.Long,
-                    IsEnabled = !readOnly
-                };
-
-                datePicker.SetBinding(DatePicker.SelectedDateProperty, binding);*/
-
                 return datePicker;
             }
 
@@ -189,13 +181,6 @@ namespace LiteDbExplorer.Controls
                 };
 
                 numberEditor.SetBinding(IntegerUpDown.ValueProperty, binding);
-
-                /*var numberEditor = new SpinControl
-                {
-                    IsEnabled = !readOnly
-                };
-
-                numberEditor.SetBinding(SpinControl.ValueProperty, binding);*/
 
                 return numberEditor;
             }

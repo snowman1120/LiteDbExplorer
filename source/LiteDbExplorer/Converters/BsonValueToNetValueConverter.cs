@@ -17,9 +17,9 @@ namespace LiteDbExplorer.Converters
                 return null;
             }
 
-            if (value is BsonValue)
+            if (value is BsonValue bsonValue)
             {
-                return (value as BsonValue).RawValue;
+                return bsonValue.RawValue;
             }
             else
             {

@@ -438,11 +438,15 @@
                 <Border BorderBrush="{Binding BorderBrush, ElementName=TreeDatabase}" 
                         BorderThickness="0" DockPanel.Dock="Top" Padding="0"
                         Name="BorderDocPreview" Visibility="Collapsed">
+                    
                     <DockPanel DockPanel.Dock="Top">
                         <Border DockPanel.Dock="Top" MinHeight="40" Background="{DynamicResource MaterialDesignToolBarBackground}" Padding="10,0">
                             <TextBlock Text="Document Preview" FontWeight="Bold" VerticalAlignment="Center"/>
                         </Border>
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top">
+
+                        <controls:DocumentTreeView x:Name="DocumentTreeView" DockPanel.Dock="Top" />
+
+                        <!--<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top">
                             <ItemsControl Name="ItemsDocPreview" Margin="5,0,5,0">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -462,7 +466,7 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                        </ScrollViewer>
+                        </ScrollViewer>-->
                     </DockPanel>
                 </Border>
 
@@ -476,6 +480,7 @@
                         <controls:FileView x:Name="FilePreview" DockPanel.Dock="Top"/>
                     </DockPanel>
                 </Border>
+
             </DockPanel>
         </Grid>
     </DockPanel>

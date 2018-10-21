@@ -1,18 +1,10 @@
 ﻿using LiteDB;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using LiteDbExplorer.Converters;
 using LiteDbExplorer.Controls;
 using System.Collections.ObjectModel;
 
@@ -115,9 +107,9 @@ namespace LiteDbExplorer.Windows
 
         private void LoadDocument(DocumentReference document)
         {
-            if (document.Collection is FileCollectionReference)
+            if (document.Collection is FileCollectionReference reference)
             {
-                var fileInfo = (document.Collection as FileCollectionReference).GetFileObject(document);
+                var fileInfo = reference.GetFileObject(document);
                 GroupFile.Visibility = Visibility.Visible;
                 FileView.LoadFile(fileInfo);
             }

@@ -782,7 +782,7 @@ namespace LiteDbExplorer
         {
             if (DbSelectedItems.Count() > 1 || DbSelectedItems.Count() == 0)
             {
-                ItemsDocPreview.ItemsSource = null;
+                // ItemsDocPreview.ItemsSource = null;
                 BorderDocPreview.Visibility = Visibility.Collapsed;
                 BorderFilePreview.Visibility = Visibility.Collapsed;
                 return;
@@ -791,27 +791,30 @@ namespace LiteDbExplorer
 
             BorderDocPreview.Visibility = Visibility.Visible;
             var document = DbSelectedItems.First();
-            var controls = new List<DocumentFieldData>();
 
+            /*var controls = new List<DocumentFieldData>();
+            
             for (int i = 0; i < document.LiteDocument.Keys.Count; i++)
             {
                 var key = document.LiteDocument.Keys.ElementAt(i);
                 var valueEdit = BsonValueEditor.GetBsonValueEditor(
-                    BsonEditorExpandMode.Inline,
-                    $"[{key}]", 
-                    document.LiteDocument[key], 
-                    document.LiteDocument, 
-                    true,
-                    key
+                    expandMode: BsonEditorExpandMode.Inline,
+                    bindingPath: $"[{key}]", 
+                    bindingValue: document.LiteDocument[key], 
+                    bindingSource: document.LiteDocument, 
+                    readOnly: true,
+                    keyName: key
                 );
                 controls.Add(new DocumentFieldData(key, valueEdit));
             }
 
-            ItemsDocPreview.ItemsSource = controls;
+            ItemsDocPreview.ItemsSource = controls;*/
 
-            if (document.Collection is FileCollectionReference)
+            DocumentTreeView.ItemsSource = new DocumentTreeItemsSource(document);
+
+            if (document.Collection is FileCollectionReference reference)
             {
-                var fileInfo = (document.Collection as FileCollectionReference).GetFileObject(document);
+                var fileInfo = reference.GetFileObject(document);
                 FilePreview.LoadFile(fileInfo);
                 BorderFilePreview.Visibility = Visibility.Visible;
             }
