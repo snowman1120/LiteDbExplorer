@@ -1,15 +1,17 @@
-﻿<Window x:Class="LiteDbExplorer.Windows.InputBoxWindow"
+﻿<mah:MetroWindow x:Class="LiteDbExplorer.Windows.InputBoxWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LiteDbExplorer.Windows"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
         Title="InputBoxWindow"
         SizeToContent="WidthAndHeight"
         MinWidth="300" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        Style="{StaticResource DialogWindowStyle}">
     <DockPanel>
         <TextBlock Name="TextMessage" DockPanel.Dock="Top" Margin="15,8"/>
         <TextBox Name="TextText" Text="" DockPanel.Dock="Top" Margin="15,8"/>
@@ -25,4 +27,4 @@
                     Style="{StaticResource MaterialDesignFlatButton}"/>
         </DockPanel>
     </DockPanel>
-</Window>
+</mah:MetroWindow>

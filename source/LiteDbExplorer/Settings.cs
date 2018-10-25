@@ -1,11 +1,7 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LiteDbExplorer
 {
@@ -15,76 +11,75 @@ namespace LiteDbExplorer
         Original
     }
 
+    public enum ColorTheme
+    {
+        Light,
+        Dark
+    }
+
     public class Settings : INotifyPropertyChanged
-    {        
+    {
         public class WindowPosition
         {
             public class Point
             {
-                public double X
-                {
-                    get; set;
-                }
+                public double X { get; set; }
 
-                public double Y
-                {
-                    get; set;
-                }
+                public double Y { get; set; }
             }
 
-            public Point Position
-            {
-                get; set;
-            }
+            public Point Position { get; set; }
 
-            public Point Size
-            {
-                get; set;
-            }
+            public Point Size { get; set; }
         }
 
-        private Dictionary<string, WindowPosition> windowPositions = new Dictionary<string, WindowPosition>();
+        private Dictionary<string, WindowPosition> _windowPositions = new Dictionary<string, WindowPosition>();
+
         public Dictionary<string, WindowPosition> WindowPositions
         {
-            get
-            {
-                return windowPositions;
-            }
+            get => _windowPositions;
 
             set
             {
-                windowPositions = value;
-                OnPropertyChanged("WindowPositions");
+                _windowPositions = value;
+                OnPropertyChanged(nameof(WindowPositions));
             }
         }
 
-        private FieldSortOrder fieldSortOrder = FieldSortOrder.Original;
+        private FieldSortOrder _fieldSortOrder = FieldSortOrder.Original;
+
         public FieldSortOrder FieldSortOrder
         {
-            get
-            {
-                return fieldSortOrder;
-            }
+            get => _fieldSortOrder;
 
             set
             {
-                fieldSortOrder = value;
-                OnPropertyChanged("FieldSortOrder");
+                _fieldSortOrder = value;
+                OnPropertyChanged(nameof(FieldSortOrder));
             }
         }
 
-        private double mainSplitterSize = 250;
+        private double _mainSplitterSize = 250;
+
         public double MainSplitterSize
         {
-            get
-            {
-                return mainSplitterSize;
-            }
+            get => _mainSplitterSize;
 
             set
             {
-                mainSplitterSize = value;
-                OnPropertyChanged("MainSplitterSize");
+                _mainSplitterSize = value;
+                OnPropertyChanged(nameof(MainSplitterSize));
+            }
+        }
+
+        private ColorTheme _colorTheme = ColorTheme.Light;
+        public ColorTheme ColorTheme
+        {
+            get => _colorTheme;
+            set
+            {
+                _colorTheme = value;
+                OnPropertyChanged(nameof(ColorTheme));
             }
         }
 
@@ -101,10 +96,8 @@ namespace LiteDbExplorer
             {
                 return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(Paths.SettingsFilePath));
             }
-            else
-            {
-                return new Settings();
-            }
+
+            return new Settings();
         }
 
         public void SaveSettings()

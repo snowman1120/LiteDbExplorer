@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using LiteDbExplorer.Controls;
 using System.Collections.ObjectModel;
+using MahApps.Metro.Controls;
 
 namespace LiteDbExplorer.Windows
 {
@@ -33,7 +34,7 @@ namespace LiteDbExplorer.Windows
     /// <summary>
     /// Interaction logic for DocumentViewer.xaml
     /// </summary>
-    public partial class DocumentViewer : Window
+    public partial class DocumentViewer : MetroWindow
     {
         public static readonly RoutedUICommand PreviousItem = new RoutedUICommand
         (

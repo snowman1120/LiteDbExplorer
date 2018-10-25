@@ -6,13 +6,14 @@ using System.Windows.Data;
 using LiteDB;
 using LiteDbExplorer.Controls;
 using System.Collections.ObjectModel;
+using MahApps.Metro.Controls;
 
 namespace LiteDbExplorer.Windows
 {
     /// <summary>
     /// Interaction logic for ArrayViewer.xaml
     /// </summary>
-    public partial class ArrayViewer : Window
+    public partial class ArrayViewer : MetroWindow
     {
         public class ArrayUIItem
         {

@@ -48,7 +48,7 @@ namespace LiteDbExplorer.Controls
                         var window = new Windows.ArrayViewer(arrayValue, readOnly)
                         {
                             Owner = Application.Current.MainWindow,
-                            Height = 500
+                            Height = 600
                         };
 
                         if (window.ShowDialog() == true)
@@ -97,7 +97,7 @@ namespace LiteDbExplorer.Controls
                         var window = new Windows.DocumentViewer(bindingValue as BsonDocument, readOnly)
                         {
                             Owner = Application.Current.MainWindow,
-                            Height = 500
+                            Height = 600
                         };
 
                         window.ShowDialog();

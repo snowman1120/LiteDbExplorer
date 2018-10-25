@@ -14,17 +14,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
+using MahApps.Metro.Controls;
 using MaterialDesignThemes.Wpf;
 
 namespace LiteDbExplorer
@@ -32,13 +29,13 @@ namespace LiteDbExplorer
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
-        private PipeService pipeService;
-        private PipeServer pipeServer;
+        private PipeService _pipeService;
+        private PipeServer _pipeServer;
 
-        private WindowPositionHandler positionManager;
-        private static NLog.Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly WindowPositionHandler _positionManager;
+        private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
         public Paths PathDefinitions
         {
@@ -58,10 +55,8 @@ namespace LiteDbExplorer
                 {
                     return ListCollectionData.SelectedItems.Cast<DocumentReference>();
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
         }
 
@@ -73,58 +68,57 @@ namespace LiteDbExplorer
                 {
                     return ListCollectionData.SelectedItems.Count;
                 }
-                else
-                {
-                    return 0;
-                }
+
+                return 0;
             }
         }
 
-        private CollectionReference selectedCollection;
+        private CollectionReference _selectedCollection;
         public CollectionReference SelectedCollection
         {
             get
             {
-                return selectedCollection;
+                return _selectedCollection;
             }
 
             set
             {
-                selectedCollection = value;
+                _selectedCollection = value;
 
                 if (value == null)
                 {
                     ListCollectionData.ItemsSource = null;
+                    ListCollectionPanel.Visibility = Visibility.Hidden;
                     ListCollectionData.Visibility = Visibility.Hidden;
                 }
                 else
                 {
                     UpdateGridColumns();
-                    ListCollectionData.ItemsSource = selectedCollection.Items;
+                    ListCollectionData.ItemsSource = _selectedCollection.Items;
+                    ListCollectionPanel.Visibility = Visibility.Visible;
                     ListCollectionData.Visibility = Visibility.Visible;
                 }
             }
         }
 
-        private DatabaseReference selectedDatabase;
-        
+        private DatabaseReference _selectedDatabase;
         public DatabaseReference SelectedDatabase
         {
             get
             {
-                return selectedDatabase;
+                return _selectedDatabase;
             }
 
             set
             {
-                selectedDatabase = value;
-                if (selectedDatabase == null)
+                _selectedDatabase = value;
+                if (_selectedDatabase == null)
                 {
-                    Title = "LiteDB Explorer " + Versions.CurrentVersion;
+                    Title = $"LiteDB Explorer {Versions.CurrentVersion}";
                 }
                 else
                 {
-                    Title = string.Format("{0} - LiteDB Explorer {1}", selectedDatabase.Name, Versions.CurrentVersion);
+                    Title = $"{_selectedDatabase.Name} - LiteDB Explorer {Versions.CurrentVersion}";
                 }
             }
         }
@@ -133,7 +127,7 @@ namespace LiteDbExplorer
         {
             InitializeComponent();
 
-            positionManager = new WindowPositionHandler(this, "Main");
+            _positionManager = new WindowPositionHandler(this, "Main");
 
             Task.Factory.StartNew(() =>
             {
@@ -154,7 +148,7 @@ namespace LiteDbExplorer
                 }
                 catch (Exception exc)
                 {
-                    logger.Error(exc, "Failed to process update.");
+                    Logger.Error(exc, "Failed to process update.");
                 }
             });
 
@@ -203,7 +197,7 @@ namespace LiteDbExplorer
             }
             catch (Exception exc)
             {
-                logger.Error(exc, "Failed to open database: ");
+                Logger.Error(exc, "Failed to open database: ");
                 MessageBox.Show("Failed to open database: " + exc.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -545,7 +539,7 @@ namespace LiteDbExplorer
         #region Find Command
         private void FindCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            e.CanExecute = SelectedCollection != null;
         }
 
         private void FindCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -662,7 +656,7 @@ namespace LiteDbExplorer
             }
             catch (Exception exc)
             {
-                logger.Warn(exc, "Cannot process clipboard data.");
+                Logger.Warn(exc, "Cannot process clipboard data.");
                 MessageBox.Show("Failed to paste document from clipboard: " + exc.Message, "Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -701,7 +695,7 @@ namespace LiteDbExplorer
 
         private void UpdateGridColumns()
         {
-            List<string> keys = new List<string>();
+            var keys = new List<string>();
             foreach (var item in SelectedCollection.Items)
             {
                 keys = item.LiteDocument.Keys.Union(keys).ToList();
@@ -726,7 +720,7 @@ namespace LiteDbExplorer
                 Header = new TextBlock() { Text = key },
                 DisplayMemberBinding = new Binding()
                 {
-                    Path = new PropertyPath(string.Format("LiteDocument[{0}]", key)),
+                    Path = new PropertyPath($"LiteDocument[{key}]"),
                     Mode = BindingMode.OneWay,
                     Converter = new BsonValueToStringConverter()
                 }
@@ -831,6 +825,13 @@ namespace LiteDbExplorer
             OpenDatabase(path);
         }
 
+        private void RecentListItem_Click(object sender, MouseButtonEventArgs e)
+        {
+            var path = (sender as FrameworkElement)?.Tag as string;
+
+            OpenDatabase(path);
+        }
+
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
@@ -892,7 +893,7 @@ namespace LiteDbExplorer
             catch (Exception e)
             {
                 MessageBox.Show("Failed to open database:" + Environment.NewLine + e.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                logger.Error(e, "Failed to process update: ");
+                Logger.Error(e, "Failed to process update: ");
                 return;
             }
         }
@@ -956,15 +957,20 @@ namespace LiteDbExplorer
 
         private void WindowMain_Loaded(object sender, RoutedEventArgs e)
         {
-            positionManager.RestoreSizeAndLocation(App.Settings);
+            SetColorTheme();
+
+            Title = $"LiteDB Explorer {Versions.CurrentVersion}";
+
+            _positionManager.RestoreSizeAndLocation(App.Settings);
+
             App.Settings.PropertyChanged += Settings_PropertyChanged;
 
             if ((Application.Current as App).OriginalInstance)
             {
-                pipeService = new PipeService();
-                pipeService.CommandExecuted += PipeService_CommandExecuted; ;
-                pipeServer = new PipeServer(ConfigurationManager.AppSettings["PipeEndpoint"]);
-                pipeServer.StartServer(pipeService);
+                _pipeService = new PipeService();
+                _pipeService.CommandExecuted += PipeService_CommandExecuted; ;
+                _pipeServer = new PipeServer(ConfigurationManager.AppSettings["PipeEndpoint"]);
+                _pipeServer.StartServer(_pipeService);
 
                 var args = Environment.GetCommandLineArgs();
                 if (args.Count() > 1)
@@ -984,7 +990,7 @@ namespace LiteDbExplorer
 
         private void PipeService_CommandExecuted(object sender, CommandExecutedEventArgs args)
         {
-            logger.Info(@"Executing command ""{0}"" from pipe with arguments ""{1}""", args.Command, args.Args);
+            Logger.Info(@"Executing command ""{0}"" from pipe with arguments ""{1}""", args.Command, args.Args);
 
             switch (args.Command)
             {
@@ -998,7 +1004,7 @@ namespace LiteDbExplorer
                     break;
 
                 default:
-                    logger.Warn("Unknown command received");
+                    Logger.Warn("Unknown command received");
                     break;
             }
         }
@@ -1007,7 +1013,7 @@ namespace LiteDbExplorer
         {
             if (IsLoaded)
             {
-                positionManager.SavePosition(App.Settings);
+                _positionManager.SavePosition(App.Settings);
             }
         }
 
@@ -1015,13 +1021,18 @@ namespace LiteDbExplorer
         {
             if (IsLoaded)
             {
-                positionManager.SaveSize(App.Settings);
+                _positionManager.SaveSize(App.Settings);
             }
         }
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "FieldSortOrder")
+            if (e.PropertyName == nameof(Settings.ColorTheme))
+            {
+                SetColorTheme();
+            }
+
+            if (e.PropertyName == nameof(Settings.FieldSortOrder))
             {
                 UpdateGridColumns();
             }
@@ -1045,9 +1056,21 @@ namespace LiteDbExplorer
             }
             catch (Exception exc)
             {
-                logger.Error(exc, "Failed to open database: ");
+                Logger.Error(exc, "Failed to open database: ");
                 MessageBox.Show("Failed to open database: " + exc.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void SetColorTheme()
+        {
+            new PaletteHelper().SetLightDark(App.Settings.ColorTheme == ColorTheme.Dark);
+        }
+
+        private void ChangeThemeLabel_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ChangeThemeComboBox.IsDropDownOpen = !ChangeThemeComboBox.IsDropDownOpen;
+        }
+
+        
     }
 }
