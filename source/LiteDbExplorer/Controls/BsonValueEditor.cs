@@ -3,23 +3,27 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using LiteDbExplorer.Converters;
+using LiteDbExplorer.Windows;
 using LiteDB;
 using Xceed.Wpf.Toolkit;
 
 namespace LiteDbExplorer.Controls
 {
-    public enum BsonEditorExpandMode
+    public enum OpenEditorMode
     {
         Inline,
         Window
     }
-
+    
     public class BsonValueEditor
     {
         public static FrameworkElement GetBsonValueEditor(
-            BsonEditorExpandMode expandMode,
-            string bindingPath, BsonValue bindingValue,
-            object bindingSource, bool readOnly, string keyName)
+            OpenEditorMode openMode,
+            string bindingPath, 
+            BsonValue bindingValue,
+            object bindingSource, 
+            bool readOnly, 
+            string keyName)
         {
             var binding = new Binding
             {
@@ -34,17 +38,33 @@ namespace LiteDbExplorer.Controls
             {
                 var arrayValue = bindingValue as BsonArray;
 
-                if (expandMode == BsonEditorExpandMode.Window)
+                if (openMode == OpenEditorMode.Window)
                 {
                     var button = new Button
                     {
-                        Content = "Array",
+                        Content = $"[Array] {arrayValue?.Count} {keyName}",
                         Style = StyleKit.MaterialDesignEntryButtonStyle
                     };
 
                     button.Click += (s, a) =>
                     {
                         arrayValue = bindingValue as BsonArray;
+
+                        var windowController = new WindowController { Title = "Array Editor" };
+                        var control = new ArrayViewerControl(arrayValue, readOnly, windowController);
+                        var window = new DialogWindow(control, windowController)
+                        {
+                            Owner = Application.Current.MainWindow,
+                            Height = 600
+                        };
+
+                        if (window.ShowDialog() == true)
+                        {
+                            arrayValue.Clear();
+                            arrayValue.AddRange(control.EditedItems);
+                        }
+
+                        /*arrayValue = bindingValue as BsonArray;
                         var window = new Windows.ArrayViewer(arrayValue, readOnly)
                         {
                             Owner = Application.Current.MainWindow,
@@ -55,13 +75,13 @@ namespace LiteDbExplorer.Controls
                         {
                             arrayValue.Clear();
                             arrayValue.AddRange(window.EditedItems);
-                        }
+                        }*/
                     };
 
                     return button;
                 }
                 
-                var contentView = new LazyContentView
+                var contentView = new ContentExpander
                 {
                     LoadButton =
                     {
@@ -84,33 +104,45 @@ namespace LiteDbExplorer.Controls
 
             if (bindingValue.IsDocument)
             {
-                if (expandMode == BsonEditorExpandMode.Window)
+                var expandLabel = "[Document]";
+                if (openMode == OpenEditorMode.Window)
                 {
                     var button = new Button
                     {
-                        Content = "Document",
+                        Content = expandLabel,
                         Style = StyleKit.MaterialDesignEntryButtonStyle
                     };
 
                     button.Click += (s, a) =>
                     {
-                        var window = new Windows.DocumentViewer(bindingValue as BsonDocument, readOnly)
+                        /*var window = new Windows.DocumentViewer(bindingValue as BsonDocument, readOnly)
                         {
                             Owner = Application.Current.MainWindow,
                             Height = 600
                         };
 
+                        window.ShowDialog();*/
+
+                        var windowController = new WindowController{ Title = "Document Editor"};
+                        var bsonDocument = bindingValue as BsonDocument;
+                        var control = new DocumentViewerControl(bsonDocument, readOnly, windowController);
+                        var window = new DialogWindow(control, windowController)
+                        {
+                            Owner = Application.Current.MainWindow,
+                            Height = 600
+                        };
+                        
                         window.ShowDialog();
                     };
 
                     return button;
                 }
                 
-                var contentView = new LazyContentView
+                var contentView = new ContentExpander
                 {
                     LoadButton =
                     {
-                        Content = $"[Document] {keyName}"
+                        Content = expandLabel
                     }
                 };
 

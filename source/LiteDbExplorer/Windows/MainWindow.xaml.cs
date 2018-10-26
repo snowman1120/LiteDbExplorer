@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -315,10 +314,18 @@ namespace LiteDbExplorer
         {
             var item = DbSelectedItems.First();
 
-            var window = new Windows.DocumentViewer(item)
+            var windowController = new WindowController();
+            var control = new DocumentViewerControl(item, windowController);
+            var window = new DialogWindow(control, windowController)
+            {
+                Owner = Application.Current.MainWindow,
+                Height = 600
+            };
+
+            /*var window = new Windows.DocumentViewer(item)
             {
                 Owner = this
-            };
+            };*/
 
             if (window.ShowDialog() == true)
             {
@@ -969,7 +976,7 @@ namespace LiteDbExplorer
             {
                 _pipeService = new PipeService();
                 _pipeService.CommandExecuted += PipeService_CommandExecuted; ;
-                _pipeServer = new PipeServer(ConfigurationManager.AppSettings["PipeEndpoint"]);
+                _pipeServer = new PipeServer(Config.PipeEndpoint);
                 _pipeServer.StartServer(_pipeService);
 
                 var args = Environment.GetCommandLineArgs();

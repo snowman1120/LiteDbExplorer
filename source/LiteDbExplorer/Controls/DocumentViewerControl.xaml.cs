@@ -11,6 +11,25 @@ using LiteDB;
 
 namespace LiteDbExplorer.Controls
 {
+    public class DocumentFieldData
+    {
+        public string Name
+        {
+            get; set;
+        }
+
+        public FrameworkElement EditControl
+        {
+            get; set;
+        }
+
+        public DocumentFieldData(string name, FrameworkElement editControl)
+        {
+            Name = name;
+            EditControl = editControl;
+        }
+    }
+
     /// <summary>
     ///     Interaction logic for DocumentViewerControl.xaml
     /// </summary>
@@ -45,8 +64,11 @@ namespace LiteDbExplorer.Controls
 
         private bool _loaded = false;
 
-        private DocumentViewerControl()
+        private DocumentViewerControl(WindowController windowController = null)
         {
+
+            _windowController = windowController;
+
             InitializeComponent();
 
             ListItems.Loaded += (sender, args) =>
@@ -62,7 +84,7 @@ namespace LiteDbExplorer.Controls
             };
         }
 
-        public DocumentViewerControl(BsonDocument document, bool readOnly) : this()
+        public DocumentViewerControl(BsonDocument document, bool readOnly, WindowController windowController = null) : this(windowController)
         {
             IsReadOnly = readOnly;
 
@@ -89,7 +111,7 @@ namespace LiteDbExplorer.Controls
             }
         }
 
-        public DocumentViewerControl(DocumentReference document) : this()
+        public DocumentViewerControl(DocumentReference document, WindowController windowController = null) : this(windowController)
         {
             LoadDocument(document);
         }
@@ -122,8 +144,21 @@ namespace LiteDbExplorer.Controls
 
         private DocumentFieldData NewField(string key, bool readOnly)
         {
+            var expandMode = OpenEditorMode.Inline;
+            if (_windowController != null)
+            {
+                expandMode = OpenEditorMode.Window;
+            }
+
             var valueEdit =
-                BsonValueEditor.GetBsonValueEditor(BsonEditorExpandMode.Inline, $"[{key}]", currentDocument[key], currentDocument, readOnly, key);
+                BsonValueEditor.GetBsonValueEditor(
+                    openMode: expandMode, 
+                    bindingPath: $"[{key}]", 
+                    bindingValue: currentDocument[key], 
+                    bindingSource: currentDocument, 
+                    readOnly: readOnly, 
+                    keyName: key);
+
             return new DocumentFieldData(key, valueEdit);
         }
 
@@ -145,8 +180,9 @@ namespace LiteDbExplorer.Controls
 
         private void Close()
         {
-            // TODO: Handle
             OnCloseRequested();
+
+            _windowController?.Close(DialogResult);
         }
 
         private void ButtonOK_Click(object sender, RoutedEventArgs e)
@@ -230,7 +266,9 @@ namespace LiteDbExplorer.Controls
             ListItems.ScrollIntoView(newField);
         }
 
-        private bool _invalidatingSize; 
+        private bool _invalidatingSize;
+        private readonly WindowController _windowController;
+
         private async void ItemsField_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (_invalidatingSize)

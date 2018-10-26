@@ -7,9 +7,9 @@ namespace LiteDbExplorer.Controls
     /// <summary>
     /// Interaction logic for LazyContentView.xaml
     /// </summary>
-    public partial class LazyContentView : UserControl
+    public partial class ContentExpander : UserControl
     {
-        public LazyContentView()
+        public ContentExpander()
         {
             InitializeComponent();
 

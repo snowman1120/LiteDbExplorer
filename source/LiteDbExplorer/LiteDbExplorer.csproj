@@ -131,10 +131,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CmdlineCommands.cs" />
-    <Compile Include="CollectionReference.cs" />
-    <Compile Include="Commands.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="Application\CmdlineCommands.cs" />
+    <Compile Include="Controls\WindowController.cs" />
+    <Compile Include="Core\CollectionReference.cs" />
+    <Compile Include="Application\Commands.cs" />
+    <Compile Include="Application\Config.cs" />
     <Compile Include="Controls\ArrayViewerControl.xaml.cs">
       <DependentUpon>ArrayViewerControl.xaml</DependentUpon>
     </Compile>
@@ -148,10 +149,10 @@
     <Compile Include="Controls\FileView.xaml.cs">
       <DependentUpon>FileView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\LazyContentView.xaml.cs">
-      <DependentUpon>LazyContentView.xaml</DependentUpon>
+    <Compile Include="Controls\ContentExpander.xaml.cs">
+      <DependentUpon>ContentExpander.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\StyleKit.cs" />
+    <Compile Include="Application\StyleKit.cs" />
     <Compile Include="Converters\BsonValueToForegroundConverter.cs" />
     <Compile Include="Converters\BsonValueToNetValueConverter.cs" />
     <Compile Include="Converters\ConverterBase.cs" />
@@ -162,24 +163,21 @@
     <Compile Include="Converters\LeftMarginMultiplierConverter.cs" />
     <Compile Include="Converters\NegateConverter.cs" />
     <Compile Include="Converters\NullOrEmptyToVisibilityConverter.cs" />
-    <Compile Include="DatabaseReference.cs" />
-    <Compile Include="DocumentReference.cs" />
-    <Compile Include="FileCollectionReference.cs" />
-    <Compile Include="Paths.cs" />
-    <Compile Include="PipeServer.cs" />
+    <Compile Include="Core\DatabaseReference.cs" />
+    <Compile Include="Core\DocumentReference.cs" />
+    <Compile Include="Core\FileCollectionReference.cs" />
+    <Compile Include="Application\Paths.cs" />
+    <Compile Include="Application\PipeServer.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="Update.cs" />
-    <Compile Include="Versions.cs" />
-    <Compile Include="WindowPositionHandler.cs" />
-    <Compile Include="Windows\ArrayViewer.xaml.cs">
-      <DependentUpon>ArrayViewer.xaml</DependentUpon>
+    <Compile Include="Application\Settings.cs" />
+    <Compile Include="Application\Update.cs" />
+    <Compile Include="Application\Versions.cs" />
+    <Compile Include="Application\WindowPositionHandler.cs" />
+    <Compile Include="Windows\DialogWindow.xaml.cs">
+      <DependentUpon>DialogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\DatabasePropertiesWindow.xaml.cs">
       <DependentUpon>DatabasePropertiesWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\DocumentViewer.xaml.cs">
-      <DependentUpon>DocumentViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\InputBoxWindow.xaml.cs">
       <DependentUpon>InputBoxWindow.xaml</DependentUpon>
@@ -203,7 +201,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\LazyContentView.xaml">
+    <Page Include="Controls\ContentExpander.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -211,7 +209,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\MaterialDesignTheme.ButtonEntry.xaml">
+    <Page Include="Themes\MaterialDesignTheme.Button.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -239,6 +237,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\DialogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\DatabasePropertiesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -256,14 +258,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Windows\ArrayViewer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\DocumentViewer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Windows\InputBoxWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

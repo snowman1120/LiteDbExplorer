@@ -8,23 +8,23 @@ using LiteDB;
 
 namespace LiteDbExplorer.Controls
 {
+    public class ArrayUIItem
+    {
+        public string Name { get; set; }
+
+        public FrameworkElement Control { get; set; }
+
+        public BsonValue Value { get; set; }
+
+        public int? Index { get; set; }
+    }
+
     /// <summary>
     /// Interaction logic for ArrayViewerControl.xaml
     /// </summary>
     public partial class ArrayViewerControl : UserControl
     {
-        public class ArrayUIItem
-        {
-            public FrameworkElement Control
-            {
-                get; set;
-            }
-
-            public BsonValue Value
-            {
-                get; set;
-            }
-        }
+        private readonly WindowController _windowController;
 
         public ObservableCollection<ArrayUIItem> Items
         {
@@ -33,28 +33,27 @@ namespace LiteDbExplorer.Controls
 
         public BsonArray EditedItems;
 
-        private bool isReadOnly = false;
-        public bool IsReadOnly
-        {
-            get
-            {
-                return isReadOnly;
-            }
-        }
+        public bool IsReadOnly { get; } = false;
 
         public bool DialogResult { get; set; }
 
         public event EventHandler CloseRequested;
 
-        public ArrayViewerControl(BsonArray array, bool readOnly)
+        public ArrayViewerControl(BsonArray array, bool readOnly, WindowController windowController = null)
         {
+            _windowController = windowController;
+
             InitializeComponent();
-            isReadOnly = readOnly;
+            
+            IsReadOnly = readOnly;
+
             Items = new ObservableCollection<ArrayUIItem>();
 
+            var index = 0;
             foreach (BsonValue item in array)
             {
-                Items.Add(NewItem(item));
+                Items.Add(NewItem(item, index));
+                index++;
             }
 
             ItemsItems.ItemsSource = Items;
@@ -66,8 +65,13 @@ namespace LiteDbExplorer.Controls
                 ButtonCancel.Visibility = Visibility.Collapsed;
                 ButtonAddItem.Visibility = Visibility.Collapsed;
             }
-        }
 
+            if (_windowController != null)
+            {
+                ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            }
+        }
+        
         private void ButtonRemove_Click(object sender, RoutedEventArgs e)
         {
             var value = (sender as Control).Tag as BsonValue;
@@ -107,19 +111,37 @@ namespace LiteDbExplorer.Controls
 
         private void Close()
         {
-            // TODO: Handle
             OnCloseRequested();
+
+            _windowController?.Close(DialogResult);
         }
 
-        public ArrayUIItem NewItem(BsonValue value)
+        public ArrayUIItem NewItem(BsonValue value, int? index)
         {
+            var keyName = value.Type.ToString();
             var arrayItem = new ArrayUIItem
             {
-                Value = value
+                Name = $"{index}:{keyName}",
+                Value = value,
+                Index = index
             };
-            var keyName = value.Type.ToString();
-            var valueEdit = BsonValueEditor.GetBsonValueEditor(BsonEditorExpandMode.Inline, "Value", value, arrayItem, IsReadOnly, keyName);
+
+            var expandMode = OpenEditorMode.Inline;
+            if (_windowController != null)
+            {
+                expandMode = OpenEditorMode.Window;
+            }
+
+            var valueEdit = BsonValueEditor.GetBsonValueEditor(
+                openMode: expandMode, 
+                bindingPath: "Value", 
+                bindingValue: value, 
+                bindingSource: arrayItem, 
+                readOnly: IsReadOnly, 
+                keyName: keyName);
+
             arrayItem.Control = valueEdit;
+
             return arrayItem;
         }
 
@@ -127,7 +149,7 @@ namespace LiteDbExplorer.Controls
         {
             var menuItem = sender as MenuItem;
             BsonValue newValue;
-            ButtonAddItem.IsOpen = false;
+            ButtonAddItem.IsPopupOpen = false;
 
             switch (menuItem.Header as string)
             {
@@ -160,7 +182,7 @@ namespace LiteDbExplorer.Controls
 
             }
 
-            var newItem = NewItem(newValue);
+            var newItem = NewItem(newValue, null);
             Items.Add(newItem);
             newItem.Control.Focus();
             newItem.Control.BringIntoView();

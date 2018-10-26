@@ -5,9 +5,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Input;
+using LiteDbExplorer.Annotations;
 using LiteDB;
-using PropertyTools.Wpf;
 
 namespace LiteDbExplorer.Controls
 {
@@ -34,9 +33,7 @@ namespace LiteDbExplorer.Controls
         {
             Nodes = GetNodes(document.LiteDocument);
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
+        
         public ObservableCollection<DocumentFieldNode> Nodes { get; set; }
 
         public ObservableCollection<DocumentFieldNode> GetNodes(BsonDocument document)
@@ -71,6 +68,9 @@ namespace LiteDbExplorer.Controls
         {
             return ((IEnumerable) Nodes).GetEnumerator();
         }
+
+        [UsedImplicitly]
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     public class DocumentFieldNode : INotifyPropertyChanged
@@ -78,7 +78,7 @@ namespace LiteDbExplorer.Controls
         private bool _isExpanded;
         private bool _loaded;
 
-        private Func<BsonDocument, ObservableCollection<DocumentFieldNode>> _loadNodes;
+        private readonly Func<BsonDocument, ObservableCollection<DocumentFieldNode>> _loadNodes;
 
         private DocumentFieldNode()
         {
@@ -144,8 +144,10 @@ namespace LiteDbExplorer.Controls
         private void OnNodeExpanded()
         {
             if(IsExpanded == false)
+            {
                 return;
-            
+            }
+
             if (_loadNodes != null && Value is BsonDocument document)
             {
                 _loaded = true;
