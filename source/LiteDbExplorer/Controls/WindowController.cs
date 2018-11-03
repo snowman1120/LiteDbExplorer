@@ -62,6 +62,8 @@ namespace LiteDbExplorer.Controls
         }
 
         [UsedImplicitly]
+#pragma warning disable CS0067 // The event 'WindowController.PropertyChanged' is never used
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS0067 // The event 'WindowController.PropertyChanged' is never used
     }
 }

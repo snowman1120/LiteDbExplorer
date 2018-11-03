@@ -5,9 +5,9 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
                  xmlns:local="clr-namespace:LiteDbExplorer"
-                 xmlns:converters="clr-namespace:LiteDbExplorer.Converters"
                  xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
                  mc:Ignorable="d"
                  Width="1024" Height="740"
                  WindowStartupLocation="CenterScreen"
@@ -288,15 +288,6 @@
                                 </ContextMenu>
                             </Button.ContextMenu>
                         </Button>
-                        <!--<materialDesign:PopupBox>
-                            <ItemsControl ItemsSource="{Binding Path=ItemsSource, Source={x:Reference Name=MenuRecentItems}}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Button Content="{Binding}" Tag="{Binding}" Click="RecentMenuItem_Click"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </materialDesign:PopupBox>-->
                     </ToolBar>
                 </ToolBarTray>
 

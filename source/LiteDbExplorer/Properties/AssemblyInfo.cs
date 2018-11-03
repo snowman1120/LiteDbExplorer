@@ -1,8 +1,10 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Markup;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -53,3 +55,11 @@ using System.Windows;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.7.0.0")]
 [assembly: AssemblyFileVersion("0.7.0.0")]
+
+
+[assembly: XmlnsDefinition("http://schemas.litedbexplorer.io/winfx/xaml", "LiteDbExplorer")]
+[assembly: XmlnsDefinition("http://schemas.litedbexplorer.io/winfx/xaml/controls", "LiteDbExplorer.Controls")]
+[assembly: XmlnsDefinition("http://schemas.litedbexplorer.io/winfx/xaml/presentation", "LiteDbExplorer.Presentation")]
+[assembly: XmlnsDefinition("http://schemas.litedbexplorer.io/winfx/xaml/presentation/behaviors", "LiteDbExplorer.Presentation.Behaviors")]
+[assembly: XmlnsDefinition("http://schemas.litedbexplorer.io/winfx/xaml/presentation/converters", "LiteDbExplorer.Presentation.Converters")]
+[assembly: XmlnsDefinition("http://schemas.litedbexplorer.io/winfx/xaml/presentation/controls", "LiteDbExplorer.Presentation.Controls")]

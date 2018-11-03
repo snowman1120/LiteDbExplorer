@@ -1,0 +1,63 @@
+﻿using System;
+using System.Windows.Data;
+using LiteDB;
+
+namespace LiteDbExplorer.Presentation.Converters
+{
+    class BsonValueToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
+            if (value is BsonValue bsonValue)
+            {
+                if (bsonValue.IsDocument)
+                {
+                    return "[Document]";
+                }
+
+                if (bsonValue.IsArray)
+                {
+                    return "[Array]";
+                }
+                if (bsonValue.IsBinary)
+                {
+                    return "[Binary]";
+                }
+                if (bsonValue.IsObjectId)
+                {
+                    return bsonValue.AsString;
+                }
+                if (bsonValue.IsDateTime)
+                {
+                    return bsonValue.AsDateTime;
+                }
+                if (bsonValue.IsGuid)
+                {
+                    return bsonValue.AsGuid;
+                }
+                if (bsonValue.IsString)
+                {
+                    return bsonValue.AsString;
+                }
+                return bsonValue.ToString();
+            }
+
+            throw new Exception("Cannot convert non BSON value");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            return new BsonValue(value as string);
+        }
+    }
+}

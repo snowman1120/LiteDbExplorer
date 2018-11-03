@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace LiteDbExplorer.Converters
+namespace LiteDbExplorer.Presentation.Converters
 {
     public abstract class ConverterBase<TFrom, TTo> : ConverterBase<TFrom, TTo, object>
     {

@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Windows;
 
 namespace LiteDbExplorer
 {
@@ -17,21 +19,21 @@ namespace LiteDbExplorer
         Dark
     }
 
-    public class Settings : INotifyPropertyChanged
+    public class Settings : Freezable, INotifyPropertyChanged
     {
-        public class WindowPosition
+        private static readonly Lazy<Settings> _current =
+            new Lazy<Settings>(Settings.LoadSettings);
+
+        [Obsolete("This is a design-time only constructor, use static Current instead.")]
+        public Settings()
         {
-            public class Point
-            {
-                public double X { get; set; }
-
-                public double Y { get; set; }
-            }
-
-            public Point Position { get; set; }
-
-            public Point Size { get; set; }
         }
+
+        private Settings(DateTime timestamp)
+        {
+        }
+
+        public static Settings Current => _current.Value;
 
         private Dictionary<string, WindowPosition> _windowPositions = new Dictionary<string, WindowPosition>();
 
@@ -89,19 +91,38 @@ namespace LiteDbExplorer
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public static Settings LoadSettings()
+        private static Settings LoadSettings()
         {
             if (File.Exists(Paths.SettingsFilePath))
             {
                 return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(Paths.SettingsFilePath));
             }
 
-            return new Settings();
+            return new Settings(DateTime.UtcNow);
         }
-
+        
         public void SaveSettings()
         {
             File.WriteAllText(Paths.SettingsFilePath, JsonConvert.SerializeObject(this, Formatting.Indented));
+        }
+
+        protected override Freezable CreateInstanceCore()
+        {
+            return Current;
+        }
+
+        public class WindowPosition
+        {
+            public class Point
+            {
+                public double X { get; set; }
+
+                public double Y { get; set; }
+            }
+
+            public Point Position { get; set; }
+
+            public Point Size { get; set; }
         }
     }
 }

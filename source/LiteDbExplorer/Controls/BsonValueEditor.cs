@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using LiteDbExplorer.Converters;
+using LiteDbExplorer.Presentation.Converters;
 using LiteDbExplorer.Windows;
 using LiteDB;
 using Xceed.Wpf.Toolkit;
@@ -14,15 +14,15 @@ namespace LiteDbExplorer.Controls
         Inline,
         Window
     }
-    
+
     public class BsonValueEditor
     {
         public static FrameworkElement GetBsonValueEditor(
             OpenEditorMode openMode,
-            string bindingPath, 
+            string bindingPath,
             BsonValue bindingValue,
-            object bindingSource, 
-            bool readOnly, 
+            object bindingSource,
+            bool readOnly,
             string keyName)
         {
             var binding = new Binding
@@ -50,7 +50,7 @@ namespace LiteDbExplorer.Controls
                     {
                         arrayValue = bindingValue as BsonArray;
 
-                        var windowController = new WindowController { Title = "Array Editor" };
+                        var windowController = new WindowController {Title = "Array Editor"};
                         var control = new ArrayViewerControl(arrayValue, readOnly, windowController);
                         var window = new DialogWindow(control, windowController)
                         {
@@ -80,7 +80,7 @@ namespace LiteDbExplorer.Controls
 
                     return button;
                 }
-                
+
                 var contentView = new ContentExpander
                 {
                     LoadButton =
@@ -123,7 +123,7 @@ namespace LiteDbExplorer.Controls
 
                         window.ShowDialog();*/
 
-                        var windowController = new WindowController{ Title = "Document Editor"};
+                        var windowController = new WindowController {Title = "Document Editor"};
                         var bsonDocument = bindingValue as BsonDocument;
                         var control = new DocumentViewerControl(bsonDocument, readOnly, windowController);
                         var window = new DialogWindow(control, windowController)
@@ -131,13 +131,13 @@ namespace LiteDbExplorer.Controls
                             Owner = Application.Current.MainWindow,
                             Height = 600
                         };
-                        
+
                         window.ShowDialog();
                     };
 
                     return button;
                 }
-                
+
                 var contentView = new ContentExpander
                 {
                     LoadButton =

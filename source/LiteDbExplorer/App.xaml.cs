@@ -23,17 +23,13 @@ namespace LiteDbExplorer
             private set;
         }
 
-        public static Settings Settings
-        {
-            get; set;
-        }
+        public static Settings Settings => Settings.Current;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
 #if !DEBUG
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 #endif
-            Settings = Settings.LoadSettings();
             Config.ConfigureLogger();
 
             // For now we want to allow multiple instances if app is started without args

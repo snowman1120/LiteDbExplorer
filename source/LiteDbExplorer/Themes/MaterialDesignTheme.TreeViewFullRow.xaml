@@ -3,7 +3,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
                     xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
-                    xmlns:localConverters="clr-namespace:LiteDbExplorer.Converters">
+                    xmlns:converters1="clr-namespace:LiteDbExplorer.Presentation.Converters">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary>
@@ -27,7 +27,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TreeViewItem}">
                     <ControlTemplate.Resources>
-                        <localConverters:LeftMarginMultiplierConverter x:Key="LengthConverter" Length="16" />
+                        <converters1:LeftMarginMultiplierConverter x:Key="LengthConverter" Length="16" />
                     </ControlTemplate.Resources>
 
                     <Grid Margin="{Binding Converter={StaticResource LengthConverter}, RelativeSource={RelativeSource TemplatedParent}}">

@@ -96,5 +96,18 @@ namespace LiteDbExplorer
 
             OnPropertyChanged(nameof(Items));
         }
+
+        public void InvalidateProperties()
+        {
+            if (Items != null)
+            {
+                foreach (var documentReference in Items)
+                {
+                    documentReference.InvalidateProperties();
+                }
+            }
+
+            OnPropertyChanged(string.Empty);
+        }
     }
 }

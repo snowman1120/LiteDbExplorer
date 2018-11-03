@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using LiteDbExplorer.Annotations;
+using LiteDbExplorer.Presentation;
 using LiteDB;
 
 namespace LiteDbExplorer.Controls
@@ -18,13 +20,23 @@ namespace LiteDbExplorer.Controls
         public DocumentTreeView()
         {
             InitializeComponent();
+
+            // ThemeManager.CurrentThemeChanged += OnCurrentThemeChanged;
         }
         
+        private void OnCurrentThemeChanged(object sender, EventArgs e)
+        {
+            DocumentTree.InvalidateProperty(ItemsControl.ItemsSourceProperty);
+            DocumentTree.UpdateLayout();
+        }
+
         public IEnumerable ItemsSource
         {
             get => DocumentTree.ItemsSource;
             set => DocumentTree.ItemsSource = value;
         }
+
+        
     }
 
     public class DocumentTreeItemsSource : IEnumerable<DocumentFieldNode>, INotifyPropertyChanged
@@ -70,13 +82,17 @@ namespace LiteDbExplorer.Controls
         }
 
         [UsedImplicitly]
+#pragma warning disable CS0067 // The event 'DocumentTreeItemsSource.PropertyChanged' is never used
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS0067 // The event 'DocumentTreeItemsSource.PropertyChanged' is never used
     }
 
     public class DocumentFieldNode : INotifyPropertyChanged
     {
         private bool _isExpanded;
+#pragma warning disable CS0414 // The field 'DocumentFieldNode._loaded' is assigned but its value is never used
         private bool _loaded;
+#pragma warning restore CS0414 // The field 'DocumentFieldNode._loaded' is assigned but its value is never used
 
         private readonly Func<BsonDocument, ObservableCollection<DocumentFieldNode>> _loadNodes;
 
@@ -138,8 +154,10 @@ namespace LiteDbExplorer.Controls
         }
         
         public ObservableCollection<DocumentFieldNode> Nodes { get; set; }
-
+        
+#pragma warning disable CS0067 // The event 'DocumentFieldNode.PropertyChanged' is never used
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS0067 // The event 'DocumentFieldNode.PropertyChanged' is never used
         
         private void OnNodeExpanded()
         {

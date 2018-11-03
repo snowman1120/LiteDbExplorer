@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:LiteDbExplorer.Controls"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
-             xmlns:converters="clr-namespace:LiteDbExplorer.Converters"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
 

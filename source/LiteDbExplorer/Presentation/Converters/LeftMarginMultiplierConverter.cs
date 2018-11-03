@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace LiteDbExplorer.Converters
+namespace LiteDbExplorer.Presentation.Converters
 {
     public class LeftMarginMultiplierConverter : IValueConverter
     {

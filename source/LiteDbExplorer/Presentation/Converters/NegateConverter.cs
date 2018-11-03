@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace LiteDbExplorer.Converters
+namespace LiteDbExplorer.Presentation.Converters
 {
     /// <summary>
     /// Produces an output value that is the negative of the input.

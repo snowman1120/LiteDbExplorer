@@ -1,6 +1,5 @@
 ﻿using LiteDB;
 using LiteDbExplorer.Controls;
-using LiteDbExplorer.Converters;
 using LiteDbExplorer.Windows;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -20,8 +19,9 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using LiteDbExplorer.Presentation;
+using LiteDbExplorer.Presentation.Converters;
 using MahApps.Metro.Controls;
-using MaterialDesignThemes.Wpf;
 
 namespace LiteDbExplorer
 {
@@ -314,7 +314,7 @@ namespace LiteDbExplorer
         {
             var item = DbSelectedItems.First();
 
-            var windowController = new WindowController();
+            var windowController = new WindowController {Title = "Document Editor"};
             var control = new DocumentViewerControl(item, windowController);
             var window = new DialogWindow(control, windowController)
             {
@@ -722,9 +722,9 @@ namespace LiteDbExplorer
 
         private void AddGridColumn(string key)
         {
-            GridCollectionData.Columns.Add(new GridViewColumn()
+            GridCollectionData.Columns.Add(new GridViewColumn
             {
-                Header = new TextBlock() { Text = key },
+                Header = new TextBlock { Text = key },
                 DisplayMemberBinding = new Binding()
                 {
                     Path = new PropertyPath($"LiteDocument[{key}]"),
@@ -781,7 +781,7 @@ namespace LiteDbExplorer
 
         private void ListCollectionData_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DbSelectedItems.Count() > 1 || DbSelectedItems.Count() == 0)
+            if (DbSelectedItems.Count() > 1 || !DbSelectedItems.Any())
             {
                 // ItemsDocPreview.ItemsSource = null;
                 BorderDocPreview.Visibility = Visibility.Collapsed;
@@ -1070,7 +1070,14 @@ namespace LiteDbExplorer
 
         private void SetColorTheme()
         {
-            new PaletteHelper().SetLightDark(App.Settings.ColorTheme == ColorTheme.Dark);
+            ThemeManager.SetColorTheme(App.Settings.ColorTheme);
+            
+            var selectedIndex = ListCollectionData.SelectedIndex;
+
+            ListCollectionData.SelectedIndex = -1;
+
+            ListCollectionData.SelectedIndex = selectedIndex;
+
         }
 
         private void ChangeThemeLabel_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

@@ -39,13 +39,29 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Images\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Caliburn.Micro, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.Core.3.2.0\lib\net45\Caliburn.Micro.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.3.2.0\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.3.2.0\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
+    </Reference>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
+    </Reference>
+    <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
       <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
@@ -77,12 +93,6 @@
     <Reference Include="PropertyChanged, Version=2.5.13.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\packages\PropertyChanged.Fody.2.5.13\lib\net452\PropertyChanged.dll</HintPath>
     </Reference>
-    <Reference Include="PropertyTools, Version=2.0.1.0, Culture=neutral, PublicKeyToken=ea0c9f2b460934d0, processorArchitecture=MSIL">
-      <HintPath>..\packages\PropertyTools.Wpf.2.0.1\lib\net45\PropertyTools.dll</HintPath>
-    </Reference>
-    <Reference Include="PropertyTools.Wpf, Version=2.0.1.0, Culture=neutral, PublicKeyToken=ea0c9f2b460934d0, processorArchitecture=MSIL">
-      <HintPath>..\packages\PropertyTools.Wpf.2.0.1\lib\net45\PropertyTools.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -93,7 +103,7 @@
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <HintPath>..\packages\Caliburn.Micro.3.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -152,22 +162,26 @@
     <Compile Include="Controls\ContentExpander.xaml.cs">
       <DependentUpon>ContentExpander.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Application\StyleKit.cs" />
-    <Compile Include="Converters\BsonValueToForegroundConverter.cs" />
-    <Compile Include="Converters\BsonValueToNetValueConverter.cs" />
-    <Compile Include="Converters\ConverterBase.cs" />
-    <Compile Include="Converters\DoubleToGridLengthConverter .cs" />
-    <Compile Include="Converters\EnumConverter.cs" />
-    <Compile Include="Converters\InverseVisibilityConverter.cs" />
-    <Compile Include="Converters\InvertableBooleanToVisibilityConverter.cs" />
-    <Compile Include="Converters\LeftMarginMultiplierConverter.cs" />
-    <Compile Include="Converters\NegateConverter.cs" />
-    <Compile Include="Converters\NullOrEmptyToVisibilityConverter.cs" />
+    <Compile Include="Presentation\Behaviors\BsonValueForeground.cs" />
+    <Compile Include="Presentation\Controls\DataContextProxy.cs" />
+    <Compile Include="Presentation\StyleKit.cs" />
+    <Compile Include="Presentation\Converters\BsonValueToForegroundConverter.cs" />
+    <Compile Include="Presentation\Converters\BsonValueToNetValueConverter.cs" />
+    <Compile Include="Presentation\Converters\ConverterBase.cs" />
+    <Compile Include="Presentation\Converters\DoubleToGridLengthConverter .cs" />
+    <Compile Include="Presentation\Converters\EnumConverter.cs" />
+    <Compile Include="Presentation\Converters\InverseVisibilityConverter.cs" />
+    <Compile Include="Presentation\Converters\InvertableBooleanToVisibilityConverter.cs" />
+    <Compile Include="Presentation\Converters\LeftMarginMultiplierConverter.cs" />
+    <Compile Include="Presentation\Converters\NegateConverter.cs" />
+    <Compile Include="Presentation\Converters\NullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Core\DatabaseReference.cs" />
     <Compile Include="Core\DocumentReference.cs" />
     <Compile Include="Core\FileCollectionReference.cs" />
     <Compile Include="Application\Paths.cs" />
     <Compile Include="Application\PipeServer.cs" />
+    <Compile Include="Presentation\Behaviors\BubbleScrollEvent.cs" />
+    <Compile Include="Presentation\ThemeManager.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Application\Settings.cs" />
     <Compile Include="Application\Update.cs" />
@@ -253,7 +267,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Converters\BsonValueToStringConverter.cs" />
+    <Compile Include="Presentation\Converters\BsonValueToStringConverter.cs" />
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -348,6 +362,7 @@
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.3.2.9\build\Fody.targets" Condition="Exists('..\packages\Fody.3.2.9\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

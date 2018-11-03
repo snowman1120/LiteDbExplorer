@@ -167,7 +167,8 @@
                             <Popup x:Name="PART_Popup"
                                    IsOpen="{Binding IsChecked, ElementName=_calendarToggleButton}"
                                    StaysOpen="False"
-                                   ToolTip="{x:Static sys:String.Empty}">
+                                   ToolTip="{x:Static sys:String.Empty}"
+                                   AllowsTransparency="True">
                                 <Popup.Resources>
                                     <Style TargetType="ToolTip">
                                         <Style.Triggers>
@@ -179,13 +180,16 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Popup.Resources>
-                                <Border BorderThickness="1" Background="{DynamicResource PopupBackground}"
-                                        BorderBrush="{DynamicResource WindowBorder}" Padding="3">
+                                <materialDesign:Card Background="{DynamicResource MaterialDesignPaper}"
+                                                     materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                                                     Margin="10">
                                     <StackPanel>
                                         <Calendar x:Name="PART_Calendar"
                                                   BorderThickness="0"
+                                                  Margin="0,-5,0,0"
                                                   DisplayMode="{Binding CalendarDisplayMode, RelativeSource={RelativeSource TemplatedParent}}" />
                                         <xctk:TimePicker x:Name="PART_TimeUpDown"
+                                                         Margin="15"
                                                          Background="{DynamicResource InputBackground}"
                                                          Foreground="{DynamicResource InputText}"
                                                          Format="{TemplateBinding TimeFormat}"
@@ -202,7 +206,7 @@
                                                          WatermarkTemplate="{TemplateBinding TimeWatermarkTemplate}"
                                                          Visibility="{TemplateBinding TimePickerVisibility}" />
                                     </StackPanel>
-                                </Border>
+                                </materialDesign:Card>
                             </Popup>
                         </Grid>
                     </Border>

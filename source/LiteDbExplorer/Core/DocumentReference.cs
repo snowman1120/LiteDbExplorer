@@ -1,5 +1,6 @@
 ﻿using LiteDB;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using LiteDbExplorer.Annotations;
 
 namespace LiteDbExplorer
@@ -19,8 +20,18 @@ namespace LiteDbExplorer
         public BsonDocument LiteDocument { get; set; }
 
         public CollectionReference Collection { get; set; }
-
-        [UsedImplicitly]
+        
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public void InvalidateProperties()
+        {
+            OnPropertyChanged(string.Empty);
+        }
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace LiteDbExplorer.Converters
+namespace LiteDbExplorer.Presentation.Converters
 {
     public class NullOrEmptyToVisibilityConverter : ConverterBase<object, Visibility>
     {
