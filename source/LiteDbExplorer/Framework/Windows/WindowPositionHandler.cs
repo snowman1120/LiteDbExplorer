@@ -1,17 +1,73 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace LiteDbExplorer
 {
+    public static class WindowPositionHandlerExtensions
+    {
+        public static void AttachPositionHandler(this Window window, string windowName)
+        {
+            var handler = new WindowPositionHandler(window, windowName, true);
+        }
+    }
+
     public class WindowPositionHandler
     {
         private readonly Window _window;
         private readonly string _windowName;
         private bool _ignoreChanges;
+        private bool _initialized;
 
-        public WindowPositionHandler(Window window, string windowName)
+        public WindowPositionHandler(Window window, string windowName, bool autoAttach = false)
         {
             _window = window;
             _windowName = windowName;
+
+            if (autoAttach)
+            {
+                _window.Loaded += WindowOnLoaded;
+                _window.LocationChanged += WindowOnLocationChanged;
+                _window.SizeChanged += WindowOnSizeChanged;
+                _window.Unloaded += WindowOnUnloaded;
+            }
+        }
+        
+        private void WindowOnLoaded(object sender, RoutedEventArgs e)
+        {
+            RestoreSizeAndLocation(App.Settings);
+
+            _initialized = true;
+        }
+
+        private void WindowOnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (!_initialized)
+            {
+                return;
+            }
+
+            SaveSize(App.Settings);   
+        }
+
+        private void WindowOnLocationChanged(object sender, EventArgs e)
+        {
+            if (!_initialized)
+            {
+                return;
+            }
+
+            SavePosition(App.Settings);
+        }
+
+        private void WindowOnUnloaded(object sender, RoutedEventArgs e)
+        {
+            if (_window != null)
+            {
+                _window.Loaded -= WindowOnLoaded;
+                _window.LocationChanged -= WindowOnLocationChanged;
+                _window.SizeChanged -= WindowOnSizeChanged;
+                _window.Unloaded -= WindowOnUnloaded;
+            }
         }
 
         public void SaveSize(Settings config)

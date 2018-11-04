@@ -3,7 +3,10 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
+using Newtonsoft.Json.Serialization;
 
 namespace LiteDbExplorer
 {
@@ -23,6 +26,12 @@ namespace LiteDbExplorer
     {
         private static readonly Lazy<Settings> _current =
             new Lazy<Settings>(Settings.LoadSettings);
+
+        private static readonly JsonSerializerSettings _settings = new JsonSerializerSettings
+        {
+            ContractResolver = new IgnoreParentPropertiesResolver(true),
+            Formatting = Formatting.Indented
+        };
 
         [Obsolete("This is a design-time only constructor, use static Current instead.")]
         public Settings()
@@ -62,6 +71,7 @@ namespace LiteDbExplorer
         }
 
         private double _mainSplitterSize = 250;
+
         public double MainSplitterSize
         {
             get => _mainSplitterSize;
@@ -74,6 +84,7 @@ namespace LiteDbExplorer
         }
 
         private ColorTheme _colorTheme = ColorTheme.Light;
+
         public ColorTheme ColorTheme
         {
             get => _colorTheme;
@@ -95,15 +106,16 @@ namespace LiteDbExplorer
         {
             if (File.Exists(Paths.SettingsFilePath))
             {
-                return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(Paths.SettingsFilePath));
+                var value = File.ReadAllText(Paths.SettingsFilePath);
+                return JsonConvert.DeserializeObject<Settings>(value, _settings);
             }
 
             return new Settings(DateTime.UtcNow);
         }
-        
+
         public void SaveSettings()
         {
-            File.WriteAllText(Paths.SettingsFilePath, JsonConvert.SerializeObject(this, Formatting.Indented));
+            File.WriteAllText(Paths.SettingsFilePath, JsonConvert.SerializeObject(this, _settings));
         }
 
         protected override Freezable CreateInstanceCore()
@@ -123,6 +135,27 @@ namespace LiteDbExplorer
             public Point Position { get; set; }
 
             public Point Size { get; set; }
+        }
+    }
+
+    public class IgnoreParentPropertiesResolver : DefaultContractResolver
+    {
+        readonly bool _ignoreBase = false;
+
+        public IgnoreParentPropertiesResolver(bool ignoreBase)
+        {
+            _ignoreBase = ignoreBase;
+        }
+
+        protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+        {
+            var allProps = base.CreateProperties(type, memberSerialization);
+            if (!_ignoreBase) return allProps;
+
+            //Choose the properties you want to serialize/deserialize
+            var props = type.GetProperties(~BindingFlags.FlattenHierarchy);
+
+            return allProps.Where(p => props.Any(a => a.Name == p.PropertyName)).ToList();
         }
     }
 }

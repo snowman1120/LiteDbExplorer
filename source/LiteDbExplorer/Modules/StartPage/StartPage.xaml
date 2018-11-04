@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="LiteDbExplorer.Modules.StartPage.StartPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LiteDbExplorer.Modules.StartPage"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:cal="http://www.caliburnproject.org"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+            <materialDesign:Card MinWidth="300" MinHeight="200"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Center"
+                                     Padding="50">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <Image Source="/Images/icon.png" Height="42" Stretch="Uniform"
+                                   RenderOptions.BitmapScalingMode="HighQuality" Margin="4,0,4,0" />
+                            <TextBlock FontWeight="Light" FontSize="32"
+                                       Text="LiteDB Explorer" Margin="0,8,0,0" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Margin="10">
+
+                            <Border BorderThickness="0,0,0,1" Padding="0,10" Margin="0,10"
+                                    BorderBrush="{StaticResource MaterialDesignDivider}">
+                                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}">
+                                    <materialDesign:PackIcon Kind="Database" Height="18" Width="18" Margin="10,-4" />
+                                    Start
+                                </TextBlock>
+                            </Border>
+
+                            <StackPanel>
+                                <Button Command="Open"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        HorizontalContentAlignment="Left"
+                                        FontWeight="Normal">
+                                    <TextBlock Padding="25,0" Text="Open" TextTrimming="CharacterEllipsis" />
+                                </Button>
+                            </StackPanel>
+
+                            <Border BorderThickness="0,0,0,1" Padding="0,10" Margin="0,10"
+                                    BorderBrush="{StaticResource MaterialDesignDivider}">
+                                <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}">
+                                    <materialDesign:PackIcon Kind="History" Height="18" Width="18" Margin="10,-4" />
+                                    Recent files
+                                </TextBlock>
+                            </Border>
+
+                            <ItemsControl
+                                ItemsSource="{Binding Path=PathDefinitions.RecentFiles}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                                CommandParameter="{Binding}"
+                                                HorizontalContentAlignment="Left" FontWeight="Normal"
+                                                cal:Message.Attach="OpenRecentItem($dataContext)">
+                                            <TextBlock Padding="25,0" Text="{Binding}" TextTrimming="CharacterEllipsis" />
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Grid>
+                </materialDesign:Card>
+    </Grid>
+</UserControl>
