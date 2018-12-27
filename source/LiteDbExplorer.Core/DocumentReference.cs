@@ -1,7 +1,7 @@
 ﻿using LiteDB;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using LiteDbExplorer.Annotations;
+using JetBrains.Annotations;
 
 namespace LiteDbExplorer
 {

@@ -8,6 +8,7 @@
                  xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
+                 xmlns:liteDbExplorer="clr-namespace:LiteDbExplorer;assembly=LiteDbExplorer.Core"
                  mc:Ignorable="d"
                  Width="1024" Height="740"
                  WindowStartupLocation="CenterScreen"
@@ -324,8 +325,21 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
-                        <HierarchicalDataTemplate DataType="{x:Type local:DatabaseReference}"
+                        <HierarchicalDataTemplate DataType="{x:Type liteDbExplorer:DatabaseReference}"
                                                   ItemsSource="{Binding Collections}">
+                            <HierarchicalDataTemplate.ItemContainerStyle>
+                                <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItemFullRow}">
+                                    <Setter Property="ContextMenu">
+                                        <Setter.Value>
+                                            <ContextMenu>
+                                                <MenuItem Command="local:Commands.AddCollection" />
+                                                <MenuItem Command="local:Commands.RenameCollection" />
+                                                <MenuItem Command="local:Commands.DropCollection" />
+                                            </ContextMenu>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </HierarchicalDataTemplate.ItemContainerStyle>
                             <StackPanel Orientation="Horizontal" ToolTip="{Binding Location}">
                                 <materialDesign:PackIcon Kind="Database" Height="20" Width="20" Margin="-1,0,0,0"
                                                          VerticalAlignment="Center" Foreground="#089910" />
@@ -335,21 +349,14 @@
                                            Foreground="{DynamicResource MaterialDesignBody}" />
                             </StackPanel>
                         </HierarchicalDataTemplate>
-                        <DataTemplate DataType="{x:Type local:CollectionReference}">
+                        <DataTemplate DataType="{x:Type liteDbExplorer:CollectionReference}">
                             <StackPanel Orientation="Horizontal">
-                                <StackPanel.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Command="local:Commands.AddCollection" />
-                                        <MenuItem Command="local:Commands.RenameCollection" />
-                                        <MenuItem Command="local:Commands.DropCollection" />
-                                    </ContextMenu>
-                                </StackPanel.ContextMenu>
                                 <ContentPresenter Content="{Binding}">
                                     <ContentPresenter.Resources>
-                                        <DataTemplate DataType="{x:Type local:FileCollectionReference}">
+                                        <DataTemplate DataType="{x:Type liteDbExplorer:FileCollectionReference}">
                                             <Image Source="/Images/file-table.png" />
                                         </DataTemplate>
-                                        <DataTemplate DataType="{x:Type local:CollectionReference}">
+                                        <DataTemplate DataType="{x:Type liteDbExplorer:CollectionReference}">
                                             <Image Source="/Images/table.png" Height="16" />
                                         </DataTemplate>
                                     </ContentPresenter.Resources>

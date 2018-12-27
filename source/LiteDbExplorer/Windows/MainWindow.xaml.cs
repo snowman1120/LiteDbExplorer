@@ -2,7 +2,6 @@
 using LiteDbExplorer.Controls;
 using LiteDbExplorer.Windows;
 using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -22,6 +21,7 @@ using System.Windows.Media;
 using LiteDbExplorer.Presentation;
 using LiteDbExplorer.Presentation.Converters;
 using MahApps.Metro.Controls;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace LiteDbExplorer
 {
