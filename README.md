@@ -10,19 +10,29 @@ Graphical editor for [LiteDB](https://github.com/mbdavid/LiteDB) databases. Writ
 * Change password in protected databases
 * Shrink database
 * Open multiple databases at the same time
+* Document tree
+* Portable exe (require .NET 4.6.2)
+* Material dark and white theme
 <p>
-<img align="center" src="https://raw.githubusercontent.com/JosefNemec/LiteDbExplorer/master/web/screen1.png" width="400" >
-<img align="center" src="https://raw.githubusercontent.com/JosefNemec/LiteDbExplorer/master/web/screen2.png" width="200" >
-<img align="center" src="https://raw.githubusercontent.com/JosefNemec/LiteDbExplorer/master/web/screen3.png" width="200" >
+<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_01.png" width="800" >
+<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_02.png" width="800" >
+<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_03.png" width="800" >
+<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_04.png" width="800" >
 </p>
 
 Download
 ---------
 
-Grab latest build from [releases](https://github.com/JosefNemec/LiteDbExplorer/releases) page.
-Application will automatically notify about new version when released.
+Grab latest build from [releases](https://github.com/julianpaulozzi/LiteDbExplorer/releases) page.
 
-Requirements: Windows 7, 8 or 10 and [.Net 4.6](https://www.microsoft.com/en-us/download/details.aspx?id=53344)
+Portable single exe version available from version 7.0, just unzip and run.
+
+Requirements: Windows 7, 8 or 10 and [.Net 4.6.2](https://www.microsoft.com/en-us/download/details.aspx?id=53344)
+
+Mac OS (WIP) [LiteDbExplorer.Mac](https://github.com/julianpaulozzi/LiteDbExplorer.Mac)
+---------
+Work in progress native mac version using Xamarin.Mac and netstandard2.0.
+
 
 Building
 ---------
