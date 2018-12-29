@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
+using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using LiteDbExplorer.Annotations;
-using LiteDbExplorer.Presentation;
 using LiteDB;
 
 namespace LiteDbExplorer.Controls
@@ -24,28 +22,40 @@ namespace LiteDbExplorer.Controls
             // ThemeManager.CurrentThemeChanged += OnCurrentThemeChanged;
         }
         
-        private void OnCurrentThemeChanged(object sender, EventArgs e)
-        {
-            DocumentTree.InvalidateProperty(ItemsControl.ItemsSourceProperty);
-            DocumentTree.UpdateLayout();
-        }
-
         public IEnumerable ItemsSource
         {
             get => DocumentTree.ItemsSource;
             set => DocumentTree.ItemsSource = value;
         }
 
-        
+        public void InvalidateItemsSource(object item)
+        {
+            if (ItemsSource is DocumentTreeItemsSource treeItems && item is BsonDocument document)
+            {
+                treeItems.Invalidate(document);
+            }
+            else
+            {
+                DocumentTree.InvalidateProperty(ItemsControl.ItemsSourceProperty);
+            }
+        }
+
+        private void OnCurrentThemeChanged(object sender, EventArgs e)
+        {
+            InvalidateItemsSource(null);
+        }
     }
 
     public class DocumentTreeItemsSource : IEnumerable<DocumentFieldNode>, INotifyPropertyChanged
     {
         public DocumentTreeItemsSource(DocumentReference document)
         {
+            InstanceId = document.InstanceId;
             Nodes = GetNodes(document.LiteDocument);
         }
-        
+
+        public string InstanceId { get; }
+
         public ObservableCollection<DocumentFieldNode> Nodes { get; set; }
 
         public ObservableCollection<DocumentFieldNode> GetNodes(BsonDocument document)
@@ -58,7 +68,7 @@ namespace LiteDbExplorer.Controls
 
                 Func<BsonDocument, ObservableCollection<DocumentFieldNode>> loadAction = null;
                 
-                if (bsonValue.IsArray || bsonValue.IsDocument)
+                if (bsonValue != null && (bsonValue.IsArray || bsonValue.IsDocument))
                 {
                     loadAction = GetNodes;
                 }
@@ -71,6 +81,11 @@ namespace LiteDbExplorer.Controls
             return nodes;
         }
 
+        public void Invalidate(BsonDocument document)
+        {
+            Nodes = GetNodes(document);
+        }
+
         public IEnumerator<DocumentFieldNode> GetEnumerator()
         {
             return Nodes.GetEnumerator();
@@ -81,10 +96,13 @@ namespace LiteDbExplorer.Controls
             return ((IEnumerable) Nodes).GetEnumerator();
         }
 
-        [UsedImplicitly]
-#pragma warning disable CS0067 // The event 'DocumentTreeItemsSource.PropertyChanged' is never used
         public event PropertyChangedEventHandler PropertyChanged;
-#pragma warning restore CS0067 // The event 'DocumentTreeItemsSource.PropertyChanged' is never used
+
+        [JetBrains.Annotations.NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public class DocumentFieldNode : INotifyPropertyChanged
@@ -102,8 +120,45 @@ namespace LiteDbExplorer.Controls
         
         public DocumentFieldNode(string key, BsonValue value, Func<BsonDocument, ObservableCollection<DocumentFieldNode>> loadNodes)
         {
+            _loadNodes = loadNodes;
+
+            Initialize(key, value);
+        }
+
+        public int? NodesCount { get; set; }
+
+        public string NodesCountText { get; set; }
+
+        public string Key { get; set; }
+        
+        public BsonValue Value { get; set; }
+
+        public bool IsSelected { get; set; }
+
+        public BsonType? ValueType { get; set; }
+        
+        public bool IsExpanded
+        {
+            get => _isExpanded;
+            set
+            {
+                _isExpanded = value;
+                OnNodeExpanded();
+            }
+        }
+        
+        public ObservableCollection<DocumentFieldNode> Nodes { get; set; }
+        
+        protected void Initialize(string key, BsonValue value)
+        {
             Key = key;
             Value = value;
+
+            // TODO: Infer Null value type to handle
+            if (Value != null)
+            {
+                ValueType = Value.Type;
+            }
 
             if (value is BsonDocument document)
             {
@@ -121,8 +176,6 @@ namespace LiteDbExplorer.Controls
                 NodesCountText = $" {NodesCount} {suffix}";
             }
             
-            _loadNodes = loadNodes;
-
             if (_loadNodes != null)
             {
                 // Add Dummy load node
@@ -133,32 +186,6 @@ namespace LiteDbExplorer.Controls
             }
         }
 
-        public int? NodesCount { get; set; }
-
-        public string NodesCountText { get; set; }
-
-        public string Key { get; set; }
-        
-        public BsonValue Value { get; set; }
-
-        public bool IsSelected { get; set; }
-        
-        public bool IsExpanded
-        {
-            get => _isExpanded;
-            set
-            {
-                _isExpanded = value;
-                OnNodeExpanded();
-            }
-        }
-        
-        public ObservableCollection<DocumentFieldNode> Nodes { get; set; }
-        
-#pragma warning disable CS0067 // The event 'DocumentFieldNode.PropertyChanged' is never used
-        public event PropertyChangedEventHandler PropertyChanged;
-#pragma warning restore CS0067 // The event 'DocumentFieldNode.PropertyChanged' is never used
-        
         private void OnNodeExpanded()
         {
             if(IsExpanded == false)
@@ -187,7 +214,14 @@ namespace LiteDbExplorer.Controls
             }
         }
 
-        
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [JetBrains.Annotations.NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
 }

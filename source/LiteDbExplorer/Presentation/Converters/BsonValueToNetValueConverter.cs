@@ -17,10 +17,8 @@ namespace LiteDbExplorer.Presentation.Converters
             {
                 return bsonValue.RawValue;
             }
-            else
-            {
-                throw new Exception("Cannot convert non BSON value");
-            }
+
+            throw new Exception("Cannot convert non BSON value");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

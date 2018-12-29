@@ -1,26 +1,52 @@
-﻿using LiteDB;
+﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using LiteDB;
 
 namespace LiteDbExplorer
 {
     public class DocumentReference : INotifyPropertyChanged
     {
+        private BsonDocument _liteDocument;
+        private CollectionReference _collection;
+
         public DocumentReference()
         {
+            InstanceId = Guid.NewGuid().ToString();
         }
 
-        public DocumentReference(BsonDocument document, CollectionReference collection)
+        public DocumentReference(BsonDocument document, CollectionReference collection) : this()
         {
             LiteDocument = document;
             Collection = collection;
         }
 
-        public BsonDocument LiteDocument { get; set; }
+        public string InstanceId { get; }
 
-        public CollectionReference Collection { get; set; }
-        
+        public BsonDocument LiteDocument
+        {
+            get => _liteDocument;
+            set
+            {
+                if (Equals(value, _liteDocument)) return;
+                _liteDocument = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public CollectionReference Collection
+        {
+            get => _collection;
+            set
+            {
+                if (Equals(value, _collection)) return;
+                _collection = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [UsedImplicitly]
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void InvalidateProperties()

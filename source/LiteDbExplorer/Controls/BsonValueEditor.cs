@@ -17,6 +17,8 @@ namespace LiteDbExplorer.Controls
 
     public class BsonValueEditor
     {
+        // TODO: Infer Null value type to handle
+
         public static FrameworkElement GetBsonValueEditor(
             OpenEditorMode openMode,
             string bindingPath,
@@ -60,8 +62,8 @@ namespace LiteDbExplorer.Controls
 
                         if (window.ShowDialog() == true)
                         {
-                            arrayValue.Clear();
-                            arrayValue.AddRange(control.EditedItems);
+                            arrayValue?.Clear();
+                            arrayValue?.AddRange(control.EditedItems);
                         }
 
                         /*arrayValue = bindingValue as BsonArray;

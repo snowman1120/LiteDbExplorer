@@ -1,18 +1,53 @@
-﻿using LiteDB;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
+using LiteDB;
 
 namespace LiteDbExplorer
 {
     public class CollectionReference : INotifyPropertyChanged
     {
-        public string Name { get; set; }
-
-        public DatabaseReference Database { get; set; }
-        
         private ObservableCollection<DocumentReference> _items;
+        private string _name;
+        private DatabaseReference _database;
+
+        public CollectionReference(string name, DatabaseReference database)
+        {
+            InstanceId = Guid.NewGuid().ToString();
+            Name = name;
+            Database = database;
+        }
+
+        public string InstanceId { get; }
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                if (value == _name) return;
+                _name = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(LiteCollection));
+            }
+        }
+
+        public DatabaseReference Database
+        {
+            get => _database;
+            set
+            {
+                if (Equals(value, _database)) return;
+                _database = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(LiteCollection));
+            }
+        }
+
         public ObservableCollection<DocumentReference> Items
         {
             get
@@ -28,7 +63,6 @@ namespace LiteDbExplorer
 
                 return _items;
             }
-
             set
             {
                 _items = value;
@@ -37,20 +71,7 @@ namespace LiteDbExplorer
         }
 
         public LiteCollection<BsonDocument> LiteCollection => Database.LiteDatabase.GetCollection(Name);
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public CollectionReference(string name, DatabaseReference database)
-        {
-            Name = name;
-            Database = database;
-        }
-
+        
         public virtual void UpdateItem(DocumentReference document)
         {
             LiteCollection.Update(document.LiteDocument);
@@ -81,13 +102,9 @@ namespace LiteDbExplorer
         public virtual void Refresh()
         {
             if (_items == null)
-            {
                 _items = new ObservableCollection<DocumentReference>();
-            }
             else
-            {
                 _items.Clear();
-            }
 
             foreach (var item in LiteCollection.FindAll().Select(a => new DocumentReference(a, this)))
             {
@@ -101,13 +118,18 @@ namespace LiteDbExplorer
         {
             if (Items != null)
             {
-                foreach (var documentReference in Items)
-                {
-                    documentReference.InvalidateProperties();
-                }
+                foreach (var documentReference in Items) documentReference.InvalidateProperties();
             }
 
             OnPropertyChanged(string.Empty);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

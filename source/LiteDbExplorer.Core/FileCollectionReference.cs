@@ -15,7 +15,7 @@ namespace LiteDbExplorer
         }
 
         public DocumentReference AddFile(string id, string path)
-        {            
+        {
             var file = Database.LiteDatabase.FileStorage.Upload(id, path);
             var newDoc = new DocumentReference(file.AsDocument, this);
             Items.Add(newDoc);

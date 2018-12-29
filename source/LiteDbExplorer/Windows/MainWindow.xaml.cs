@@ -301,6 +301,8 @@ namespace LiteDbExplorer
                 ListCollectionData.ScrollIntoView(ListCollectionData.SelectedItem);
                 UpdateGridColumns(newDoc);
             }
+
+            UpdateDocumentPreview();
         }
         #endregion Add Command
 
@@ -330,6 +332,7 @@ namespace LiteDbExplorer
             if (window.ShowDialog() == true)
             {
                 UpdateGridColumns(item.LiteDocument);
+                UpdateDocumentPreview();
             }
         }
         #endregion Edit Command
@@ -643,8 +646,12 @@ namespace LiteDbExplorer
             try
             {
                 var textData = Clipboard.GetText();
-                var newValue = JsonSerializer.Deserialize(textData);
+                if (string.IsNullOrWhiteSpace(textData))
+                {
+                    return;
+                }
 
+                var newValue = JsonSerializer.Deserialize(textData);
                 if (newValue.IsArray)
                 {
                     foreach (var value in newValue.AsArray)
@@ -660,6 +667,8 @@ namespace LiteDbExplorer
                     SelectedCollection.AddItem(doc);
                     UpdateGridColumns(doc);
                 }
+
+                UpdateDocumentPreview();
             }
             catch (Exception exc)
             {
@@ -672,15 +681,10 @@ namespace LiteDbExplorer
         private bool ItemMatchesSearch(string matchTerm, DocumentReference document, bool matchCase)
         {
             var stringData = JsonSerializer.Serialize(document.LiteDocument);
+            var stringComparison =
+                matchCase ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase;
 
-            if (matchCase)
-            {
-                return stringData.IndexOf(matchTerm, 0, StringComparison.InvariantCulture) != -1;
-            }
-            else
-            {
-                return stringData.IndexOf(matchTerm, 0, StringComparison.InvariantCultureIgnoreCase) != -1;
-            }
+            return stringData.IndexOf(matchTerm, 0, stringComparison) != -1;
         }
 
         private void SelectDocumentInView(DocumentReference document)
@@ -689,9 +693,30 @@ namespace LiteDbExplorer
             ListCollectionData.ScrollIntoView(document);
         }
 
+        private void UpdateDocumentPreview()
+        {
+            // TODO: Update only changed node and keep tree state
+            var document = DbSelectedItems.FirstOrDefault();
+            if (document != null)
+            {
+                DocumentTreeView.ItemsSource = new DocumentTreeItemsSource(document);
+
+                if (document.Collection is FileCollectionReference reference)
+                {
+                    var fileInfo = reference.GetFileObject(document);
+                    FilePreview.LoadFile(fileInfo);
+                    BorderFilePreview.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    BorderFilePreview.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
         private void UpdateGridColumns(BsonDocument dbItem)
         {
-            var headers = GridCollectionData.Columns.Select(a => (a.Header as TextBlock).Text);
+            var headers = GridCollectionData.Columns.Select(a => (a.Header as TextBlock)?.Text);
             var missing = dbItem.Keys.Except(headers);
 
             foreach (var key in missing)
@@ -791,26 +816,9 @@ namespace LiteDbExplorer
 
 
             BorderDocPreview.Visibility = Visibility.Visible;
-            var document = DbSelectedItems.First();
-
-            /*var controls = new List<DocumentFieldData>();
             
-            for (int i = 0; i < document.LiteDocument.Keys.Count; i++)
-            {
-                var key = document.LiteDocument.Keys.ElementAt(i);
-                var valueEdit = BsonValueEditor.GetBsonValueEditor(
-                    expandMode: BsonEditorExpandMode.Inline,
-                    bindingPath: $"[{key}]", 
-                    bindingValue: document.LiteDocument[key], 
-                    bindingSource: document.LiteDocument, 
-                    readOnly: true,
-                    keyName: key
-                );
-                controls.Add(new DocumentFieldData(key, valueEdit));
-            }
-
-            ItemsDocPreview.ItemsSource = controls;*/
-
+            var document = DbSelectedItems.First();
+            
             DocumentTreeView.ItemsSource = new DocumentTreeItemsSource(document);
 
             if (document.Collection is FileCollectionReference reference)
@@ -917,10 +925,13 @@ namespace LiteDbExplorer
 
         private void RecentItemMoreBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ButtonOpen.ContextMenu.IsEnabled = true;
-            ButtonOpen.ContextMenu.PlacementTarget = ButtonOpen;
-            ButtonOpen.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
-            ButtonOpen.ContextMenu.IsOpen = true;
+            if (ButtonOpen.ContextMenu != null)
+            {
+                ButtonOpen.ContextMenu.IsEnabled = true;
+                ButtonOpen.ContextMenu.PlacementTarget = ButtonOpen;
+                ButtonOpen.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+                ButtonOpen.ContextMenu.IsOpen = true;
+            }
         }
 
         private void ButtonCloseSearch_Click(object sender, RoutedEventArgs e)
@@ -972,15 +983,15 @@ namespace LiteDbExplorer
 
             App.Settings.PropertyChanged += Settings_PropertyChanged;
 
-            if ((Application.Current as App).OriginalInstance)
+            if ((Application.Current as App)?.OriginalInstance == true)
             {
                 _pipeService = new PipeService();
-                _pipeService.CommandExecuted += PipeService_CommandExecuted; ;
+                _pipeService.CommandExecuted += PipeService_CommandExecuted;
                 _pipeServer = new PipeServer(Config.PipeEndpoint);
                 _pipeServer.StartServer(_pipeService);
 
                 var args = Environment.GetCommandLineArgs();
-                if (args.Count() > 1)
+                if (args.Length > 1)
                 {
                     PipeService_CommandExecuted(this, new CommandExecutedEventArgs(CmdlineCommands.Open, args[1]));
                 }

@@ -18,7 +18,9 @@ namespace LiteDbExplorer.Modules.Main
     [PartCreationPolicy (CreationPolicy.NonShared)]
     public class DocumentSetViewModel : Conductor<IDocument>.Collection.OneActive, IDocumentSet
     {
+#pragma warning disable 649
         private bool _closing;
+#pragma warning restore 649
 
         public DocumentSetViewModel()
         {

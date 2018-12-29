@@ -15,36 +15,45 @@ namespace LiteDbExplorer.Presentation.Converters
 
             if (value is BsonValue bsonValue)
             {
-                if (bsonValue.IsDocument)
+                try
                 {
-                    return "[Document]";
-                }
+                    if (bsonValue.IsDocument)
+                    {
+                        return "[Document]";
+                    }
+                    if (bsonValue.IsArray)
+                    {
+                        return "[Array]";
+                    }
+                    if (bsonValue.IsBinary)
+                    {
+                        return "[Binary]";
+                    }
+                    if (bsonValue.IsObjectId)
+                    {
+                        return bsonValue.AsString;
+                    }
+                    if (bsonValue.IsDateTime)
+                    {
+                        return bsonValue.AsDateTime;
+                    }
+                    if (bsonValue.IsGuid)
+                    {
+                        return bsonValue.AsGuid;
+                    }
+                    if (bsonValue.IsString)
+                    {
+                        return bsonValue.AsString;
+                    }
 
-                if (bsonValue.IsArray)
-                {
-                    return "[Array]";
+                    return bsonValue.ToString();
                 }
-                if (bsonValue.IsBinary)
+                catch (Exception e)
                 {
-                    return "[Binary]";
+                    Console.WriteLine(e);
+                    return string.Empty;
                 }
-                if (bsonValue.IsObjectId)
-                {
-                    return bsonValue.AsString;
-                }
-                if (bsonValue.IsDateTime)
-                {
-                    return bsonValue.AsDateTime;
-                }
-                if (bsonValue.IsGuid)
-                {
-                    return bsonValue.AsGuid;
-                }
-                if (bsonValue.IsString)
-                {
-                    return bsonValue.AsString;
-                }
-                return bsonValue.ToString();
+                
             }
 
             throw new Exception("Cannot convert non BSON value");

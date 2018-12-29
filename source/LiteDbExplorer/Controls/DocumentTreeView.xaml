@@ -31,7 +31,7 @@
                                TextWrapping="Wrap"/>
                     <TextBlock Text="{Binding NodesCountText}" Foreground="#707070"/>
                 </StackPanel>
-                <TextBlock Grid.Column="1" Text="{Binding Path=Value.Type}" Margin="10,0" TextAlignment="Right" FontSize="13" Opacity="0.9"/>
+                <TextBlock Grid.Column="1" Text="{Binding Path=ValueType, FallbackValue=''}" Margin="10,0" TextAlignment="Right" FontSize="13" Opacity="0.9"/>
             </Grid>
         </HierarchicalDataTemplate>
 
