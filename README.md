@@ -14,10 +14,16 @@ Graphical editor for [LiteDB](https://github.com/mbdavid/LiteDB) databases. Writ
 * Portable exe (require .NET 4.6.2)
 * Material dark and white theme
 <p>
-<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_01.png" width="800" >
-<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_02.png" width="800" >
-<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_03.png" width="800" >
-<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_04.png" width="800" >
+<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_01.png" width="880" >
+</p>
+<p>
+<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_02.png" width="880" >
+</p>
+<p>
+<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_03.png" width="880" >
+</p>
+<p>
+<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_04.png" width="880" >
 </p>
 
 Download
@@ -45,7 +51,7 @@ Contributions
 All contributions are welcome!
 
 Regarding code styling, there are only a few major rules:
-* private fields and properties should use camelCase (without underscore)
+* private fields and properties should use camelCase (with underscore)
 * all methods (private and public) should use PascalCase
 * use spaces instead of tabs with 4 spaces width
 * always encapsulate with brackets:
