@@ -8,6 +8,7 @@
              xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
              xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors"
              xmlns:liteDbExplorer="clr-namespace:LiteDbExplorer"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="DocumentTreeViewControl">
@@ -23,14 +24,13 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto" MinWidth="80"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding Key}" FontWeight="Medium"/>
-                    <TextBlock Text=": " FontWeight="Medium"/>
-                    <TextBlock Text="{Binding Value, Converter={StaticResource BsonValueToStringConverter}}" 
-                               Foreground="{Binding Value, Converter={StaticResource BsonValueToForegroundConverter}}"
-                               TextWrapping="Wrap"/>
-                    <TextBlock Text="{Binding NodesCountText}" Foreground="#707070"/>
-                </StackPanel>
+                <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap">
+                    <Run Text="{Binding Key}" FontWeight="Medium"/>
+                    <Run Text=": " FontWeight="Medium"/>
+                    <Run Text="{Binding Value, Converter={StaticResource BsonValueToStringConverter}}" 
+                               Foreground="{Binding Value, Converter={StaticResource BsonValueToForegroundConverter}}"/>
+                    <Run Text="{Binding NodesCountText}" Foreground="#707070"/>
+                </TextBlock>
                 <TextBlock Grid.Column="1" Text="{Binding Path=ValueType, FallbackValue=''}" Margin="10,0" TextAlignment="Right" FontSize="13" Opacity="0.9"/>
             </Grid>
         </HierarchicalDataTemplate>

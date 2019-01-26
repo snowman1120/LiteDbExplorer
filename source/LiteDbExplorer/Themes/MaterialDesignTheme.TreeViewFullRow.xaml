@@ -30,7 +30,8 @@
                         <converters1:LeftMarginMultiplierConverter x:Key="LengthConverter" Length="16" />
                     </ControlTemplate.Resources>
 
-                    <Grid Margin="{Binding Converter={StaticResource LengthConverter}, RelativeSource={RelativeSource TemplatedParent}}">
+                    <Grid Margin="{Binding Converter={StaticResource LengthConverter}, RelativeSource={RelativeSource TemplatedParent}}"
+                          Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type TreeView}}}">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup Name="CommonStates">
                                 <VisualStateGroup.Transitions>
@@ -153,7 +154,7 @@
                                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                         Padding="{TemplateBinding Padding}"
                                         IsEnabled="False">
-                                <ContentPresenter x:Name="PART_Header" ContentSource="Header" />
+                                <ContentPresenter x:Name="PART_Header" ContentSource="Header"/>
                             </materialDesign:Ripple>
                         </Grid>
 
@@ -165,10 +166,9 @@
                                         Visibility="Collapsed">
                         </ContentControl>
 
-                        <StackPanel Grid.Column="0" Grid.Row="2"
+                        <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3"
                                     x:Name="ItemsPanel"
-                                    Margin="-16,0,0,0"
-                                    Grid.ColumnSpan="3">
+                                    Margin="-16,0,0,0">
                             <StackPanel.Height>
                                 <MultiBinding Converter="{StaticResource MathMlpMultipleConverter}">
                                     <Binding ElementName="ItemsHost" Path="ActualHeight"/>
@@ -177,6 +177,7 @@
                             </StackPanel.Height>
                             <ItemsPresenter x:Name="ItemsHost"
                                             VerticalAlignment="Top"
+                                            HorizontalAlignment="Stretch"
                                             Opacity="0"
                                             Visibility="Collapsed"/>
                         </StackPanel>

@@ -6,7 +6,7 @@ using LiteDB;
 
 namespace LiteDbExplorer
 {
-    public class DocumentReference : INotifyPropertyChanged
+    public class DocumentReference : INotifyPropertyChanging, INotifyPropertyChanged
     {
         private BsonDocument _liteDocument;
         private CollectionReference _collection;
@@ -30,6 +30,7 @@ namespace LiteDbExplorer
             set
             {
                 if (Equals(value, _liteDocument)) return;
+                OnPropertyChanging();
                 _liteDocument = value;
                 OnPropertyChanged();
             }
@@ -41,6 +42,7 @@ namespace LiteDbExplorer
             set
             {
                 if (Equals(value, _collection)) return;
+                OnPropertyChanging();
                 _collection = value;
                 OnPropertyChanged();
             }
@@ -58,6 +60,13 @@ namespace LiteDbExplorer
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        protected virtual void OnPropertyChanging([CallerMemberName] string name = null)
+        {
+            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(name));
         }
     }
 }

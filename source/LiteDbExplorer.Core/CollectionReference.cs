@@ -9,7 +9,7 @@ using LiteDB;
 
 namespace LiteDbExplorer
 {
-    public class CollectionReference : INotifyPropertyChanged
+    public class CollectionReference : INotifyPropertyChanging, INotifyPropertyChanged
     {
         private ObservableCollection<DocumentReference> _items;
         private string _name;
@@ -30,6 +30,8 @@ namespace LiteDbExplorer
             set
             {
                 if (value == _name) return;
+                OnPropertyChanging();
+                OnPropertyChanging(nameof(LiteCollection));
                 _name = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(LiteCollection));
@@ -43,6 +45,8 @@ namespace LiteDbExplorer
             {
                 if (Equals(value, _database)) return;
                 _database = value;
+                OnPropertyChanging();
+                OnPropertyChanging(nameof(LiteCollection));
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(LiteCollection));
             }
@@ -65,6 +69,7 @@ namespace LiteDbExplorer
             }
             set
             {
+                OnPropertyChanging(nameof(Items));
                 _items = value;
                 OnPropertyChanged(nameof(Items));
             }
@@ -101,10 +106,16 @@ namespace LiteDbExplorer
 
         public virtual void Refresh()
         {
+            OnPropertyChanging(nameof(Items));
+
             if (_items == null)
+            {
                 _items = new ObservableCollection<DocumentReference>();
+            }
             else
+            {
                 _items.Clear();
+            }
 
             foreach (var item in LiteCollection.FindAll().Select(a => new DocumentReference(a, this)))
             {
@@ -130,6 +141,13 @@ namespace LiteDbExplorer
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public event PropertyChangingEventHandler PropertyChanging;
+
+        protected virtual void OnPropertyChanging([CallerMemberName] string name = null)
+        {
+            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(name));
         }
     }
 }

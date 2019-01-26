@@ -22,6 +22,8 @@
         <converters:EnumConverter x:Key="EnumConverter" />
         <converters:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
         <converters:InverseVisibilityConverter x:Key="InverseVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <controls:StoreContext x:Key="StoreContext"/>
     </mah:MetroWindow.Resources>
 
     <mah:MetroWindow.CommandBindings>
@@ -294,11 +296,15 @@
 
                 <TreeView Name="TreeDatabase" DockPanel.Dock="Top"
                           SelectedItemChanged="TreeDatabasese_SelectedItemChanged"
-                          ItemsSource="{Binding Databases, RelativeSource={RelativeSource AncestorType=Window}}">
+                          ItemsSource="{Binding Current.Databases, Source={StaticResource StoreContext}}"
+                          HorizontalContentAlignment="Stretch" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+                          mah:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="False">
                     <TreeView.Resources>
                         <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItemFullRow}">
                             <Setter Property="IsExpanded" Value="True" />
                             <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
+                            <Setter Property="ToolTip" Value="{Binding Location}"/>
                             <Setter Property="ContextMenu">
                                 <Setter.Value>
                                     <ContextMenu>
@@ -329,6 +335,7 @@
                                                   ItemsSource="{Binding Collections}">
                             <HierarchicalDataTemplate.ItemContainerStyle>
                                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItemFullRow}">
+                                    <Setter Property="ToolTip" Value="{Binding Name}"/>
                                     <Setter Property="ContextMenu">
                                         <Setter.Value>
                                             <ContextMenu>
@@ -340,17 +347,26 @@
                                     </Setter>
                                 </Style>
                             </HierarchicalDataTemplate.ItemContainerStyle>
-                            <StackPanel Orientation="Horizontal" ToolTip="{Binding Location}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
                                 <materialDesign:PackIcon Kind="Database" Height="20" Width="20" Margin="-1,0,0,0"
                                                          VerticalAlignment="Center" Foreground="#089910" />
-                                <TextBlock Text="{Binding Name}" Padding="8,4"
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" Padding="8,4"
                                            FontSize="14" FontWeight="Regular"
                                            FontFamily="{StaticResource MaterialDesignFont}"
-                                           Foreground="{DynamicResource MaterialDesignBody}" />
-                            </StackPanel>
+                                           Foreground="{DynamicResource MaterialDesignBody}" 
+                                           TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
+                            </Grid>
                         </HierarchicalDataTemplate>
                         <DataTemplate DataType="{x:Type liteDbExplorer:CollectionReference}">
-                            <StackPanel Orientation="Horizontal">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
                                 <ContentPresenter Content="{Binding}">
                                     <ContentPresenter.Resources>
                                         <DataTemplate DataType="{x:Type liteDbExplorer:FileCollectionReference}">
@@ -361,18 +377,20 @@
                                         </DataTemplate>
                                     </ContentPresenter.Resources>
                                 </ContentPresenter>
-                                <TextBlock Text="{Binding Name}" Padding="8,4"
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" Padding="8,4"
                                            FontSize="14" FontWeight="Regular"
                                            FontFamily="{StaticResource MaterialDesignFont}"
-                                           Foreground="{DynamicResource MaterialDesignBody}" />
-                            </StackPanel>
+                                           Foreground="{DynamicResource MaterialDesignBody}" 
+                                           TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
+                            </Grid>
                         </DataTemplate>
                     </TreeView.Resources>
                 </TreeView>
 
             </DockPanel>
 
-            <DockPanel Grid.Column="2" x:Name="ListCollectionPanel" Visibility="Collapsed">
+            <DockPanel Grid.Column="2" x:Name="ListCollectionPanel" 
+                       Visibility="{Binding Path=Current.HasSelectedCollection, Source={StaticResource StoreContext}, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ToolBarTray DockPanel.Dock="Top">
                     <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}">
                         <ToolBar.Resources>
@@ -466,10 +484,13 @@
                     </materialDesign:Card>
                 </Border>
 
-                <ListView Name="ListCollectionData" Visibility="Collapsed"
-                          MouseDoubleClick="ListCollectionData_MouseDoubleClick"
-                          SelectionChanged="ListCollectionData_SelectionChanged">
-                    <ListView.ContextMenu>
+                <controls:CollectionListView x:Name="CollectionListView" 
+                                             Visibility="{Binding Path=Current.HasSelectedCollection, Source={StaticResource StoreContext}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                             CollectionReference="{Binding Path=Current.SelectedCollection, Source={StaticResource StoreContext}}"
+                                             SelectedItem="{Binding Path=Current.SelectedDocument, Source={StaticResource StoreContext}}"
+                                             SelectedItems="{Binding Path=Current.SelectedDocuments, Source={StaticResource StoreContext}}"
+                                             DoubleClickCommand="local:Commands.Edit">
+                    <controls:CollectionListView.ListViewContextMenu>
                         <ContextMenu>
                             <MenuItem Command="local:Commands.Add">
                                 <MenuItem.Icon>
@@ -503,11 +524,8 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                         </ContextMenu>
-                    </ListView.ContextMenu>
-                    <ListView.View>
-                        <GridView x:Name="GridCollectionData" />
-                    </ListView.View>
-                </ListView>
+                    </controls:CollectionListView.ListViewContextMenu>
+                </controls:CollectionListView>
             </DockPanel>
 
             <Border Grid.Column="2"
@@ -576,18 +594,55 @@
 
             <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" />
 
-            <DockPanel Grid.Column="4">
+            <UniformGrid Grid.Column="4" Columns="1">
                 <Border BorderBrush="{Binding BorderBrush, ElementName=TreeDatabase}"
                         BorderThickness="0" DockPanel.Dock="Top" Padding="0"
-                        Name="BorderDocPreview" Visibility="Collapsed">
+                        Name="BorderDocPreview"
+                        Visibility="{Binding Path=Current.HasSelectedDocument, Source={StaticResource StoreContext}, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                     <DockPanel DockPanel.Dock="Top">
-                        <Border DockPanel.Dock="Top" MinHeight="40"
+                        <!--<Border DockPanel.Dock="Top" MinHeight="40"
                                 Background="{DynamicResource MaterialDesignToolBarBackground}" Padding="10,0">
                             <TextBlock Text="Document Preview" FontWeight="Bold" VerticalAlignment="Center" />
-                        </Border>
+                        </Border>-->
+                        <Grid DockPanel.Dock="Top" MinHeight="40"
+                              Background="{DynamicResource MaterialDesignToolBarBackground}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="10"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="1" Text="Document Preview" FontWeight="Bold" VerticalAlignment="Center" />
+                            <ListBox x:Name="DetailViewSelector" 
+                                     Grid.Column="2" VerticalAlignment="Center"
+                                     SelectedIndex="0"
+                                     Style="{StaticResource MaterialDesignToolToggleFlatListBox}">
+                                <ListBoxItem>
+                                    <materialDesign:PackIcon Kind="FileTree" />
+                                </ListBoxItem>
+                                <ListBoxItem>
+                                    <materialDesign:PackIcon Kind="Json" />
+                                </ListBoxItem>
+                            </ListBox>
+                        </Grid>
 
-                        <controls:DocumentTreeView x:Name="DocumentTreeView" DockPanel.Dock="Top" />
+                        <TabControl DockPanel.Dock="Top" 
+                                    SelectedIndex="{Binding SelectedIndex, ElementName=DetailViewSelector}">
+                            <TabControl.ItemContainerStyle>
+                                <Style TargetType="{x:Type TabItem}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </Style>
+                            </TabControl.ItemContainerStyle>
+                            <TabItem>
+                                <controls:DocumentTreeView x:Name="DocumentTreeView"
+                                                           DocumentSource="{Binding Path=Current.SelectedDocument, Source={StaticResource StoreContext}}"/>
+                            </TabItem>
+                            <TabItem>
+                                <controls:DocumentJsonView x:Name="DocumentJsonView"
+                                                           DocumentSource="{Binding Path=Current.SelectedDocument, Source={StaticResource StoreContext}}"/>
+                            </TabItem>
+                        </TabControl>
 
                         <!--<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top">
                             <ItemsControl Name="ItemsDocPreview" Margin="5,0,5,0">
@@ -613,8 +668,8 @@
                     </DockPanel>
                 </Border>
 
-                <Border BorderBrush="{Binding BorderBrush, ElementName=TreeDatabase}"
-                        BorderThickness="1,0,1,1" DockPanel.Dock="Top" Padding="0,5,0,5"
+                <Border  BorderBrush="{Binding BorderBrush, ElementName=TreeDatabase}"
+                        BorderThickness="1,0,1,1" DockPanel.Dock="Bottom" Padding="0,5,0,5"
                         Name="BorderFilePreview" Visibility="Collapsed">
                     <DockPanel DockPanel.Dock="Top">
                         <Border DockPanel.Dock="Top" MinHeight="40"
@@ -625,7 +680,7 @@
                     </DockPanel>
                 </Border>
 
-            </DockPanel>
+            </UniformGrid>
         </Grid>
     </DockPanel>
 </mah:MetroWindow>

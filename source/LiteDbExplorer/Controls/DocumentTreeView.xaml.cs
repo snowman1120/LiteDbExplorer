@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
 using LiteDB;
 
@@ -18,10 +19,37 @@ namespace LiteDbExplorer.Controls
         public DocumentTreeView()
         {
             InitializeComponent();
-
-            // ThemeManager.CurrentThemeChanged += OnCurrentThemeChanged;
         }
-        
+
+        public static readonly DependencyProperty DocumentSourceProperty = DependencyProperty.Register(
+            nameof(DocumentSource), 
+            typeof(DocumentReference), 
+            typeof(DocumentTreeView), 
+            new PropertyMetadata(null, propertyChangedCallback: OnDocumentSourceChanged));
+
+        private static void OnDocumentSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (!(d is DocumentTreeView documentTreeView))
+            {
+                return;
+            }
+
+            if (e.NewValue is DocumentReference documentReference)
+            {
+                documentTreeView.ItemsSource = new DocumentTreeItemsSource(documentReference);
+            }
+            else
+            {
+                documentTreeView.ItemsSource = null;
+            }
+        }
+
+        public DocumentReference DocumentSource
+        {
+            get => (DocumentReference) GetValue(DocumentSourceProperty);
+            set => SetValue(DocumentSourceProperty, value);
+        }
+
         public IEnumerable ItemsSource
         {
             get => DocumentTree.ItemsSource;

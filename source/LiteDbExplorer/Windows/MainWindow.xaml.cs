@@ -4,22 +4,17 @@ using LiteDbExplorer.Windows;
 using Microsoft.Win32;
 using NLog;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using LiteDbExplorer.Presentation;
-using LiteDbExplorer.Presentation.Converters;
 using MahApps.Metro.Controls;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
@@ -40,88 +35,7 @@ namespace LiteDbExplorer
         {
             get; set;
         } = new Paths();
-
-        public ObservableCollection<DatabaseReference> Databases
-        {
-            get; set;
-        } = new ObservableCollection<DatabaseReference>();
-
-        private IEnumerable<DocumentReference> DbSelectedItems
-        {
-            get
-            {
-                if (ListCollectionData.Visibility == Visibility.Visible)
-                {
-                    return ListCollectionData.SelectedItems.Cast<DocumentReference>();
-                }
-
-                return null;
-            }
-        }
-
-        private int DbItemsSelectedCount
-        {
-            get
-            {
-                if (ListCollectionData != null && ListCollectionData.Visibility == Visibility.Visible)
-                {
-                    return ListCollectionData.SelectedItems.Count;
-                }
-
-                return 0;
-            }
-        }
-
-        private CollectionReference _selectedCollection;
-        public CollectionReference SelectedCollection
-        {
-            get
-            {
-                return _selectedCollection;
-            }
-
-            set
-            {
-                _selectedCollection = value;
-
-                if (value == null)
-                {
-                    ListCollectionData.ItemsSource = null;
-                    ListCollectionPanel.Visibility = Visibility.Hidden;
-                    ListCollectionData.Visibility = Visibility.Hidden;
-                }
-                else
-                {
-                    UpdateGridColumns();
-                    ListCollectionData.ItemsSource = _selectedCollection.Items;
-                    ListCollectionPanel.Visibility = Visibility.Visible;
-                    ListCollectionData.Visibility = Visibility.Visible;
-                }
-            }
-        }
-
-        private DatabaseReference _selectedDatabase;
-        public DatabaseReference SelectedDatabase
-        {
-            get
-            {
-                return _selectedDatabase;
-            }
-
-            set
-            {
-                _selectedDatabase = value;
-                if (_selectedDatabase == null)
-                {
-                    Title = $"LiteDB Explorer {Versions.CurrentVersion}";
-                }
-                else
-                {
-                    Title = $"{_selectedDatabase.Name} - LiteDB Explorer {Versions.CurrentVersion}";
-                }
-            }
-        }
-
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -152,9 +66,40 @@ namespace LiteDbExplorer
             });
 
             DockSearch.Visibility = Visibility.Collapsed;
+
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            Store.Current.SelectedDatabaseChange += (sender, args) =>
+            {
+                var databaseReference = args.Data;
+                Title = databaseReference == null ? $"LiteDB Explorer {Versions.CurrentVersion}" : $"{databaseReference.Name} - LiteDB Explorer {Versions.CurrentVersion}";
+            };
+
+            Store.Current.SelectedCollectionChange += (sender, args) =>
+            {
+                BorderFilePreview.Visibility = Visibility.Collapsed;
+            };
+
+            Store.Current.SelectedDocumentChange += (sender, args) =>
+            {
+                var document = args.Data;
+                
+                BorderFilePreview.Visibility = Visibility.Collapsed;
+
+                if (document != null && document.Collection is FileCollectionReference reference)
+                {
+                    var fileInfo = reference.GetFileObject(document);
+                    FilePreview.LoadFile(fileInfo);
+                    BorderFilePreview.Visibility = Visibility.Visible;
+                }
+            };
         }
 
         #region Exit Command
+
         private void ExitCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
@@ -162,12 +107,12 @@ namespace LiteDbExplorer
 
         private void ExitCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            foreach (var database in Databases)
-            {
-                database.Dispose();
-            }
+            Store.Current.CloseDatabases();
 
-            Application.Current.MainWindow.Close();
+            if (Application.Current.MainWindow != null)
+            {
+                Application.Current.MainWindow.Close();
+            }
         }
         #endregion Exit Command
 
@@ -179,7 +124,7 @@ namespace LiteDbExplorer
 
         private void OpenCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog()
+            var dialog = new OpenFileDialog
             {
                 Filter = "All files|*.*",
                 Multiselect = false
@@ -233,31 +178,25 @@ namespace LiteDbExplorer
         #region Close Command
         private void CloseCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedDatabase != null;
+            e.CanExecute = Store.Current.HasSelectedDatabase;
         }
 
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (SelectedCollection != null && SelectedCollection.Database == SelectedDatabase)
-            {
-                SelectedCollection = null;
-            }
+            Store.Current.CloseSelectedDatabase();
 
-            SelectedDatabase.Dispose();
-            Databases.Remove(SelectedDatabase);
-            SelectedDatabase = null;
         }
         #endregion Close Command
 
         #region EditDbProperties Command
         private void EditDbPropertiesCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedDatabase != null;
+            e.CanExecute = Store.Current.HasSelectedDatabase;
         }
 
         private void EditDbPropertiesCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var window = new DatabasePropertiesWindow(SelectedDatabase.LiteDatabase)
+            var window = new DatabasePropertiesWindow(Store.Current.SelectedDatabase.LiteDatabase)
             {
                 Owner = this
             };
@@ -269,26 +208,27 @@ namespace LiteDbExplorer
         #region AddFile Command
         private void AddFileCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedDatabase != null;
+            e.CanExecute = Store.Current.HasSelectedDatabase;
         }
 
         private void AddFileCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            AddFileToDatabase(SelectedDatabase);
+            AddFileToDatabase(Store.Current.SelectedDatabase);
         }
+
         #endregion AddFile Command
 
         #region Add Command
         private void AddCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedCollection != null;
+            e.CanExecute = Store.Current.HasSelectedDatabase;
         }
 
         private void AddCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (SelectedCollection is FileCollectionReference)
+            if (Store.Current.SelectedCollection is FileCollectionReference)
             {
-                AddFileToDatabase(SelectedCollection.Database);
+                AddFileToDatabase(Store.Current.SelectedCollection.Database);
             }
             else
             {
@@ -297,8 +237,10 @@ namespace LiteDbExplorer
                     ["_id"] = ObjectId.NewObjectId()
                 };
 
-                ListCollectionData.SelectedItem = SelectedCollection.AddItem(newDoc);
-                ListCollectionData.ScrollIntoView(ListCollectionData.SelectedItem);
+                var documentReference = Store.Current.SelectedCollection.AddItem(newDoc);
+                Store.Current.SelectDocument(documentReference);
+                CollectionListView.ScrollIntoSelectedItem();
+
                 UpdateGridColumns(newDoc);
             }
 
@@ -309,12 +251,12 @@ namespace LiteDbExplorer
         #region Edit Command
         private void EditCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = DbItemsSelectedCount == 1;
+            e.CanExecute = Store.Current.SelectedDocumentsCount == 1; //DbItemsSelectedCount == 1;
         }
 
         private void EditCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var item = DbSelectedItems.First();
+            var item = Store.Current.SelectedDocument;
 
             var windowController = new WindowController {Title = "Document Editor"};
             var control = new DocumentViewerControl(item, windowController);
@@ -340,7 +282,7 @@ namespace LiteDbExplorer
         #region Remove Command
         private void RemoveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = DbItemsSelectedCount > 0;
+            e.CanExecute = Store.Current.SelectedDocumentsCount > 0; //DbItemsSelectedCount > 0;
         }
 
         private void RemoveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -355,25 +297,33 @@ namespace LiteDbExplorer
                 return;
             }
 
-            SelectedCollection.RemoveItems(DbSelectedItems.ToList());
+            var currentSelectedDocuments = Store.Current.SelectedDocuments.ToList();
+            Store.Current.SelectedCollection.RemoveItems(currentSelectedDocuments);
         }
         #endregion Remove Command
 
         #region Export Command
         private void ExportCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = DbItemsSelectedCount > 0;
+            e.CanExecute = Store.Current.SelectedDocumentsCount > 0; // DbItemsSelectedCount > 0;
         }
 
         private void ExportCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (SelectedCollection is FileCollectionReference)
+            if (Store.Current.SelectedDocumentsCount == 0)
             {
-                if (DbSelectedItems.Count() == 1)
-                {
-                    var file = DbSelectedItems.First();
+                return;
+            }
 
-                    var dialog = new SaveFileDialog()
+            var documentReference = Store.Current.SelectedDocuments.First();
+
+            if (Store.Current.SelectedCollection is FileCollectionReference)
+            {
+                if (Store.Current.SelectedDocumentsCount == 1)
+                {
+                    var file = documentReference;
+
+                    var dialog = new SaveFileDialog
                     {
                         Filter = "All files|*.*",
                         FileName = file.LiteDocument["filename"],
@@ -387,7 +337,7 @@ namespace LiteDbExplorer
                 }
                 else
                 {
-                    var dialog = new CommonOpenFileDialog()
+                    var dialog = new CommonOpenFileDialog
                     {
                         IsFolderPicker = true,
                         Title = "Select folder to export files to..."
@@ -395,9 +345,9 @@ namespace LiteDbExplorer
 
                     if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                     {
-                        foreach (var file in DbSelectedItems)
+                        foreach (var file in Store.Current.SelectedDocuments)
                         {
-                            var path = Path.Combine(dialog.FileName, file.LiteDocument["_id"].AsString + "-" + file.LiteDocument["filename"].AsString);
+                            var path = Path.Combine(dialog.FileName, $"{file.LiteDocument["_id"].AsString}-{file.LiteDocument["filename"].AsString}");
                             var dir = Path.GetDirectoryName(path);
                             if (!Directory.Exists(dir))
                             {
@@ -411,7 +361,7 @@ namespace LiteDbExplorer
             }
             else
             {
-                var dialog = new SaveFileDialog()
+                var dialog = new SaveFileDialog
                 {
                     Filter = "Json File|*.json",
                     FileName = "export.json",
@@ -420,13 +370,13 @@ namespace LiteDbExplorer
 
                 if (dialog.ShowDialog() == true)
                 {
-                    if (DbSelectedItems.Count() == 1)
+                    if (Store.Current.SelectedDocumentsCount == 1)
                     {
-                        File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(DbSelectedItems.First().LiteDocument, true, false));
+                        File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(documentReference.LiteDocument, true, false));
                     }
                     else
                     {
-                        var data = new BsonArray(DbSelectedItems.Select(a => a.LiteDocument));
+                        var data = new BsonArray(Store.Current.SelectedDocuments.Select(a => a.LiteDocument));
                         File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(data, true, false));
                     }
                 }
@@ -437,19 +387,20 @@ namespace LiteDbExplorer
         #region Refresh Collection Command
         private void RefreshCollectionCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedCollection != null;
+            e.CanExecute = Store.Current.HasSelectedCollection;
         }
 
         private void RefreshCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SelectedCollection.Refresh();
+            Store.Current.SelectedCollection?.Refresh();
         }
+
         #endregion Refresh Collection Command
 
         #region AddCollection Command
         private void AddCollectionCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedDatabase != null;
+            e.CanExecute = Store.Current.HasSelectedDatabase;
         }
 
         private void AddCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -458,7 +409,7 @@ namespace LiteDbExplorer
             {
                 if (InputBoxWindow.ShowDialog("New collection name:", "Enter new colletion name", "", out string name) == true)
                 {
-                    SelectedDatabase.AddCollection(name);
+                    Store.Current.SelectedDatabase.AddCollection(name);
                 }
             }
             catch (Exception exc)
@@ -476,16 +427,16 @@ namespace LiteDbExplorer
         #region RenameCollection Command
         private void RenameCollectionCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedCollection != null && SelectedCollection.Name != "_files" && SelectedCollection.Name != "_chunks";
+            e.CanExecute = Store.Current.SelectedCollection != null && Store.Current.SelectedCollection.Name != "_files" && Store.Current.SelectedCollection.Name != "_chunks";
         }
 
         private void RenameCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
-                if (InputBoxWindow.ShowDialog("New name:", "Enter new colletion name", SelectedCollection.Name, out string name) == true)
+                if (InputBoxWindow.ShowDialog("New name:", "Enter new colletion name", Store.Current.SelectedCollection.Name, out string name) == true)
                 {
-                    SelectedDatabase.RenameCollection(SelectedCollection.Name, name);
+                    Store.Current.SelectedDatabase.RenameCollection(Store.Current.SelectedCollection.Name, name);
                 }
             }
             catch (Exception exc)
@@ -503,7 +454,7 @@ namespace LiteDbExplorer
         #region DropCollection Command
         private void DropCollectionCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedCollection != null && SelectedCollection.Name != "_files" && SelectedCollection.Name != "_chunks";
+            e.CanExecute = Store.Current.SelectedCollection != null && Store.Current.SelectedCollection.Name != "_files" && Store.Current.SelectedCollection.Name != "_chunks";
         }
 
         private void DropCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -511,14 +462,14 @@ namespace LiteDbExplorer
             try
             {
                 if (MessageBox.Show(
-                    string.Format("Are you sure you want to drop collection \"{0}\"?", SelectedCollection.Name),
+                    string.Format("Are you sure you want to drop collection \"{0}\"?", Store.Current.SelectedCollection.Name),
                     "Are you sure?",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question
                 ) == MessageBoxResult.Yes)
                 {
-                    SelectedDatabase.DropCollection(SelectedCollection.Name);
-                    SelectedCollection = null;
+                    Store.Current.SelectedDatabase.DropCollection(Store.Current.SelectedCollection.Name);
+                    Store.Current.ResetSelectedCollection();
                 }
             }
             catch (Exception exc)
@@ -536,20 +487,20 @@ namespace LiteDbExplorer
         #region Refresh Database Command
         private void RefreshDatabaseCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedDatabase != null;
+            e.CanExecute = Store.Current.HasSelectedDatabase;
         }
 
         private void RefreshDatabaseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SelectedCollection = null;
-            SelectedDatabase.Refresh();
+            Store.Current.ResetSelectedCollection();
+            Store.Current.SelectedDatabase.Refresh();
         }
         #endregion Refresh Database Command
 
         #region Find Command
         private void FindCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedCollection != null;
+            e.CanExecute = Store.Current.HasSelectedCollection;
         }
 
         private void FindCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -563,7 +514,7 @@ namespace LiteDbExplorer
         #region FindNext Command
         private void FindNextCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedCollection != null;
+            e.CanExecute = Store.Current.HasSelectedCollection;
         }
 
         private void FindNextCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -574,12 +525,13 @@ namespace LiteDbExplorer
             }
 
             var skipIndex = -1;
-            if (DbItemsSelectedCount > 0)
+            
+            if (Store.Current.SelectedDocumentsCount > 0)
             {
-                skipIndex = SelectedCollection.Items.IndexOf(DbSelectedItems.Last());
+                skipIndex = Store.Current.SelectedCollection.Items.IndexOf(Store.Current.SelectedDocuments.Last());
             }
 
-            foreach (var item in SelectedCollection.Items.Skip(skipIndex + 1))
+            foreach (var item in Store.Current.SelectedCollection.Items.Skip(skipIndex + 1))
             {
                 if (ItemMatchesSearch(TextSearch.Text, item, CheckSearchCase.IsChecked ?? false))
                 {
@@ -595,7 +547,7 @@ namespace LiteDbExplorer
         #region FindPrevious Command
         private void FindPreviousCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedCollection != null;
+            e.CanExecute = Store.Current.HasSelectedCollection;
         }
 
         private void FindPreviousCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -606,12 +558,12 @@ namespace LiteDbExplorer
             }
 
             var skipIndex = 0;
-            if (DbItemsSelectedCount > 0)
+            if (Store.Current.SelectedDocumentsCount > 0)
             {
-                skipIndex = SelectedCollection.Items.Count - SelectedCollection.Items.IndexOf(DbSelectedItems.Last()) - 1;
+                skipIndex = Store.Current.SelectedCollection.Items.Count - Store.Current.SelectedCollection.Items.IndexOf(Store.Current.SelectedDocuments.Last()) - 1;
             }
 
-            foreach (var item in SelectedCollection.Items.Reverse().Skip(skipIndex + 1))
+            foreach (var item in Store.Current.SelectedCollection.Items.Reverse().Skip(skipIndex + 1))
             {
                 if (ItemMatchesSearch(TextSearch.Text, item, (bool)CheckSearchCase.IsChecked))
                 {
@@ -625,12 +577,12 @@ namespace LiteDbExplorer
         #region Copy Command
         private void CopyCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = DbItemsSelectedCount > 0 && SelectedCollection != null && SelectedCollection.Name != "_files";
+            e.CanExecute = Store.Current.SelectedDocumentsCount > 0 && Store.Current.SelectedCollection != null && Store.Current.SelectedCollection.Name != "_files";
         }
 
         private void CopyCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var data = new BsonArray(DbSelectedItems.Select(a => a.LiteDocument));
+            var data = new BsonArray(Store.Current.SelectedDocuments.Select(a => a.LiteDocument));
             Clipboard.SetData(DataFormats.Text, JsonSerializer.Serialize(data, true, false));
         }
         #endregion Copy Command
@@ -638,7 +590,7 @@ namespace LiteDbExplorer
         #region Paste Command
         private void PasteCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = SelectedCollection != null && SelectedCollection.Name != "_files" && Clipboard.ContainsText();
+            e.CanExecute = Store.Current.SelectedCollection != null && Store.Current.SelectedCollection.Name != "_files" && Clipboard.ContainsText();
         }
 
         private void PasteCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -657,14 +609,14 @@ namespace LiteDbExplorer
                     foreach (var value in newValue.AsArray)
                     {
                         var doc = value.AsDocument;
-                        SelectedCollection.AddItem(doc);
+                        Store.Current.SelectedCollection.AddItem(doc);
                         UpdateGridColumns(doc);
                     }
                 }
                 else
                 {
                     var doc = newValue.AsDocument;
-                    SelectedCollection.AddItem(doc);
+                    Store.Current.SelectedCollection.AddItem(doc);
                     UpdateGridColumns(doc);
                 }
 
@@ -689,14 +641,14 @@ namespace LiteDbExplorer
 
         private void SelectDocumentInView(DocumentReference document)
         {
-            ListCollectionData.SelectedItem = document;
-            ListCollectionData.ScrollIntoView(document);
+            Store.Current.SelectDocument(document);
+            CollectionListView.ScrollIntoSelectedItem();
         }
 
         private void UpdateDocumentPreview()
         {
             // TODO: Update only changed node and keep tree state
-            var document = DbSelectedItems.FirstOrDefault();
+            /*var document = DbSelectedItems.FirstOrDefault();
             if (document != null)
             {
                 DocumentTreeView.ItemsSource = new DocumentTreeItemsSource(document);
@@ -711,128 +663,26 @@ namespace LiteDbExplorer
                 {
                     BorderFilePreview.Visibility = Visibility.Collapsed;
                 }
-            }
+            }*/
         }
 
         private void UpdateGridColumns(BsonDocument dbItem)
         {
-            var headers = GridCollectionData.Columns.Select(a => (a.Header as TextBlock)?.Text);
-            var missing = dbItem.Keys.Except(headers);
-
-            foreach (var key in missing)
-            {
-                AddGridColumn(key);
-            }
+            CollectionListView.UpdateGridColumns(dbItem);
         }
-
-        private void UpdateGridColumns()
-        {
-            var keys = new List<string>();
-            foreach (var item in SelectedCollection.Items)
-            {
-                keys = item.LiteDocument.Keys.Union(keys).ToList();
-            }
-
-            if (App.Settings.FieldSortOrder == FieldSortOrder.Alphabetical)
-            {
-                keys = keys.OrderBy(a => a).ToList();
-            }
-
-            GridCollectionData.Columns.Clear();
-            foreach (var key in keys)
-            {
-                AddGridColumn(key);
-            }
-        }
-
-        private void AddGridColumn(string key)
-        {
-            GridCollectionData.Columns.Add(new GridViewColumn
-            {
-                Header = new TextBlock { Text = key },
-                DisplayMemberBinding = new Binding()
-                {
-                    Path = new PropertyPath($"LiteDocument[{key}]"),
-                    Mode = BindingMode.OneWay,
-                    Converter = new BsonValueToStringConverter()
-                }
-            });
-        }
-
+        
         private void Window_Closed(object sender, EventArgs e)
         {
-            foreach (var db in Databases)
-            {
-                db.Dispose();
-            }
+            Store.Current.CloseDatabases();
 
             Application.Current.Shutdown(0);
         }
 
         private void TreeDatabasese_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue == null)
-            {
-                SelectedCollection = null;
-                return;
-            }
-
-            if (e.NewValue is CollectionReference collection)
-            {
-                SelectedCollection = collection;
-                SelectedDatabase = collection.Database;
-            }
-            else if (e.NewValue is DatabaseReference reference)
-            {
-                SelectedDatabase = reference;
-            }
-            else
-            {
-                SelectedCollection = null;
-            }
+            Store.Current.SelectNode(e.NewValue);
         }
-
-        private void ListCollectionData_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            CanExecuteRoutedEventArgs args = (CanExecuteRoutedEventArgs)Activator.CreateInstance(typeof(CanExecuteRoutedEventArgs),
-                         BindingFlags.NonPublic | BindingFlags.Instance, null, new object[2] { Commands.Edit, null }, null);
-            ExportCommand_CanExecute(this, args);
-
-            if (args.CanExecute)
-            {
-                EditCommand_Executed(this, null);
-            }
-        }
-
-        private void ListCollectionData_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DbSelectedItems.Count() > 1 || !DbSelectedItems.Any())
-            {
-                // ItemsDocPreview.ItemsSource = null;
-                BorderDocPreview.Visibility = Visibility.Collapsed;
-                BorderFilePreview.Visibility = Visibility.Collapsed;
-                return;
-            }
-
-
-            BorderDocPreview.Visibility = Visibility.Visible;
-            
-            var document = DbSelectedItems.First();
-            
-            DocumentTreeView.ItemsSource = new DocumentTreeItemsSource(document);
-
-            if (document.Collection is FileCollectionReference reference)
-            {
-                var fileInfo = reference.GetFileObject(document);
-                FilePreview.LoadFile(fileInfo);
-                BorderFilePreview.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                BorderFilePreview.Visibility = Visibility.Collapsed;
-            }
-        }
-
+        
         private void RecentMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var path = (sender as FrameworkElement)?.Tag as string;
@@ -870,7 +720,7 @@ namespace LiteDbExplorer
 
         public void OpenDatabase(string path)
         {
-            if (Databases.FirstOrDefault(a => a.Location == path) != null)
+            if (Store.Current.IsDatabaseOpen(path))
             {
                 return;
             }
@@ -903,7 +753,7 @@ namespace LiteDbExplorer
 
             try
             {
-                Databases.Add(new DatabaseReference(path, password));
+                Store.Current.AddDatabase(new DatabaseReference(path, password));
             }
             catch (Exception e)
             {
@@ -941,7 +791,7 @@ namespace LiteDbExplorer
 
         private void AddFileToDatabase(DatabaseReference database)
         {
-            var dialog = new OpenFileDialog()
+            var dialog = new OpenFileDialog
             {
                 Filter = "All files|*.*",
                 Multiselect = false
@@ -957,9 +807,9 @@ namespace LiteDbExplorer
                 if (InputBoxWindow.ShowDialog("New file id:", "Enter new file id", Path.GetFileName(dialog.FileName), out string id) == true)
                 {
                     var file = database.AddFile(id, dialog.FileName);
-                    SelectedCollection = database.Collections.First(a => a.Name == "_files");
-                    ListCollectionData.SelectedItem = file;
-                    ListCollectionData.ScrollIntoView(ListCollectionData.SelectedItem);
+                    Store.Current.SelectCollection(database.Collections.First(a => a.Name == "_files"));
+                    Store.Current.SelectDocument(file);
+                    CollectionListView.ScrollIntoSelectedItem();
                 }
             }
             catch (Exception exc)
@@ -1045,14 +895,14 @@ namespace LiteDbExplorer
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Settings.ColorTheme))
+            switch (e.PropertyName)
             {
-                SetColorTheme();
-            }
-
-            if (e.PropertyName == nameof(Settings.FieldSortOrder))
-            {
-                UpdateGridColumns();
+                case nameof(Settings.ColorTheme):
+                    SetColorTheme();
+                    break;
+                case nameof(Settings.FieldSortOrder):
+                    CollectionListView.UpdateGridColumns(Store.Current.SelectedCollection);
+                    break;
             }
         }
 
@@ -1060,15 +910,11 @@ namespace LiteDbExplorer
         {
             try
             {
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                if (e.Data.GetDataPresent(DataFormats.FileDrop) && e.Data.GetData(DataFormats.FileDrop, false) is string[] files)
                 {
-                    string[] files = e.Data.GetData(DataFormats.FileDrop, false) as string[];
-                    if (files!=null)
+                    foreach (var path in files)
                     {
-                        foreach (var f in files)
-                        {
-                            OpenDatabase(f);
-                        }
+                        OpenDatabase(path);
                     }
                 }
             }
@@ -1083,11 +929,7 @@ namespace LiteDbExplorer
         {
             ThemeManager.SetColorTheme(App.Settings.ColorTheme);
             
-            var selectedIndex = ListCollectionData.SelectedIndex;
-
-            ListCollectionData.SelectedIndex = -1;
-
-            ListCollectionData.SelectedIndex = selectedIndex;
+            // Store.Current.ResetSelectedCollection();
 
         }
 

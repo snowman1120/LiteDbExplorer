@@ -9,7 +9,7 @@ using LiteDB;
 
 namespace LiteDbExplorer
 {
-    public class DatabaseReference : INotifyPropertyChanged, IDisposable
+    public class DatabaseReference : INotifyPropertyChanging, INotifyPropertyChanged, IDisposable
     {
         private string _name;
         private string _location;
@@ -38,6 +38,7 @@ namespace LiteDbExplorer
             set
             {
                 if (value == _name) return;
+                OnPropertyChanging();
                 _name = value;
                 OnPropertyChanged();
             }
@@ -49,6 +50,7 @@ namespace LiteDbExplorer
             set
             {
                 if (value == _location) return;
+                OnPropertyChanging();
                 _location = value;
                 OnPropertyChanged();
             }
@@ -60,6 +62,7 @@ namespace LiteDbExplorer
             set
             {
                 if (Equals(value, _collections)) return;
+                OnPropertyChanging();
                 _collections = value;
                 OnPropertyChanged();
             }
@@ -146,6 +149,13 @@ namespace LiteDbExplorer
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public event PropertyChangingEventHandler PropertyChanging;
+
+        protected virtual void OnPropertyChanging([CallerMemberName] string name = null)
+        {
+            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(name));
         }
     }
 }

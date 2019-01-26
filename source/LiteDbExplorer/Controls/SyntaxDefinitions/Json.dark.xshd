@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SyntaxDefinition name="Json" extensions=".js" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Digits" foreground="#2C7AD6" exampleText="3.14" />
+  <Color name="Value" foreground="#CE9178" exampleText="var text = &quot;Hello, World!&quot;;" />
+  <Color name="ParamName" foreground="#9CDCF0"  exampleText="var text = &quot;Hello, World!&quot;;" />
+  <Color name="Punctuation" foreground="#DCDCDC" exampleText="string text = &quot;Hello, World!&quot;" />
+  <RuleSet ignoreCase="false">
+    <Keywords color="Digits" >
+      <Word>true</Word>
+      <Word>false</Word>
+    </Keywords>
+    <Span color="ParamName">
+      <Begin>"</Begin>
+      <End>(?=:)</End>
+    </Span>
+    <Span color="Value" multiline="true">
+      <Begin>
+        (?&lt;=:)\040"[^"]*
+      </Begin>
+      <End>"</End>
+    </Span>
+    <Rule color="Digits">\b0[xX][0-9a-fA-F]+|(\b\d+(\.[0-9]+)?|\.[0-9]+)([eE][+-]?[0-9]+)?</Rule>
+    <Rule color="Punctuation">
+      [?,.:;()\[\]{}+\-/%*&lt;&gt;^+~!|&amp;]+
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>

@@ -37,6 +37,14 @@ namespace LiteDbExplorer.Presentation.Converters
                     {
                         return bsonValue.AsDateTime;
                     }
+                    if (bsonValue.IsInt32)
+                    {
+                        return bsonValue.AsInt32;
+                    }
+                    if (bsonValue.IsInt64)
+                    {
+                        return bsonValue.AsInt64;
+                    }
                     if (bsonValue.IsGuid)
                     {
                         return bsonValue.AsGuid;

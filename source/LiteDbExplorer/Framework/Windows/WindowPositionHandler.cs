@@ -82,7 +82,7 @@ namespace LiteDbExplorer
                 config.WindowPositions[_windowName] = new Settings.WindowPosition();
             }
 
-            config.WindowPositions[_windowName].Size = new Settings.WindowPosition.Point()
+            config.WindowPositions[_windowName].Size = new Settings.WindowPosition.Point
             {
                 X = _window.Width,
                 Y = _window.Height
@@ -106,7 +106,7 @@ namespace LiteDbExplorer
                 config.WindowPositions[_windowName] = new Settings.WindowPosition();
             }
 
-            config.WindowPositions[_windowName].Position = new Settings.WindowPosition.Point()
+            config.WindowPositions[_windowName].Position = new Settings.WindowPosition.Point
             {
                 X = _window.Left,
                 Y = _window.Top
