@@ -407,7 +407,7 @@ namespace LiteDbExplorer
         {
             try
             {
-                if (InputBoxWindow.ShowDialog("New collection name:", "Enter new colletion name", "", out string name) == true)
+                if (InputBoxWindow.ShowDialog("New collection name:", "Enter new collection name", "", out string name) == true)
                 {
                     Store.Current.SelectedDatabase.AddCollection(name);
                 }
@@ -434,7 +434,7 @@ namespace LiteDbExplorer
         {
             try
             {
-                if (InputBoxWindow.ShowDialog("New name:", "Enter new colletion name", Store.Current.SelectedCollection.Name, out string name) == true)
+                if (InputBoxWindow.ShowDialog("New name:", "Enter new collection name", Store.Current.SelectedCollection.Name, out string name) == true)
                 {
                     Store.Current.SelectedDatabase.RenameCollection(Store.Current.SelectedCollection.Name, name);
                 }
@@ -449,6 +449,7 @@ namespace LiteDbExplorer
                 );
             }
         }
+
         #endregion RenameCollection Command
 
         #region DropCollection Command
@@ -483,6 +484,38 @@ namespace LiteDbExplorer
             }
         }
         #endregion DropCollection Command
+
+        #region ExportCollection Command
+        private void ExportCollectionCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = Store.Current.SelectedCollection != null && Store.Current.SelectedCollection.Name != "_files" && Store.Current.SelectedCollection.Name != "_chunks";
+        }
+
+        private void ExportCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var selectedCollection = Store.Current.SelectedCollection;
+            if (selectedCollection == null)
+            {
+                return;
+            }
+            
+            var dialog = new SaveFileDialog
+            {
+                Filter = "Json File|*.json",
+                FileName = $"{selectedCollection.Name}_export.json",
+                OverwritePrompt = true
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                
+                var data = new BsonArray(selectedCollection.LiteCollection.FindAll());
+
+                File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(data, true, false));
+            }
+        }
+
+        #endregion
 
         #region Refresh Database Command
         private void RefreshDatabaseCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)

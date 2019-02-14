@@ -3,10 +3,49 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="HeaderTemplate">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" MinWidth="16" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding }" TextTrimming="CharacterEllipsis" />
+                </Grid>
+            </DataTemplate>
+
+            <DataTemplate x:Key="HeaderTemplateArrowUp">
+                <DockPanel LastChildFill="True">
+                    <materialDesign:ListSortDirectionIndicator DockPanel.Dock="Right"
+                                                               Width="12" Height="12"
+                                                               HorizontalAlignment="Right" Margin="0,0,-16,0"
+                                                               VerticalAlignment="Center"
+                                                               ListSortDirection="Ascending"
+                                                               SnapsToDevicePixels="True" />
+                    <TextBlock Text="{Binding }" TextTrimming="CharacterEllipsis" />
+                </DockPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="HeaderTemplateArrowDown">
+                <DockPanel LastChildFill="True">
+                    <materialDesign:ListSortDirectionIndicator DockPanel.Dock="Right"
+                                                               Width="12" Height="12"
+                                                               HorizontalAlignment="Right" Margin="0,0,-16,0"
+                                                               VerticalAlignment="Center"
+                                                               ListSortDirection="Descending"
+                                                               SnapsToDevicePixels="True" />
+                    <TextBlock Text="{Binding }" TextTrimming="CharacterEllipsis" />
+                </DockPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
-        <ListView Name="ListCollectionData">
+        <ListView Name="ListCollectionData"
+                  GridViewColumnHeader.Click="ListCollectionData_OnHeaderClick">
             <ListView.View>
                 <GridView x:Name="GridCollectionData" />
             </ListView.View>

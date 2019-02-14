@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -43,13 +45,16 @@ namespace LiteDbExplorer.Controls
         private bool _modelHandled;
         private bool _viewHandled;
 
+        private GridViewColumnHeader _lastHeaderClicked;
+        private ListSortDirection _lastDirection;
+
         public CollectionListView()
         {
             InitializeComponent();
-            
+
             ListCollectionData.MouseDoubleClick += ListCollectionDataOnMouseDoubleClick;
             ListCollectionData.SelectionChanged += OnListViewSelectionChanged;
-
+            
             ListCollectionData.SetBinding(Selector.SelectedItemProperty, new Binding
             {
                 Source = this,
@@ -93,7 +98,9 @@ namespace LiteDbExplorer.Controls
             get
             {
                 if (ListCollectionData.Visibility == Visibility.Visible)
+                {
                     return ListCollectionData.SelectedItems.Cast<DocumentReference>();
+                }
 
                 return null;
             }
@@ -103,7 +110,10 @@ namespace LiteDbExplorer.Controls
         {
             get
             {
-                if (ListCollectionData?.ItemsSource != null) return ListCollectionData.SelectedItems.Count;
+                if (ListCollectionData?.ItemsSource != null)
+                {
+                    return ListCollectionData.SelectedItems.Count;
+                }
 
                 return 0;
             }
@@ -118,10 +128,15 @@ namespace LiteDbExplorer.Controls
 
         private static void OnSelectedItemsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var collectionListView = d as CollectionListView;
+            if (!(d is CollectionListView collectionListView))
+            {
+                return;
+            }
 
             if (collectionListView._modelHandled)
+            {
                 return;
+            }
 
             collectionListView._modelHandled = true;
             collectionListView.SelectItems();
@@ -140,10 +155,13 @@ namespace LiteDbExplorer.Controls
 
         public void UpdateGridColumns(BsonDocument dbItem)
         {
-            var headers = GridCollectionData.Columns.Select(a => (a.Header as TextBlock)?.Text);
+            var headers = GridCollectionData.Columns.Select(a => (a.Header as GridViewColumnHeader)?.Name);
             var missing = dbItem.Keys.Except(headers);
 
-            foreach (var key in missing) AddGridColumn(key);
+            foreach (var key in missing)
+            {
+                AddGridColumn(key);
+            }
         }
 
         public void UpdateGridColumns(CollectionReference collectionReference)
@@ -157,14 +175,23 @@ namespace LiteDbExplorer.Controls
 
             GridCollectionData.Columns.Clear();
 
-            if (collectionReference == null) return;
+            if (collectionReference == null)
+            {
+                return;
+            }
 
             ListCollectionData.ItemsSource = collectionReference.Items;
             
             var keys = new List<string>();
-            foreach (var item in collectionReference.Items) keys = item.LiteDocument.Keys.Union(keys).ToList();
+            foreach (var item in collectionReference.Items)
+            {
+                keys = item.LiteDocument.Keys.Union(keys).ToList();
+            }
 
-            if (App.Settings.FieldSortOrder == FieldSortOrder.Alphabetical) keys = keys.OrderBy(a => a).ToList();
+            if (App.Settings.FieldSortOrder == FieldSortOrder.Alphabetical)
+            {
+                keys = keys.OrderBy(a => a).ToList();
+            }
 
             foreach (var key in keys)
             {
@@ -176,30 +203,47 @@ namespace LiteDbExplorer.Controls
                 newCollection.CollectionChanged += OnListViewItemsChanged;
             }
         }
-        
+
         private void ListCollectionDataOnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DoubleClickCommand?.CanExecute(SelectedItem) != true) return;
+            if (DoubleClickCommand?.CanExecute(SelectedItem) != true)
+            {
+                return;
+            }
 
             DoubleClickCommand?.Execute(SelectedItem);
         }
 
         private void OnListViewItemsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (_viewHandled) return;
-            if (ListCollectionData.Items.SourceCollection == null) return;
+            if (_viewHandled)
+            {
+                return;
+            }
+
+            if (ListCollectionData.Items.SourceCollection == null)
+            {
+                return;
+            }
 
             SelectItems();
         }
-        
+
         private void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (_viewHandled) return;
-            if (ListCollectionData.Items.SourceCollection == null) return;
+            if (_viewHandled)
+            {
+                return;
+            }
+
+            if (ListCollectionData.Items.SourceCollection == null)
+            {
+                return;
+            }
 
             SelectedItems = ListCollectionData.SelectedItems.Cast<DocumentReference>().ToList();
         }
-        
+
         private void SelectItems()
         {
             _viewHandled = true;
@@ -218,14 +262,117 @@ namespace LiteDbExplorer.Controls
         {
             GridCollectionData.Columns.Add(new GridViewColumn
             {
-                Header = new TextBlock {Text = key},
+                Header = new GridViewColumnHeader
+                {
+                    Content = key,
+                    Tag = key,
+                    Name = key,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    HorizontalContentAlignment = HorizontalAlignment.Stretch
+                },
                 DisplayMemberBinding = new Binding
                 {
                     Path = new PropertyPath($"LiteDocument[{key}]"),
                     Mode = BindingMode.OneWay,
                     Converter = new BsonValueToStringConverter()
-                }
+                },
+                HeaderTemplate = Resources["HeaderTemplate"] as DataTemplate
             });
         }
+
+        private void ListCollectionData_OnHeaderClick(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource is GridViewColumnHeader headerClicked)
+            {
+                if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
+                {
+                    ListSortDirection direction;
+
+                    if (headerClicked != _lastHeaderClicked)
+                    {
+                        direction = ListSortDirection.Ascending;
+                    }
+                    else
+                    {
+                        direction = _lastDirection == ListSortDirection.Ascending ? ListSortDirection.Descending : ListSortDirection.Ascending;
+                    }
+
+                    var sortBy = headerClicked.Name;
+
+                    Sort(sortBy, direction);
+
+                    if (direction == ListSortDirection.Ascending)
+                    {
+                        headerClicked.Column.HeaderTemplate =
+                            Resources["HeaderTemplateArrowUp"] as DataTemplate;
+                    }
+                    else
+                    {
+                        headerClicked.Column.HeaderTemplate =
+                            Resources["HeaderTemplateArrowDown"] as DataTemplate;
+                    }
+
+                    // Remove arrow from previously sorted header  
+                    if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
+                    {
+                        _lastHeaderClicked.Column.HeaderTemplate = Resources["HeaderTemplate"] as DataTemplate;
+                    }
+
+                    _lastHeaderClicked = headerClicked;
+                    _lastDirection = direction;
+                }
+            }
+        }
+
+        // Sort code
+        private void Sort(string sortBy, ListSortDirection direction)  
+        {  
+            var dataView =  (ListCollectionView)CollectionViewSource.GetDefaultView(ListCollectionData.ItemsSource);
+            dataView.CustomSort = new SortBsonValue(sortBy, direction == ListSortDirection.Descending);
+        }
+        
+        public class SortBsonValue : IComparer
+        {
+            private readonly string _key;
+            private readonly bool _reverse;
+
+            public SortBsonValue(string key, bool reverse)
+            {
+                _key = key;
+                _reverse = reverse;
+            }
+
+            public int Compare(object x, object y)
+            {
+                var doc1 = x as DocumentReference;
+                var doc2 = y as DocumentReference;
+
+                if(doc1 == null && doc2 == null)
+                {
+                    return 0;
+                }
+
+                if(doc1 == null)
+                {
+                    return _reverse ? 1 : -1;
+                }
+
+                if(doc2 == null)
+                {
+                    return _reverse ? -1 : 1;
+                }
+
+                var bsonValue1 = doc1.LiteDocument[_key];
+                var bsonValue2 = doc2.LiteDocument[_key];
+
+                if (_reverse)
+                {
+                    return bsonValue2.CompareTo(bsonValue1);
+                }
+
+                return bsonValue1.CompareTo(bsonValue2);
+            }
+        }
+        
     }
 }

@@ -72,6 +72,13 @@ namespace LiteDbExplorer
             typeof(Commands)
         );
 
+        public static readonly RoutedUICommand ExportCollection = new RoutedUICommand
+        (
+            "Export as...",
+            nameof(ExportCollection),
+            typeof(Commands)
+        );
+
         public static readonly RoutedUICommand EditDbProperties = new RoutedUICommand
         (
             "Database properties...",

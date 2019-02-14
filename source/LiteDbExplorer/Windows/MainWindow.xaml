@@ -53,6 +53,10 @@
                         CanExecute="RenameCollectionCommand_CanExecute" />
         <CommandBinding Command="local:Commands.DropCollection" Executed="DropCollectionCommand_Executed"
                         CanExecute="DropCollectionCommand_CanExecute" />
+
+        <CommandBinding Command="local:Commands.ExportCollection" Executed="ExportCollectionCommand_Executed"
+                        CanExecute="ExportCollectionCommand_CanExecute" />
+
         <CommandBinding Command="local:Commands.RefreshDatabase" Executed="RefreshDatabaseCommand_Executed"
                         CanExecute="RefreshDatabaseCommand_CanExecute" />
         <CommandBinding Command="local:Commands.Find" Executed="FindCommand_Executed"
@@ -342,6 +346,8 @@
                                                 <MenuItem Command="local:Commands.AddCollection" />
                                                 <MenuItem Command="local:Commands.RenameCollection" />
                                                 <MenuItem Command="local:Commands.DropCollection" />
+                                                <Separator />
+                                                <MenuItem Command="local:Commands.ExportCollection" />
                                             </ContextMenu>
                                         </Setter.Value>
                                     </Setter>

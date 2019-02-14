@@ -1,14 +1,16 @@
-﻿using System.Diagnostics;
+﻿using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml;
-using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Indentation;
 using LiteDbExplorer.Controls.JsonViewer;
+using LiteDbExplorer.Extensions;
 using LiteDbExplorer.Presentation;
 using LiteDB;
 
@@ -19,33 +21,32 @@ namespace LiteDbExplorer.Controls
     /// </summary>
     public partial class DocumentJsonView : UserControl
     {
-        FoldingManager foldingManager;
-        BraceFoldingStrategy foldingStrategy;
+        readonly FoldingManager _foldingManager;
+        readonly BraceFoldingStrategy _foldingStrategy;
 
         public DocumentJsonView()
         {
             InitializeComponent();
 
             jsonEditor.ShowLineNumbers = true;
+            jsonEditor.Encoding = Encoding.UTF8;
 
             SetSyntaxHighlightingTheme();
 
-            foldingManager = FoldingManager.Install(jsonEditor.TextArea);
-            foldingStrategy = new BraceFoldingStrategy();
+            _foldingManager = FoldingManager.Install(jsonEditor.TextArea);
+            _foldingStrategy = new BraceFoldingStrategy();
+
             jsonEditor.TextArea.IndentationStrategy = new DefaultIndentationStrategy();
 
-            ThemeManager.CurrentThemeChanged += (sender, args) =>
-            {
-                SetSyntaxHighlightingTheme();
-            };
+            ThemeManager.CurrentThemeChanged += (sender, args) => { SetSyntaxHighlightingTheme(); };
         }
 
         public static readonly DependencyProperty DocumentSourceProperty = DependencyProperty.Register(
-            nameof(DocumentSource), 
-            typeof(DocumentReference), 
-            typeof(DocumentJsonView), 
+            nameof(DocumentSource),
+            typeof(DocumentReference),
+            typeof(DocumentJsonView),
             new PropertyMetadata(null, propertyChangedCallback: OnDocumentSourceChanged));
-        
+
         public DocumentReference DocumentSource
         {
             get => (DocumentReference) GetValue(DocumentSourceProperty);
@@ -59,7 +60,7 @@ namespace LiteDbExplorer.Controls
             if (App.Settings.ColorTheme == ColorTheme.Dark)
             {
                 jsonEditor.TextArea.Foreground = new SolidColorBrush(Colors.White);
-                resourceName = resourceName.Replace(".xshd", ".dark.xshd");
+                resourceName = resourceName.Replace(@".xshd", @".dark.xshd");
             }
             else
             {
@@ -100,15 +101,15 @@ namespace LiteDbExplorer.Controls
 
         private void SetJson(DocumentReference documentReference)
         {
-            var json = JsonSerializer.Serialize(documentReference.LiteDocument, true, false);
-            jsonEditor.Document.Text = json;
-            foldingStrategy.UpdateFoldings(foldingManager, jsonEditor.Document);
+            jsonEditor.Document.Text = documentReference.LiteDocument.SerializeDecoded(true);
+
+            _foldingStrategy.UpdateFoldings(_foldingManager, jsonEditor.Document);
         }
 
         private void ResetJson()
         {
             jsonEditor.Document.Text = string.Empty;
-            foldingStrategy.UpdateFoldings(foldingManager, jsonEditor.Document);
+            _foldingStrategy.UpdateFoldings(_foldingManager, jsonEditor.Document);
         }
     }
 }

@@ -30,8 +30,7 @@ namespace LiteDbExplorer.Controls.JsonViewer
 		
 		public void UpdateFoldings(FoldingManager manager, TextDocument document)
 		{
-			int firstErrorOffset;
-			var newFoldings = CreateNewFoldings(document, out firstErrorOffset);
+            var newFoldings = CreateNewFoldings(document, out var firstErrorOffset);
 			manager.UpdateFoldings(newFoldings, firstErrorOffset);
 		}
 		
