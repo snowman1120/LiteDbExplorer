@@ -1,16 +1,30 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Windows;
 using Caliburn.Micro;
 
 namespace LiteDbExplorer.Modules.Main
 {
-    public class ShellMenuViewModel : PropertyChangedBase
+
+    [Export(typeof(IShellMenu))]
+    [PartCreationPolicy (CreationPolicy.Shared)]
+    public class ShellMenuViewModel : PropertyChangedBase, IShellMenu
     {
-        public Paths PathDefinitions { get; set; } = new Paths();
+        private readonly IDatabaseInteractions _databaseInteractions;
+        
+        [ImportingConstructor]
+        public ShellMenuViewModel(IDatabaseInteractions databaseInteractions)
+        {
+            _databaseInteractions = databaseInteractions;
+
+            PathDefinitions = databaseInteractions.PathDefinitions;
+        }
+
+        public Paths PathDefinitions { get; }
 
         public void OpenRecentItem(string path)
         {
-            MessageBox.Show($"Open '{path}'.");
+            _databaseInteractions.OpenDatabase(path);
         }
 
         public void OpenIssuePage()

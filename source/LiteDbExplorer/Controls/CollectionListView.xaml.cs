@@ -47,6 +47,7 @@ namespace LiteDbExplorer.Controls
 
         private GridViewColumnHeader _lastHeaderClicked;
         private ListSortDirection _lastDirection;
+        private bool _stopDoubleClick;
 
         public CollectionListView()
         {
@@ -206,7 +207,7 @@ namespace LiteDbExplorer.Controls
 
         private void ListCollectionDataOnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DoubleClickCommand?.CanExecute(SelectedItem) != true)
+            if (DoubleClickCommand?.CanExecute(SelectedItem) != true || _stopDoubleClick)
             {
                 return;
             }
@@ -282,6 +283,8 @@ namespace LiteDbExplorer.Controls
 
         private void ListCollectionData_OnHeaderClick(object sender, RoutedEventArgs e)
         {
+            _stopDoubleClick = true;
+
             if (e.OriginalSource is GridViewColumnHeader headerClicked)
             {
                 if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
@@ -322,6 +325,8 @@ namespace LiteDbExplorer.Controls
                     _lastDirection = direction;
                 }
             }
+
+            _stopDoubleClick = false;
         }
 
         // Sort code

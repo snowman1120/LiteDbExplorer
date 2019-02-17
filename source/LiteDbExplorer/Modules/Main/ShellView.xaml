@@ -1,34 +1,43 @@
 ﻿<UserControl
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LiteDbExplorer.Modules.Main"
-             xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
-             xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
-             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:cal="http://www.caliburnproject.org"
-             xmlns:framework="clr-namespace:LiteDbExplorer.Framework"
-             x:Class="LiteDbExplorer.Modules.Main.ShellView"
-             mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="600">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:LiteDbExplorer.Modules.Main"
+    xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:cal="http://www.caliburnproject.org"
+    xmlns:framework="clr-namespace:LiteDbExplorer.Framework"
+    x:Class="LiteDbExplorer.Modules.Main.ShellView"
+    mc:Ignorable="d"
+    d:DesignHeight="200" d:DesignWidth="600">
     <UserControl.Resources>
-        
+
     </UserControl.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="3.5*"/>
-        </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Grid.Row="0">
-            <TextBlock Text="{Binding Documents.Count}" FontSize="16" HorizontalAlignment="Center"/>
-        </Border>
+    <DockPanel>
 
-        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+        <ContentControl x:Name="StatusBarContent" cal:View.Model="{Binding StatusBarContent}"
+                        DockPanel.Dock="Bottom"
+                        HorizontalAlignment="Stretch" />
 
-        <ContentControl Grid.Column="2" Grid.Row="0" x:Name="MainContent" cal:View.Model="{Binding MainContent}"/>
-    </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="3.5*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Grid.Row="0">
+                <ContentControl x:Name="LeftContent" cal:View.Model="{Binding LeftContent}" />
+            </Border>
+
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+
+            <ContentControl Grid.Column="2" Grid.Row="0" x:Name="MainContent" cal:View.Model="{Binding MainContent}" />
+        </Grid>
+
+    </DockPanel>
 </UserControl>

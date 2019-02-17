@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using LiteDbExplorer.Presentation;
 
 namespace LiteDbExplorer
 {
@@ -25,6 +26,17 @@ namespace LiteDbExplorer
 
         public static Settings Settings => Settings.Current;
 
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            /*if (Resources["bootstrapper"] == null)
+            {
+                StartupUri = new System.Uri(@"Windows\MainWindow.xaml", System.UriKind.Relative);
+            }*/
+            StartupUri = new System.Uri(@"Windows\MainWindow.xaml", System.UriKind.Relative);
+            
+            base.OnStartup(e);
+        }
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
 #if !DEBUG
@@ -32,6 +44,8 @@ namespace LiteDbExplorer
 #endif
             Config.ConfigureLogger();
 
+            ThemeManager.SetColorTheme(Settings.ColorTheme);
+            
             // For now we want to allow multiple instances if app is started without args
             if (Mutex.TryOpenExisting(_instanceMuxet, out var mutex))
             {
@@ -50,7 +64,7 @@ namespace LiteDbExplorer
                 OriginalInstance = true;
             }
         }
-
+        
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             Settings.SaveSettings();

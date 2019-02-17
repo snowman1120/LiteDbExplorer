@@ -1,12 +1,10 @@
 ﻿using LiteDB;
 using LiteDbExplorer.Controls;
 using LiteDbExplorer.Windows;
-using Microsoft.Win32;
 using NLog;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,9 +12,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using LiteDbExplorer.Modules;
+using LiteDbExplorer.Modules.Main;
 using LiteDbExplorer.Presentation;
 using MahApps.Metro.Controls;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace LiteDbExplorer
 {
@@ -25,11 +24,13 @@ namespace LiteDbExplorer
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
+
         private PipeService _pipeService;
         private PipeServer _pipeServer;
 
         private readonly WindowPositionHandler _positionManager;
-        private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly DatabaseInteractions _databaseInteractions;
 
         public Paths PathDefinitions
         {
@@ -40,8 +41,10 @@ namespace LiteDbExplorer
         {
             InitializeComponent();
 
-            _positionManager = new WindowPositionHandler(this, "Main");
+            _databaseInteractions = new DatabaseInteractions();
 
+            _positionManager = new WindowPositionHandler(this, "Main");
+            
             Task.Factory.StartNew(() =>
             {
                 Thread.Sleep(2000);
@@ -124,26 +127,7 @@ namespace LiteDbExplorer
 
         private void OpenCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog
-            {
-                Filter = "All files|*.*",
-                Multiselect = false
-            };
-
-            if (dialog.ShowDialog() != true)
-            {
-                return;
-            }
-
-            try
-            {
-                OpenDatabase(dialog.FileName);
-            }
-            catch (Exception exc)
-            {
-                Logger.Error(exc, "Failed to open database: ");
-                MessageBox.Show("Failed to open database: " + exc.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            _databaseInteractions.OpenDatabase();
         }
         #endregion Open Command
 
@@ -155,23 +139,7 @@ namespace LiteDbExplorer
 
         private void NewCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new SaveFileDialog()
-            {
-                Filter = "All files|*.*",
-                OverwritePrompt = true
-            };
-
-            if (dialog.ShowDialog() != true)
-            {
-                return;
-            }
-
-            using (var stream = new FileStream(dialog.FileName, System.IO.FileMode.Create))
-            {
-                LiteEngine.CreateDatabase(stream);
-            }
-
-            OpenDatabase(dialog.FileName);
+            _databaseInteractions.CreateAndOpenDatabase();
         }
         #endregion New Command
 
@@ -239,6 +207,7 @@ namespace LiteDbExplorer
 
                 var documentReference = Store.Current.SelectedCollection.AddItem(newDoc);
                 Store.Current.SelectDocument(documentReference);
+
                 CollectionListView.ScrollIntoSelectedItem();
 
                 UpdateGridColumns(newDoc);
@@ -265,12 +234,7 @@ namespace LiteDbExplorer
                 Owner = Application.Current.MainWindow,
                 Height = 600
             };
-
-            /*var window = new Windows.DocumentViewer(item)
-            {
-                Owner = this
-            };*/
-
+            
             if (window.ShowDialog() == true)
             {
                 UpdateGridColumns(item.LiteDocument);
@@ -287,18 +251,7 @@ namespace LiteDbExplorer
 
         private void RemoveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (MessageBox.Show(
-                "Are you sure you want to remove items?",
-                "Are you sure?",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question
-            ) != MessageBoxResult.Yes)
-            {
-                return;
-            }
-
-            var currentSelectedDocuments = Store.Current.SelectedDocuments.ToList();
-            Store.Current.SelectedCollection.RemoveItems(currentSelectedDocuments);
+            _databaseInteractions.RemoveSelectedDocuments();
         }
         #endregion Remove Command
 
@@ -310,77 +263,7 @@ namespace LiteDbExplorer
 
         private void ExportCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (Store.Current.SelectedDocumentsCount == 0)
-            {
-                return;
-            }
-
-            var documentReference = Store.Current.SelectedDocuments.First();
-
-            if (Store.Current.SelectedCollection is FileCollectionReference)
-            {
-                if (Store.Current.SelectedDocumentsCount == 1)
-                {
-                    var file = documentReference;
-
-                    var dialog = new SaveFileDialog
-                    {
-                        Filter = "All files|*.*",
-                        FileName = file.LiteDocument["filename"],
-                        OverwritePrompt = true
-                    };
-
-                    if (dialog.ShowDialog() == true)
-                    {
-                        (file.Collection as FileCollectionReference).SaveFile(file, dialog.FileName);
-                    }
-                }
-                else
-                {
-                    var dialog = new CommonOpenFileDialog
-                    {
-                        IsFolderPicker = true,
-                        Title = "Select folder to export files to..."
-                    };
-
-                    if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                    {
-                        foreach (var file in Store.Current.SelectedDocuments)
-                        {
-                            var path = Path.Combine(dialog.FileName, $"{file.LiteDocument["_id"].AsString}-{file.LiteDocument["filename"].AsString}");
-                            var dir = Path.GetDirectoryName(path);
-                            if (!Directory.Exists(dir))
-                            {
-                                Directory.CreateDirectory(dir);
-                            }
-
-                            (file.Collection as FileCollectionReference).SaveFile(file, path);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                var dialog = new SaveFileDialog
-                {
-                    Filter = "Json File|*.json",
-                    FileName = "export.json",
-                    OverwritePrompt = true
-                };
-
-                if (dialog.ShowDialog() == true)
-                {
-                    if (Store.Current.SelectedDocumentsCount == 1)
-                    {
-                        File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(documentReference.LiteDocument, true, false));
-                    }
-                    else
-                    {
-                        var data = new BsonArray(Store.Current.SelectedDocuments.Select(a => a.LiteDocument));
-                        File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(data, true, false));
-                    }
-                }
-            }
+            _databaseInteractions.ExportSelectedDocuments();
         }
         #endregion Export Command
 
@@ -405,22 +288,7 @@ namespace LiteDbExplorer
 
         private void AddCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
-            {
-                if (InputBoxWindow.ShowDialog("New collection name:", "Enter new collection name", "", out string name) == true)
-                {
-                    Store.Current.SelectedDatabase.AddCollection(name);
-                }
-            }
-            catch (Exception exc)
-            {
-                MessageBox.Show(
-                    "Failed to add new collection:" + Environment.NewLine + exc.Message,
-                    "Database error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
-            }
+            _databaseInteractions.AddCollectionToSelectedDatabase();
         }
         #endregion AddCollection Command
 
@@ -432,22 +300,7 @@ namespace LiteDbExplorer
 
         private void RenameCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
-            {
-                if (InputBoxWindow.ShowDialog("New name:", "Enter new collection name", Store.Current.SelectedCollection.Name, out string name) == true)
-                {
-                    Store.Current.SelectedDatabase.RenameCollection(Store.Current.SelectedCollection.Name, name);
-                }
-            }
-            catch (Exception exc)
-            {
-                MessageBox.Show(
-                    "Failed to rename collection:" + Environment.NewLine + exc.Message,
-                    "Database error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
-            }
+            _databaseInteractions.RenameSelectedCollection();
         }
 
         #endregion RenameCollection Command
@@ -460,28 +313,7 @@ namespace LiteDbExplorer
 
         private void DropCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            try
-            {
-                if (MessageBox.Show(
-                    string.Format("Are you sure you want to drop collection \"{0}\"?", Store.Current.SelectedCollection.Name),
-                    "Are you sure?",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question
-                ) == MessageBoxResult.Yes)
-                {
-                    Store.Current.SelectedDatabase.DropCollection(Store.Current.SelectedCollection.Name);
-                    Store.Current.ResetSelectedCollection();
-                }
-            }
-            catch (Exception exc)
-            {
-                MessageBox.Show(
-                    "Failed to drop collection:" + Environment.NewLine + exc.Message,
-                    "Database error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
-            }
+            _databaseInteractions.DropSelectedCollection();
         }
         #endregion DropCollection Command
 
@@ -493,26 +325,7 @@ namespace LiteDbExplorer
 
         private void ExportCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var selectedCollection = Store.Current.SelectedCollection;
-            if (selectedCollection == null)
-            {
-                return;
-            }
-            
-            var dialog = new SaveFileDialog
-            {
-                Filter = "Json File|*.json",
-                FileName = $"{selectedCollection.Name}_export.json",
-                OverwritePrompt = true
-            };
-
-            if (dialog.ShowDialog() == true)
-            {
-                
-                var data = new BsonArray(selectedCollection.LiteCollection.FindAll());
-
-                File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(data, true, false));
-            }
+            _databaseInteractions.ExportSelectedCollection();
         }
 
         #endregion
@@ -598,7 +411,7 @@ namespace LiteDbExplorer
 
             foreach (var item in Store.Current.SelectedCollection.Items.Reverse().Skip(skipIndex + 1))
             {
-                if (ItemMatchesSearch(TextSearch.Text, item, (bool)CheckSearchCase.IsChecked))
+                if (CheckSearchCase.IsChecked != null && ItemMatchesSearch(TextSearch.Text, item, (bool)CheckSearchCase.IsChecked))
                 {
                     SelectDocumentInView(item);
                     return;
@@ -615,8 +428,7 @@ namespace LiteDbExplorer
 
         private void CopyCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var data = new BsonArray(Store.Current.SelectedDocuments.Select(a => a.LiteDocument));
-            Clipboard.SetData(DataFormats.Text, JsonSerializer.Serialize(data, true, false));
+            _databaseInteractions.CopySelectedDocuments();
         }
         #endregion Copy Command
 
@@ -713,89 +525,33 @@ namespace LiteDbExplorer
 
         private void TreeDatabasese_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            Store.Current.SelectNode(e.NewValue);
+            Store.Current.SelectNode(e.NewValue as IReferenceNode);
         }
         
         private void RecentMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var path = (sender as FrameworkElement)?.Tag as string;
 
-            OpenDatabase(path);
+            _databaseInteractions.OpenDatabase(path);
         }
 
         private void RecentListItem_Click(object sender, MouseButtonEventArgs e)
         {
             var path = (sender as FrameworkElement)?.Tag as string;
-
-            OpenDatabase(path);
+            
+            _databaseInteractions.OpenDatabase(path);
         }
 
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
-
+            var treeViewItem = (e.OriginalSource as DependencyObject).VisualUpwardSearch();
             if (treeViewItem != null)
             {
                 treeViewItem.IsSelected = true;
                 e.Handled = true;
             }
         }
-
-        static TreeViewItem VisualUpwardSearch(DependencyObject source)
-        {
-            while (source != null && !(source is TreeViewItem))
-            {
-                source = VisualTreeHelper.GetParent(source);
-            }
-
-            return source as TreeViewItem;
-        }
-
-        public void OpenDatabase(string path)
-        {
-            if (Store.Current.IsDatabaseOpen(path))
-            {
-                return;
-            }
-
-            if (!File.Exists(path))
-            {
-                MessageBox.Show(
-                    "Cannot open database, file not found.",
-                    "File not found",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                return;
-            }
-
-            string password = null;
-            if (DatabaseReference.IsDbPasswordProtected(path))
-            {
-                if (InputBoxWindow.ShowDialog("Database is password protected, enter password:", "Database password.", "", out password) != true)
-                {
-                    return;
-                }
-            }
-
-            if (PathDefinitions.RecentFiles.Contains(path))
-            {
-                PathDefinitions.RecentFiles.Remove(path);
-            }
-
-            PathDefinitions.RecentFiles.Insert(0, path);
-
-            try
-            {
-                Store.Current.AddDatabase(new DatabaseReference(path, password));
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Failed to open database:" + Environment.NewLine + e.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                Logger.Error(e, "Failed to process update: ");
-                return;
-            }
-        }
-
+        
         private void IssueMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(Config.IssuesUrl);
@@ -824,42 +580,15 @@ namespace LiteDbExplorer
 
         private void AddFileToDatabase(DatabaseReference database)
         {
-            var dialog = new OpenFileDialog
+            var result = _databaseInteractions.AddFileToDatabase(database);
+            if (result.IsSuccess)
             {
-                Filter = "All files|*.*",
-                Multiselect = false
-            };
-
-            if (dialog.ShowDialog() != true)
-            {
-                return;
-            }
-
-            try
-            {
-                if (InputBoxWindow.ShowDialog("New file id:", "Enter new file id", Path.GetFileName(dialog.FileName), out string id) == true)
-                {
-                    var file = database.AddFile(id, dialog.FileName);
-                    Store.Current.SelectCollection(database.Collections.First(a => a.Name == "_files"));
-                    Store.Current.SelectDocument(file);
-                    CollectionListView.ScrollIntoSelectedItem();
-                }
-            }
-            catch (Exception exc)
-            {
-                MessageBox.Show(
-                    "Failed to upload file:" + Environment.NewLine + exc.Message,
-                    "Database error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
+                CollectionListView.ScrollIntoSelectedItem();
             }
         }
 
         private void WindowMain_Loaded(object sender, RoutedEventArgs e)
         {
-            SetColorTheme();
-
             Title = $"LiteDB Explorer {Versions.CurrentVersion}";
 
             _positionManager.RestoreSizeAndLocation(App.Settings);
@@ -900,7 +629,7 @@ namespace LiteDbExplorer
                     break;
 
                 case CmdlineCommands.Open:
-                    OpenDatabase(args.Args);
+                    _databaseInteractions.OpenDatabase(args.Args);
                     RestoreWindow();
                     break;
 
@@ -945,10 +674,7 @@ namespace LiteDbExplorer
             {
                 if (e.Data.GetDataPresent(DataFormats.FileDrop) && e.Data.GetData(DataFormats.FileDrop, false) is string[] files)
                 {
-                    foreach (var path in files)
-                    {
-                        OpenDatabase(path);
-                    }
+                    _databaseInteractions.OpenDatabases(files);
                 }
             }
             catch (Exception exc)

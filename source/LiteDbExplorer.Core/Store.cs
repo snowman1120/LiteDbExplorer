@@ -173,7 +173,7 @@ namespace LiteDbExplorer
             SelectedDatabase = databaseReference;
         }
 
-        public void SelectNode(object value)
+        public void SelectNode(IReferenceNode value)
         {
             if (value == null)
             {

@@ -1,0 +1,185 @@
+﻿<UserControl x:Class="LiteDbExplorer.Modules.Explorer.DatabasesExplorerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:liteDbExplorer="clr-namespace:LiteDbExplorer"
+             xmlns:liteDbExplorer1="clr-namespace:LiteDbExplorer;assembly=LiteDbExplorer.Core"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:framework="clr-namespace:LiteDbExplorer.Framework"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <controls:StoreContext x:Key="StoreContext"/>
+        <framework:DataContextProxy x:Key="DataContextProxy" Data="{Binding}"/>
+    </UserControl.Resources>
+    <DockPanel AllowDrop="True"
+               Background="Transparent" Drop="DockPanel_OnDrop">
+
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}">
+                <ToolBar.Resources>
+                    <ResourceDictionary>
+                        <Style TargetType="Image">
+                            <Setter Property="Height" Value="18" />
+                            <Setter Property="Width" Value="18" />
+                        </Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontFamily" Value="{StaticResource MaterialDesignFont}" />
+                            <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                            <Setter Property="FontSize" Value="15" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="Margin" Value="5,0,5,0" />
+                        </Style>
+                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button"
+                               BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                            <Setter Property="Padding" Value="10" />
+                        </Style>
+                    </ResourceDictionary>
+                </ToolBar.Resources>
+                <Button x:Name="OpenDatabase" ContextMenuService.IsEnabled="False" Padding="0">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Images/opendb.png" Margin="10" />
+                            <Border Background="{DynamicResource MaterialDesignToolBarBackground}" Width="1" />
+                            <Border Background="Transparent" Padding="3,0" BorderThickness="1"
+                                    PreviewMouseLeftButtonDown="RecentItemMoreBorder_MouseLeftButtonDown">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderBrush"
+                                                        Value="{DynamicResource MaterialDesignDivider}" />
+                                                <Setter Property="Background"
+                                                        Value="{DynamicResource MaterialDesignDivider}" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter Property="BorderBrush" Value="Transparent" />
+                                                <Setter Property="Background" Value="Transparent" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Path Margin="4" VerticalAlignment="Center" Width="6"
+                                      Fill="{DynamicResource MaterialDesignBody}" Stretch="Uniform"
+                                      HorizontalAlignment="Right"
+                                      Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z " />
+                            </Border>
+                        </StackPanel>
+                    </Button.Content>
+                    <Button.ContextMenu>
+                        <ContextMenu
+                            ItemsSource="{Binding Path=PathDefinitions.RecentFiles}">
+                            <ContextMenu.ItemContainerStyle>
+                                <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                                    <Setter Property="Tag" Value="{Binding}" />
+                                    <Setter Property="Command" Value="{Binding Path=Data.OpenRecentItemCommand, Source={StaticResource DataContextProxy}}"/>
+                                    <Setter Property="CommandParameter" Value="{Binding}"/>
+                                </Style>
+                            </ContextMenu.ItemContainerStyle>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+
+        <TreeView Name="TreeDatabase" DockPanel.Dock="Top"
+                  ItemsSource="{Binding Current.Databases, Source={StaticResource StoreContext}}"
+                  HorizontalContentAlignment="Stretch"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                  mah:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="False"
+                  cal:Message.Attach="[Event SelectedItemChanged] = [OnSelectedItemChanged($eventArgs)]">
+            <TreeView.Resources>
+                <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItemFullRow}">
+                    <Setter Property="IsExpanded" Value="True" />
+                    <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
+                    <Setter Property="ToolTip" Value="{Binding Location}" />
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Command="liteDbExplorer:Commands.AddFile">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Images/uploadfile.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Command="liteDbExplorer:Commands.AddCollection">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Images/table.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator />
+                                <MenuItem Command="liteDbExplorer:Commands.RefreshDatabase">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Images/refresh.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Command="liteDbExplorer:Commands.EditDbProperties" />
+                                <Separator />
+                                <MenuItem Command="Close" />
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <HierarchicalDataTemplate DataType="{x:Type liteDbExplorer1:DatabaseReference}"
+                                          ItemsSource="{Binding Collections}">
+                    <HierarchicalDataTemplate.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItemFullRow}">
+                            <Setter Property="ToolTip" Value="{Binding Name}" />
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu>
+                                        <MenuItem Command="liteDbExplorer:Commands.AddCollection" />
+                                        <MenuItem Command="liteDbExplorer:Commands.RenameCollection" />
+                                        <MenuItem Command="liteDbExplorer:Commands.DropCollection" />
+                                        <Separator />
+                                        <MenuItem Command="liteDbExplorer:Commands.ExportCollection" />
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </HierarchicalDataTemplate.ItemContainerStyle>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon Kind="Database" Height="20" Width="20" Margin="-1,0,0,0"
+                                                 VerticalAlignment="Center" Foreground="#089910" />
+                        <TextBlock Grid.Column="1" Text="{Binding Name}" Padding="8,4"
+                                   FontSize="14" FontWeight="Regular"
+                                   FontFamily="{StaticResource MaterialDesignFont}"
+                                   Foreground="{DynamicResource MaterialDesignBody}"
+                                   TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                    </Grid>
+                </HierarchicalDataTemplate>
+                <DataTemplate DataType="{x:Type liteDbExplorer1:CollectionReference}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ContentPresenter Content="{Binding}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate DataType="{x:Type liteDbExplorer1:FileCollectionReference}">
+                                    <Image Source="/Images/file-table.png" />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type liteDbExplorer1:CollectionReference}">
+                                    <Image Source="/Images/table.png" Height="16" />
+                                </DataTemplate>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                        <TextBlock Grid.Column="1" Text="{Binding Name}" Padding="8,4"
+                                   FontSize="14" FontWeight="Regular"
+                                   FontFamily="{StaticResource MaterialDesignFont}"
+                                   Foreground="{DynamicResource MaterialDesignBody}"
+                                   TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                    </Grid>
+                </DataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+
+    </DockPanel>
+</UserControl>

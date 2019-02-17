@@ -9,7 +9,7 @@ using LiteDB;
 
 namespace LiteDbExplorer
 {
-    public class DatabaseReference : INotifyPropertyChanging, INotifyPropertyChanged, IDisposable
+    public class DatabaseReference : INotifyPropertyChanging, INotifyPropertyChanged, IDisposable, IReferenceNode
     {
         private string _name;
         private string _location;

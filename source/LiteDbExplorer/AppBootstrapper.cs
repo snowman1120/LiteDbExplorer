@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using Caliburn.Micro;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Framework.Services;
@@ -39,34 +40,19 @@ namespace LiteDbExplorer
             batch.AddExportedValue(_container);
 
             _container.Compose(batch);
-
+            
             AddCustomConventions();
         }
-
-        private void AddCustomConventions()
-        {
-            MessageBinder.SpecialValues.Add(@"$originalSourceContext", context =>
-            {
-                if (!(context.EventArgs is RoutedEventArgs args))
-                    return null;
-
-                if (!(args.OriginalSource is FrameworkElement fe))
-                    return null;
-
-                return fe.DataContext;
-            });
-
-            ConventionManager.AddElementConvention<MenuItem>(MenuItem.CommandProperty, nameof(MenuItem.CommandParameter), nameof(MenuItem.Click));
-            ConventionManager.AddElementConvention<ButtonBase>(ButtonBase.CommandProperty, nameof(ButtonBase.CommandParameter), nameof(ButtonBase.Click));
-        }
-
+        
         protected override object GetInstance(Type serviceType, string key)
         {
-            string contract = string.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(serviceType) : key;
-            var exports = _container.GetExportedValues<object>(contract);
+            var contract = string.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(serviceType) : key;
+            var exports = _container.GetExportedValues<object>(contract).ToArray();
 
             if (exports.Any())
+            {
                 return exports.First();
+            }
 
             throw new Exception($"Could not locate any instances of contract {contract}.");
         }
@@ -84,6 +70,39 @@ namespace LiteDbExplorer
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
             DisplayRootViewFor<IShell>();
+            RegisterApplicationCommandHandlers();
+        }
+
+        private void RegisterApplicationCommandHandlers()
+        {
+            var handlers = _container.GetExportedValues<IApplicationCommandHandler>();
+            handlers.SelectMany(p => p.CommandBindings)
+                .ToList()
+                .ForEach(binding =>
+                {
+                    CommandManager.RegisterClassCommandBinding(typeof(Window), binding);
+                });
+        }
+
+        private void AddCustomConventions()
+        {
+            MessageBinder.SpecialValues.Add(@"$originalSourceContext", context =>
+            {
+                if (!(context.EventArgs is RoutedEventArgs args))
+                {
+                    return null;
+                }
+
+                if (!(args.OriginalSource is FrameworkElement fe))
+                {
+                    return null;
+                }
+
+                return fe.DataContext;
+            });
+
+            ConventionManager.AddElementConvention<MenuItem>(MenuItem.CommandProperty, nameof(MenuItem.CommandParameter), nameof(MenuItem.Click));
+            ConventionManager.AddElementConvention<ButtonBase>(ButtonBase.CommandProperty, nameof(ButtonBase.CommandParameter), nameof(ButtonBase.Click));
         }
     }
 }

@@ -9,7 +9,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="HeaderTemplate">
-                <Grid>
+                <Grid Background="Transparent" IsHitTestVisible="True">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" MinWidth="16" />
@@ -19,7 +19,7 @@
             </DataTemplate>
 
             <DataTemplate x:Key="HeaderTemplateArrowUp">
-                <DockPanel LastChildFill="True">
+                <DockPanel LastChildFill="True" Background="Transparent" IsHitTestVisible="True">
                     <materialDesign:ListSortDirectionIndicator DockPanel.Dock="Right"
                                                                Width="12" Height="12"
                                                                HorizontalAlignment="Right" Margin="0,0,-16,0"
@@ -31,7 +31,7 @@
             </DataTemplate>
 
             <DataTemplate x:Key="HeaderTemplateArrowDown">
-                <DockPanel LastChildFill="True">
+                <DockPanel LastChildFill="True" Background="Transparent" IsHitTestVisible="True">
                     <materialDesign:ListSortDirectionIndicator DockPanel.Dock="Right"
                                                                Width="12" Height="12"
                                                                HorizontalAlignment="Right" Margin="0,0,-16,0"

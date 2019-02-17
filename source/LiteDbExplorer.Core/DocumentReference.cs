@@ -6,7 +6,7 @@ using LiteDB;
 
 namespace LiteDbExplorer
 {
-    public class DocumentReference : INotifyPropertyChanging, INotifyPropertyChanged
+    public class DocumentReference : INotifyPropertyChanging, INotifyPropertyChanged, IReferenceNode
     {
         private BsonDocument _liteDocument;
         private CollectionReference _collection;

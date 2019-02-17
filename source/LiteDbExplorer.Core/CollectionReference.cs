@@ -9,7 +9,7 @@ using LiteDB;
 
 namespace LiteDbExplorer
 {
-    public class CollectionReference : INotifyPropertyChanging, INotifyPropertyChanged
+    public class CollectionReference : INotifyPropertyChanging, INotifyPropertyChanged, IReferenceNode
     {
         private ObservableCollection<DocumentReference> _items;
         private string _name;

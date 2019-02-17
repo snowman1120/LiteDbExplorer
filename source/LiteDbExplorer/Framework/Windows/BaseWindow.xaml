@@ -16,7 +16,7 @@
     </mah:MetroWindow.IconTemplate>
     <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands ShowSeparators="False">
-            <ContentControl x:Name="LeftWindowCommands" cal:View.Model="{Binding LeftWindowCommands}"/>
+            <ContentControl x:Name="WindowMenu" cal:View.Model="{Binding WindowMenu}"/>
         </mah:WindowCommands>
     </mah:MetroWindow.LeftWindowCommands>
 </mah:MetroWindow>

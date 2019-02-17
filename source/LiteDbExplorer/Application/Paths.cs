@@ -16,7 +16,10 @@ namespace LiteDbExplorer
             {
                 var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LiteDbExplorer");
                 if (!Directory.Exists(path))
+                {
                     Directory.CreateDirectory(path);
+                }
+
                 return path;
             }
         }

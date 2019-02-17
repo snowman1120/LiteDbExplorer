@@ -62,6 +62,9 @@
     <Reference Include="Costura, Version=3.3.2.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
       <HintPath>..\packages\Costura.Fody.3.3.2\lib\net40\Costura.dll</HintPath>
     </Reference>
+    <Reference Include="CSharpFunctionalExtensions, Version=1.16.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSharpFunctionalExtensions.1.16.1\lib\net461\CSharpFunctionalExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
     </Reference>
@@ -173,9 +176,11 @@
     <Compile Include="Controls\ContentExpander.xaml.cs">
       <DependentUpon>ContentExpander.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Framework\ApplicationCommandHandler.cs" />
     <Compile Include="Framework\AppWindowManager.cs" />
     <Compile Include="Framework\DataContextProxy.cs" />
     <Compile Include="Framework\Document.cs" />
+    <Compile Include="Framework\IApplicationCommandHandler.cs" />
     <Compile Include="Framework\IDocument.cs" />
     <Compile Include="Framework\LayoutItemBase.cs" />
     <Compile Include="Framework\RelayCommand.cs" />
@@ -186,15 +191,30 @@
     <Compile Include="Framework\Windows\BaseWindow.xaml.cs">
       <DependentUpon>BaseWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Modules\DatabaseCommandsHandler.cs" />
+    <Compile Include="Modules\DatabaseInteractions.cs" />
+    <Compile Include="Modules\Explorer\DatabasesExplorerView.xaml.cs">
+      <DependentUpon>DatabasesExplorerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\Explorer\DatabasesExplorerViewModel.cs" />
+    <Compile Include="Modules\Explorer\IFileDropProvider.cs" />
     <Compile Include="Modules\Main\DocumentSetView.xaml.cs">
       <DependentUpon>DocumentSetView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\Main\DocumentSetViewModel.cs" />
+    <Compile Include="Modules\Main\IDocumentExplorer.cs" />
+    <Compile Include="Modules\Main\IDocumentSet.cs" />
     <Compile Include="Modules\Main\InterTabClient.cs" />
+    <Compile Include="Modules\Main\IShellMenu.cs" />
+    <Compile Include="Modules\Main\IShellStatusBar.cs" />
     <Compile Include="Modules\Main\ShellMenuView.xaml.cs">
       <DependentUpon>ShellMenuView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\Main\ShellMenuViewModel.cs" />
+    <Compile Include="Modules\Main\ShellStatusBarView.xaml.cs">
+      <DependentUpon>ShellStatusBarView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\Main\ShellStatusBarViewModel.cs" />
     <Compile Include="Modules\Main\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
@@ -222,6 +242,7 @@
     <Compile Include="Application\PipeServer.cs" />
     <Compile Include="Presentation\Behaviors\BubbleScrollEvent.cs" />
     <Compile Include="Presentation\ThemeManager.cs" />
+    <Compile Include="Presentation\VisualTreeExtensions.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Application\Settings.cs" />
     <Compile Include="Application\Update.cs" />
@@ -275,11 +296,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Modules\Explorer\DatabasesExplorerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Modules\Main\DocumentSetView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Modules\Main\ShellMenuView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Modules\Main\ShellStatusBarView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

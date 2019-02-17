@@ -6,14 +6,6 @@ using LiteDbExplorer.Modules.StartPage;
 
 namespace LiteDbExplorer.Modules.Main
 {
-    public interface IDocumentSet : IScreen, IHaveActiveItem
-    {
-        Guid Id { get; }
-        string ContentId { get; }
-        Func<IDocument> NewDocumentFactory { get; }
-        IObservableCollection<IDocument> Documents { get; }
-    }
-
     [Export(typeof(IDocumentSet))]
     [PartCreationPolicy (CreationPolicy.NonShared)]
     public class DocumentSetViewModel : Conductor<IDocument>.Collection.OneActive, IDocumentSet
@@ -44,12 +36,16 @@ namespace LiteDbExplorer.Modules.Main
             set
             {
                 if (ReferenceEquals(_activeLayoutItem, value))
+                {
                     return;
+                }
 
                 _activeLayoutItem = value;
 
                 if (value is IDocument document)
+                {
                     ActivateItem(document);
+                }
 
                 NotifyOfPropertyChange(() => ActiveLayoutItem);
             }
@@ -57,7 +53,7 @@ namespace LiteDbExplorer.Modules.Main
 
         private IDocument NewDocumentFactoryHandler()
         {
-            return new StartPageViewModel();
+            return IoC.Get<StartPageViewModel>();
         }
 
         public void OpenDocument(IDocument model)
@@ -73,7 +69,9 @@ namespace LiteDbExplorer.Modules.Main
         public override void ActivateItem(IDocument item)
         {
             if (_closing)
+            {
                 return;
+            }
 
             RaiseActiveDocumentChanging();
 
@@ -82,7 +80,9 @@ namespace LiteDbExplorer.Modules.Main
             base.ActivateItem(item);
 
             if (!ReferenceEquals(item, currentActiveItem))
+            {
                 RaiseActiveDocumentChanged();
+            }
         }
 
         public override void DeactivateItem(IDocument item, bool close)

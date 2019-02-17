@@ -1,9 +1,7 @@
-﻿using System;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using Caliburn.Micro;
-using LiteDbExplorer.Framework;
 using LiteDbExplorer.Framework.Services;
-using LiteDbExplorer.Modules.StartPage;
+using LogManager = NLog.LogManager;
 
 namespace LiteDbExplorer.Modules.Main
 {
@@ -11,19 +9,30 @@ namespace LiteDbExplorer.Modules.Main
     [PartCreationPolicy (CreationPolicy.Shared)]
     public sealed class ShellViewModel : Screen, IShell
     {
+        private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
+
         public ShellViewModel()
         {
             DisplayName = $"LiteDB Explorer {Versions.CurrentVersion}";
+            
+            WindowMenu = IoC.Get<IShellMenu>();
 
-            LeftWindowCommands = new ShellMenuViewModel();
+            StatusBarContent = IoC.Get<IShellStatusBar>();
 
-            MainContent = new DocumentSetViewModel();
+            LeftContent = IoC.Get<IDocumentExplorer>();
+
+            MainContent = IoC.Get<IDocumentSet>();
             
             MainContent.Documents.Add(MainContent.NewDocumentFactory());
+            
         }
         
-        public object LeftWindowCommands { get; }
+        public object WindowMenu { get; }
 
+        public object StatusBarContent { get; set; }
+
+        public object LeftContent { get; }
+        
         public IDocumentSet MainContent { get; }
     }
 }
