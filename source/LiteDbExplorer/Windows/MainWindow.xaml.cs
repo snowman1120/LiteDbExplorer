@@ -9,11 +9,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using LiteDbExplorer.Modules;
-using LiteDbExplorer.Modules.Main;
 using LiteDbExplorer.Presentation;
 using MahApps.Metro.Controls;
 
@@ -47,26 +44,16 @@ namespace LiteDbExplorer
             
             Task.Factory.StartNew(() =>
             {
-                Thread.Sleep(2000);
-                var update = new Update();
-
-                try
-                {
-                    if (update.IsUpdateAvailable)
-                    {
-                        update.DownloadUpdate();
-
-                        if (MessageBox.Show("New update found, install now?", "Update found", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                        {
-                            update.InstallUpdate();
-                        }
-                    }
-                }
-                catch (Exception exc)
-                {
-                    Logger.Error(exc, "Failed to process update.");
-                }
+                AppUpdateManager.Current.CheckForUpdates(false).ConfigureAwait(false);
             });
+
+            AppUpdateManager.Current.PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == nameof(AppUpdateManager.UpdateActionText) && AppUpdateManager.Current.UpdateActionText == "Restart")
+                {
+                    DropNewUpdatePanel.IsPopupOpen = true;
+                }
+            };
 
             DockSearch.Visibility = Visibility.Collapsed;
 
@@ -561,7 +548,7 @@ namespace LiteDbExplorer
         {
             Process.Start(Config.HomepageUrl);
         }
-
+        
         private void RecentItemMoreBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (ButtonOpen.ContextMenu != null)
@@ -697,6 +684,10 @@ namespace LiteDbExplorer
             ChangeThemeComboBox.IsDropDownOpen = !ChangeThemeComboBox.IsDropDownOpen;
         }
 
-        
+
+        private void UpdatePanelButtonOnClick(object sender, RoutedEventArgs e)
+        {
+            DropNewUpdatePanel.IsPopupOpen = true;
+        }
     }
 }

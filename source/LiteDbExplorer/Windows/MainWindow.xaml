@@ -9,6 +9,7 @@
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
                  xmlns:liteDbExplorer="clr-namespace:LiteDbExplorer;assembly=LiteDbExplorer.Core"
+                 xmlns:modules="clr-namespace:LiteDbExplorer.Modules"
                  mc:Ignorable="d"
                  Width="1024" Height="740"
                  WindowStartupLocation="CenterScreen"
@@ -24,6 +25,7 @@
         <converters:InverseVisibilityConverter x:Key="InverseVisibilityConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <controls:StoreContext x:Key="StoreContext"/>
+        <modules:AppUpdateManager x:Key="AppUpdateManager"/>
     </mah:MetroWindow.Resources>
 
     <mah:MetroWindow.CommandBindings>
@@ -186,11 +188,50 @@
                                 <materialDesign:PackIcon Kind="GithubCircle" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem x:Name="CheckUpdatesMenuItem" Header="Check for updates..." 
+                                  Command="{Binding Path=Current.CheckForUpdatesCommand, Source={StaticResource AppUpdateManager}}" >
+                            <MenuItem.Icon>
+                                <materialDesign:PackIcon Kind="Update" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
                 </Menu>
             </StackPanel>
         </mah:WindowCommands>
     </mah:MetroWindow.LeftWindowCommands>
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands ShowSeparators="False">
+            <Border>
+                <materialDesign:PopupBox x:Name="DropNewUpdatePanel"
+                                         PlacementMode="BottomAndAlignRightEdges"
+                                         materialDesign:RippleAssist.IsDisabled="False">
+                    <materialDesign:PopupBox.ToggleContent>
+                        <ToggleButton Visibility="{Binding Path=Current.HasUpdate, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource AppUpdateManager}}"
+                                      IsChecked="{Binding ElementName=DropNewUpdatePanel, Path=IsPopupOpen, Mode=TwoWay}"
+                                      ToolTip="Update available"
+                                      Height="33"
+                                      Foreground="White"
+                                      Background="#FFCA00"
+                                      materialDesign:RippleAssist.IsDisabled="False">
+                            <materialDesign:PackIcon
+                                Kind="Update" Height="24" Width="24"/>
+                        </ToggleButton>
+                    </materialDesign:PopupBox.ToggleContent>
+                    <StackPanel Orientation="Vertical" Margin="20,20,20,0" MinWidth="300" MinHeight="100">
+                        <TextBlock Text="LiteDB Explorer update is available"
+                                   Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                        <TextBlock Text="{Binding Path=Current.UpdateMessage, Source={StaticResource AppUpdateManager}}" Margin="0,10"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                        <Button Command="{Binding Path=Current.DoUpdateCommand, Source={StaticResource AppUpdateManager}}" 
+                                Content="{Binding Path=Current.UpdateActionText, Source={StaticResource AppUpdateManager}}" 
+                                Margin="0,10,0,0" HorizontalAlignment="Right"
+                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                Click="UpdatePanelButtonOnClick"/>
+                    </StackPanel>
+                </materialDesign:PopupBox>
+            </Border>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
 
     <DockPanel>
         <StatusBar DockPanel.Dock="Bottom" Background="{DynamicResource AccentColorBrush}" MinHeight="24"

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using LiteDbExplorer.Presentation;
+using Onova;
+using Onova.Services;
 
 namespace LiteDbExplorer
 {
@@ -18,12 +20,8 @@ namespace LiteDbExplorer
         private readonly string _instanceMuxet = "LiteDBExplorerInstaceMutex";
         private Mutex _appMutex;
 
-        public bool OriginalInstance
-        {
-            get;
-            private set;
-        }
-
+        public bool OriginalInstance { get; private set; }
+        
         public static Settings Settings => Settings.Current;
 
         protected override void OnStartup(StartupEventArgs e)
@@ -33,7 +31,7 @@ namespace LiteDbExplorer
                 StartupUri = new System.Uri(@"Windows\MainWindow.xaml", System.UriKind.Relative);
             }*/
             StartupUri = new System.Uri(@"Windows\MainWindow.xaml", System.UriKind.Relative);
-            
+
             base.OnStartup(e);
         }
 
@@ -53,7 +51,7 @@ namespace LiteDbExplorer
 
                 if (e.Args.Any())
                 {
-                    client.InvokeCommand(CmdlineCommands.Open, e.Args[0]);                    
+                    client.InvokeCommand(CmdlineCommands.Open, e.Args[0]);
                     Shutdown();
                     return;
                 }
@@ -64,7 +62,7 @@ namespace LiteDbExplorer
                 OriginalInstance = true;
             }
         }
-        
+
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             Settings.SaveSettings();
@@ -75,8 +73,11 @@ namespace LiteDbExplorer
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var log = LogManager.Configuration.FindTargetByName("file") as FileTarget;
-            Logger.Error((Exception)e.ExceptionObject, "Unhandled exception: ");
-            MessageBox.Show(string.Format("Unhandled exception occured.\nAdditional information written into: {0}\n\nApplication will shutdown.", log.FileName),
+            Logger.Error((Exception) e.ExceptionObject, "Unhandled exception: ");
+            MessageBox.Show(
+                string.Format(
+                    "Unhandled exception occured.\nAdditional information written into: {0}\n\nApplication will shutdown.",
+                    log.FileName),
                 "Unhandled Exception", MessageBoxButton.OK, MessageBoxImage.Error);
             Process.GetCurrentProcess().Kill();
         }
