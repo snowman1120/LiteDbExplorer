@@ -161,6 +161,9 @@
     <Compile Include="Controls\DocumentJsonView.xaml.cs">
       <DependentUpon>DocumentJsonView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\InputDialogView.xaml.cs">
+      <DependentUpon>InputDialogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\JsonViewer\BraceFoldingStrategy.cs" />
     <Compile Include="Controls\StoreContext.cs" />
     <Compile Include="Controls\WindowController.cs" />
@@ -292,6 +295,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ContentExpander.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\InputDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

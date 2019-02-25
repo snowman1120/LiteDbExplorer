@@ -42,10 +42,13 @@ namespace LiteDbExplorer
 
             _positionManager = new WindowPositionHandler(this, "Main");
             
+#if (!DEBUG)
+
             Task.Factory.StartNew(() =>
             {
                 AppUpdateManager.Current.CheckForUpdates(false).ConfigureAwait(false);
             });
+#endif
 
             AppUpdateManager.Current.PropertyChanged += (sender, args) =>
             {
@@ -479,6 +482,15 @@ namespace LiteDbExplorer
 
         private void UpdateDocumentPreview()
         {
+            DocumentTreeView.UpdateDocument();
+            DocumentJsonView.UpdateDocument();
+
+            
+            /*if (DetailViewSelector.SelectedIndex == 1)
+            {
+                
+            }*/
+
             // TODO: Update only changed node and keep tree state
             /*var document = DbSelectedItems.FirstOrDefault();
             if (document != null)

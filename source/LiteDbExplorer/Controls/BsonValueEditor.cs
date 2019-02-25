@@ -64,20 +64,9 @@ namespace LiteDbExplorer.Controls
                         {
                             arrayValue?.Clear();
                             arrayValue?.AddRange(control.EditedItems);
+                            
+                            button.Content = $"[Array] {arrayValue?.Count} {keyName}";
                         }
-
-                        /*arrayValue = bindingValue as BsonArray;
-                        var window = new Windows.ArrayViewer(arrayValue, readOnly)
-                        {
-                            Owner = Application.Current.MainWindow,
-                            Height = 600
-                        };
-
-                        if (window.ShowDialog() == true)
-                        {
-                            arrayValue.Clear();
-                            arrayValue.AddRange(window.EditedItems);
-                        }*/
                     };
 
                     return button;
@@ -117,14 +106,6 @@ namespace LiteDbExplorer.Controls
 
                     button.Click += (s, a) =>
                     {
-                        /*var window = new Windows.DocumentViewer(bindingValue as BsonDocument, readOnly)
-                        {
-                            Owner = Application.Current.MainWindow,
-                            Height = 600
-                        };
-
-                        window.ShowDialog();*/
-
                         var windowController = new WindowController {Title = "Document Editor"};
                         var bsonDocument = bindingValue as BsonDocument;
                         var control = new DocumentViewerControl(bsonDocument, readOnly, windowController);
@@ -204,6 +185,20 @@ namespace LiteDbExplorer.Controls
                 return numberEditor;
             }
 
+            if (bindingValue.IsDecimal)
+            {
+                var numberEditor = new DecimalUpDown
+                {
+                    TextAlignment = TextAlignment.Left,
+                    IsReadOnly = readOnly,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 0, 0, 0)
+                };
+
+                numberEditor.SetBinding(DecimalUpDown.ValueProperty, binding);
+                return numberEditor;
+            }
+
             if (bindingValue.IsInt32)
             {
                 var numberEditor = new IntegerUpDown
@@ -269,14 +264,12 @@ namespace LiteDbExplorer.Controls
                 return text;
             }
 
+            var defaultEditor = new TextBox
             {
-                var stringEditor = new TextBox
-                {
-                    VerticalAlignment = VerticalAlignment.Center,
-                };
-                stringEditor.SetBinding(TextBox.TextProperty, binding);
-                return stringEditor;
-            }
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            defaultEditor.SetBinding(TextBox.TextProperty, binding);
+            return defaultEditor;
         }
     }
 }

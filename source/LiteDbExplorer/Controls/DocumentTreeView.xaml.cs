@@ -56,6 +56,11 @@ namespace LiteDbExplorer.Controls
             set => DocumentTree.ItemsSource = value;
         }
 
+        public void UpdateDocument()
+        {
+            ItemsSource = DocumentSource != null ? new DocumentTreeItemsSource(DocumentSource) : null;
+        }
+
         public void InvalidateItemsSource(object item)
         {
             if (ItemsSource is DocumentTreeItemsSource treeItems && item is BsonDocument document)
@@ -234,7 +239,15 @@ namespace LiteDbExplorer.Controls
                 var nodes = new ObservableCollection<DocumentFieldNode>();
                 foreach (var arrayDoc in array)
                 {
-                    nodes.Add(new DocumentFieldNode(index.ToString(), arrayDoc, _loadNodes));
+                    if (arrayDoc is BsonDocument || arrayDoc is BsonArray)
+                    {
+                        nodes.Add(new DocumentFieldNode(index.ToString(), arrayDoc, _loadNodes));
+                    }
+                    else
+                    {
+                        nodes.Add(new DocumentFieldNode(index.ToString(), arrayDoc, null));
+                    }
+                    
                     index++;
                 }
 

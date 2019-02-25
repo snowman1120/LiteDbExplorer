@@ -162,6 +162,9 @@ namespace LiteDbExplorer.Controls
                 case "Double":
                     newValue = new BsonValue((double)0);
                     break;
+                case "Decimal":
+                    newValue = new BsonValue((decimal) 0.0m);
+                    break;
                 case "Int32":
                     newValue = new BsonValue((int)0);
                     break;
@@ -182,7 +185,7 @@ namespace LiteDbExplorer.Controls
 
             }
 
-            var newItem = NewItem(newValue, null);
+            var newItem = NewItem(newValue, Items.Count);
             Items.Add(newItem);
             newItem.Control.Focus();
             newItem.Control.BringIntoView();

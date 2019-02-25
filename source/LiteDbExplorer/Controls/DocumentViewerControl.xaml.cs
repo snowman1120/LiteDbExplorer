@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using LiteDbExplorer.Windows;
 using LiteDB;
 
 namespace LiteDbExplorer.Controls
@@ -57,10 +56,9 @@ namespace LiteDbExplorer.Controls
             }
         );
 
-        private BsonDocument currentDocument;
-
-        private ObservableCollection<DocumentFieldData> customControls;
-        private DocumentReference documentReference;
+        private BsonDocument _currentDocument;
+        private ObservableCollection<DocumentFieldData> _customControls;
+        private DocumentReference _documentReference;
 
         private bool _loaded = false;
 
@@ -88,16 +86,16 @@ namespace LiteDbExplorer.Controls
         {
             IsReadOnly = readOnly;
 
-            currentDocument = document;
-            customControls = new ObservableCollection<DocumentFieldData>();
+            _currentDocument = document;
+            _customControls = new ObservableCollection<DocumentFieldData>();
 
             for (var i = 0; i < document.Keys.Count; i++)
             {
                 var key = document.Keys.ElementAt(i);
-                customControls.Add(NewField(key, readOnly));
+                _customControls.Add(NewField(key, readOnly));
             }
 
-            ListItems.ItemsSource = customControls;
+            ListItems.ItemsSource = _customControls;
 
             ButtonNext.Visibility = Visibility.Collapsed;
             ButtonPrev.Visibility = Visibility.Collapsed;
@@ -122,24 +120,24 @@ namespace LiteDbExplorer.Controls
 
         private void LoadDocument(DocumentReference document)
         {
-            if (document.Collection is FileCollectionReference)
+            if (document.Collection is FileCollectionReference reference)
             {
-                var fileInfo = (document.Collection as FileCollectionReference).GetFileObject(document);
+                var fileInfo = reference.GetFileObject(document);
                 GroupFile.Visibility = Visibility.Visible;
                 FileView.LoadFile(fileInfo);
             }
 
-            currentDocument = document.Collection.LiteCollection.FindById(document.LiteDocument["_id"]);
-            documentReference = document;
-            customControls = new ObservableCollection<DocumentFieldData>();
+            _currentDocument = document.Collection.LiteCollection.FindById(document.LiteDocument["_id"]);
+            _documentReference = document;
+            _customControls = new ObservableCollection<DocumentFieldData>();
 
             for (var i = 0; i < document.LiteDocument.Keys.Count; i++)
             {
                 var key = document.LiteDocument.Keys.ElementAt(i);
-                customControls.Add(NewField(key, IsReadOnly));
+                _customControls.Add(NewField(key, IsReadOnly));
             }
 
-            ListItems.ItemsSource = customControls;
+            ListItems.ItemsSource = _customControls;
         }
 
         private DocumentFieldData NewField(string key, bool readOnly)
@@ -154,8 +152,8 @@ namespace LiteDbExplorer.Controls
                 BsonValueEditor.GetBsonValueEditor(
                     openMode: expandMode, 
                     bindingPath: $"[{key}]", 
-                    bindingValue: currentDocument[key], 
-                    bindingSource: currentDocument, 
+                    bindingValue: _currentDocument[key], 
+                    bindingSource: _currentDocument, 
                     readOnly: readOnly, 
                     keyName: key);
 
@@ -165,9 +163,9 @@ namespace LiteDbExplorer.Controls
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
             var key = (sender as Button).Tag as string;
-            var item = customControls.First(a => a.Name == key);
-            customControls.Remove(item);
-            currentDocument.Remove(key);
+            var item = _customControls.First(a => a.Name == key);
+            _customControls.Remove(item);
+            _currentDocument.Remove(key);
         }
 
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
@@ -187,8 +185,8 @@ namespace LiteDbExplorer.Controls
 
         private void ButtonOK_Click(object sender, RoutedEventArgs e)
         {
-            //TODO make array and document types use this as well
-            foreach (var ctrl in customControls)
+            // TODO make array and document types use this as well
+            foreach (var ctrl in _customControls)
             {
                 var control = ctrl.EditControl;
                 var values = control.GetLocalValueEnumerator();
@@ -198,33 +196,41 @@ namespace LiteDbExplorer.Controls
                     if (BindingOperations.IsDataBound(control, current.Property))
                     {
                         var binding = control.GetBindingExpression(current.Property);
-                        if (binding.IsDirty) binding.UpdateSource();
+                        if (binding.IsDirty)
+                        {
+                            binding.UpdateSource();
+                        }
                     }
                 }
             }
 
-            if (documentReference != null)
+            if (_documentReference != null)
             {
-                documentReference.LiteDocument = currentDocument;
-                documentReference.Collection.UpdateItem(documentReference);
+                _documentReference.LiteDocument = _currentDocument;
+                _documentReference.Collection.UpdateItem(_documentReference);
             }
 
             DialogResult = true;
             Close();
         }
 
-        private void NewFieldMenuItem_Click(object sender, RoutedEventArgs e)
+        private async void NewFieldMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (InputBoxWindow.ShowDialog("Enter name of new field.", "New field name:", "", out var fieldName) !=
-                true) return;
-
-            if (currentDocument.Keys.Contains(fieldName))
+            var maybeFieldName = await InputDialogView.Show("DocumentViewerDialogHost", "Enter name of new field.", "New field name");
+            if (maybeFieldName.HasNoValue)
             {
-                MessageBox.Show(string.Format("Field \"{0}\" already exists!", fieldName), "", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
                 return;
             }
 
+            var fieldName = maybeFieldName.Value;
+
+            if (_currentDocument.Keys.Contains(fieldName))
+            {
+                MessageBox.Show($"Field \"{fieldName}\" already exists!", "", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
+            
             var menuItem = sender as MenuItem;
             BsonValue newValue;
 
@@ -238,6 +244,9 @@ namespace LiteDbExplorer.Controls
                     break;
                 case "Double":
                     newValue = new BsonValue((double) 0);
+                    break;
+                case "Decimal":
+                    newValue = new BsonValue((decimal) 0.0m);
                     break;
                 case "Int32":
                     newValue = new BsonValue(0);
@@ -258,9 +267,9 @@ namespace LiteDbExplorer.Controls
                     throw new Exception("Uknown value type.");
             }
 
-            currentDocument.Add(fieldName, newValue);
+            _currentDocument.Add(fieldName, newValue);
             var newField = NewField(fieldName, false);
-            customControls.Add(newField);
+            _customControls.Add(newField);
             newField.EditControl.Focus();
             ItemsField_SizeChanged(ListItems, null);
             ListItems.ScrollIntoView(newField);
@@ -303,44 +312,44 @@ namespace LiteDbExplorer.Controls
 
         private void NextItemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (documentReference == null)
+            if (_documentReference == null)
                 e.CanExecute = false;
             else
             {
-                var index = documentReference.Collection.Items.IndexOf(documentReference);
-                e.CanExecute = index + 1 < documentReference.Collection.Items.Count;
+                var index = _documentReference.Collection.Items.IndexOf(_documentReference);
+                e.CanExecute = index + 1 < _documentReference.Collection.Items.Count;
             }
         }
 
         private void NextItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var index = documentReference.Collection.Items.IndexOf(documentReference);
+            var index = _documentReference.Collection.Items.IndexOf(_documentReference);
 
-            if (index + 1 < documentReference.Collection.Items.Count)
+            if (index + 1 < _documentReference.Collection.Items.Count)
             {
-                var newDocument = documentReference.Collection.Items[index + 1];
+                var newDocument = _documentReference.Collection.Items[index + 1];
                 LoadDocument(newDocument);
             }
         }
 
         private void PreviousItemCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (documentReference == null)
+            if (_documentReference == null)
                 e.CanExecute = false;
             else
             {
-                var index = documentReference.Collection.Items.IndexOf(documentReference);
+                var index = _documentReference.Collection.Items.IndexOf(_documentReference);
                 e.CanExecute = index > 0;
             }
         }
 
         private void PreviousItemCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var index = documentReference.Collection.Items.IndexOf(documentReference);
+            var index = _documentReference.Collection.Items.IndexOf(_documentReference);
 
             if (index > 0)
             {
-                var newDocument = documentReference.Collection.Items[index - 1];
+                var newDocument = _documentReference.Collection.Items[index - 1];
                 LoadDocument(newDocument);
             }
         }

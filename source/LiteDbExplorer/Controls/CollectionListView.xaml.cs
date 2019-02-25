@@ -156,10 +156,16 @@ namespace LiteDbExplorer.Controls
 
         public void UpdateGridColumns(BsonDocument dbItem)
         {
-            var headers = GridCollectionData.Columns.Select(a => (a.Header as GridViewColumnHeader)?.Name);
-            var missing = dbItem.Keys.Except(headers);
+            var headers = GridCollectionData.Columns.Select(a => (a.Header as GridViewColumnHeader)?.Name).ToArray();
+            var addKeys = dbItem.Keys.Except(headers);
+            var removeKeys = headers.Except(dbItem.Keys);
+            
+            foreach (var key in removeKeys)
+            {
+                RemoveGridColumn(key);
+            }
 
-            foreach (var key in missing)
+            foreach (var key in addKeys)
             {
                 AddGridColumn(key);
             }
@@ -279,6 +285,23 @@ namespace LiteDbExplorer.Controls
                 },
                 HeaderTemplate = Resources["HeaderTemplate"] as DataTemplate
             });
+        }
+
+        private void RemoveGridColumn(string key)
+        {
+            GridViewColumn columnToRemove = null;
+            foreach (var gridViewColumn in GridCollectionData.Columns)
+            {
+                if (gridViewColumn.Header is GridViewColumnHeader header && header.Tag.Equals(key))
+                {
+                    columnToRemove = gridViewColumn;
+                }
+            }
+
+            if (columnToRemove != null)
+            {
+                GridCollectionData.Columns.Remove(columnToRemove);
+            } 
         }
 
         private void ListCollectionData_OnHeaderClick(object sender, RoutedEventArgs e)

@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,7 +10,6 @@ using ICSharpCode.AvalonEdit.Indentation;
 using LiteDbExplorer.Controls.JsonViewer;
 using LiteDbExplorer.Extensions;
 using LiteDbExplorer.Presentation;
-using LiteDB;
 
 namespace LiteDbExplorer.Controls
 {
@@ -53,6 +50,18 @@ namespace LiteDbExplorer.Controls
             set => SetValue(DocumentSourceProperty, value);
         }
 
+        public void UpdateDocument()
+        {
+            if (DocumentSource != null)
+            {
+                SetJson(DocumentSource);
+            }
+            else
+            {
+                ResetJson();
+            }
+        }
+
         private void SetSyntaxHighlightingTheme()
         {
             // jsonEditor.SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("JavaScript");
@@ -81,7 +90,7 @@ namespace LiteDbExplorer.Controls
                 }
             }
         }
-
+        
         private static void OnDocumentSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (!(d is DocumentJsonView documentJsonView))

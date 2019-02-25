@@ -8,6 +8,7 @@
              xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
+             xmlns:controlzEx="clr-namespace:ControlzEx;assembly=MaterialDesignThemes.Wpf"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -21,136 +22,146 @@
         <CommandBinding Command="local:DocumentViewerControl.NextItem" Executed="NextItemCommand_Executed"
                         CanExecute="NextItemCommand_CanExecute" />
     </UserControl.CommandBindings>
+    <materialDesign:DialogHost
+        x:Name="DocumentViewerDialogHost"
+        Identifier="DocumentViewerDialogHost"
+        DialogTheme="Inherit">
 
-    <DockPanel>
-        <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
+        <DockPanel>
+            <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
 
-            <Button Name="ButtonClose" Content="Close" IsCancel="True"
-                    Click="ButtonCancel_Click" Visibility="Collapsed"
-                    DockPanel.Dock="Right" Width="60" Margin="10" />
+                <Button Name="ButtonClose" Content="Close" IsCancel="True"
+                        Click="ButtonCancel_Click" Visibility="Collapsed"
+                        DockPanel.Dock="Right" Width="60" Margin="10" />
 
-            <Button Name="ButtonCancel" Content="CANCEL" IsCancel="True"
-                    Click="ButtonCancel_Click"
-                    DockPanel.Dock="Right" Margin="10"
-                    MinWidth="85"
-                    Style="{StaticResource MaterialDesignFlatButton}" />
+                <Button Name="ButtonCancel" Content="CANCEL" IsCancel="True"
+                        Click="ButtonCancel_Click"
+                        DockPanel.Dock="Right" Margin="10"
+                        MinWidth="85"
+                        Style="{StaticResource MaterialDesignFlatButton}" />
 
-            <Button Name="ButtonOK" Content="OK"
-                    Click="ButtonOK_Click"
-                    DockPanel.Dock="Right" Margin="10"
-                    MinWidth="85"
-                    Style="{StaticResource MaterialDesignFlatButton}" />
+                <Button Name="ButtonOK" Content="OK"
+                        Click="ButtonOK_Click"
+                        DockPanel.Dock="Right" Margin="10"
+                        MinWidth="85"
+                        Style="{StaticResource MaterialDesignFlatButton}" />
 
-            <materialDesign:PopupBox Margin="10" DockPanel.Dock="Left"
-                                     x:Name="DropNewField"
-                                     materialDesign:RippleAssist.IsDisabled="True">
-                <materialDesign:PopupBox.ToggleContent>
-                    <ToggleButton Style="{StaticResource MaterialDesignFlatToggleButtonFull}" 
-                                  IsChecked="{Binding ElementName=DropNewField, Path=IsPopupOpen, Mode=TwoWay}"
-                                  materialDesign:RippleAssist.IsDisabled="False">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Images/addfield.png" Width="16" VerticalAlignment="Center" />
-                            <TextBlock Text="ADD FIELD" Margin="6,0,0,0" FontSize="14" FontWeight="Medium"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </ToggleButton>
-                </materialDesign:PopupBox.ToggleContent>
-                <StackPanel Margin="0" MinWidth="140">
-                    <MenuItem Header="String" Click="NewFieldMenuItem_Click" />
-                    <MenuItem Header="Boolean" Click="NewFieldMenuItem_Click" />
-                    <MenuItem Header="Double" Click="NewFieldMenuItem_Click" />
-                    <MenuItem Header="Int32" Click="NewFieldMenuItem_Click" />
-                    <MenuItem Header="Int64" Click="NewFieldMenuItem_Click" />
-                    <MenuItem Header="DateTime" Click="NewFieldMenuItem_Click" />
-                    <MenuItem Header="Array" Click="NewFieldMenuItem_Click" />
-                    <MenuItem Header="Document" Click="NewFieldMenuItem_Click" />
-                </StackPanel>
-            </materialDesign:PopupBox>
-            <Canvas />
-        </DockPanel>
-
-        <Grid DockPanel.Dock="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <Button Name="ButtonPrev" Grid.Column="0" Grid.Row="0" Margin="20"
-                    Command="local:DocumentViewerControl.PreviousItem"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniButton}">
-                <materialDesign:PackIcon Kind="ArrowLeft" />
-            </Button>
-            <Button Name="ButtonNext" Grid.Column="2" Grid.Row="0" Margin="20"
-                    Command="local:DocumentViewerControl.NextItem"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniButton}">
-                <materialDesign:PackIcon Kind="ArrowRight" />
-            </Button>
-
-            <DockPanel Grid.Column="1" Grid.Row="0">
-                <ListView Name="ListItems" SizeChanged="ItemsField_SizeChanged"
-                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                          BorderThickness="0" DockPanel.Dock="Top">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MaterialDesignGridViewItemNoBorder}">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.View>
-                        <GridView>
-                            <GridView.ColumnHeaderContainerStyle>
-                                <Style TargetType="GridViewColumnHeader">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </Style>
-                            </GridView.ColumnHeaderContainerStyle>
-                            <GridViewColumn>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Name}" TextAlignment="Right" Margin="3,11,6,3"
-                                                   VerticalAlignment="Top" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <ContentPresenter Content="{Binding EditControl}" MinHeight="32"
-                                                          Margin="0,3,0,3" VerticalAlignment="Top"
-                                                          ScrollViewer.VerticalScrollBarVisibility="Disabled" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Width="40">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button DockPanel.Dock="Right" Tag="{Binding Name}" Click="RemoveButton_Click"
-                                                ToolTip="Remove Item"
-                                                Style="{StaticResource MaterialDesignFlatButton}"
-                                                Padding="4" Height="32" Width="32"
-                                                Visibility="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource InvertableBooleanToVisibilityConverter}, ConverterParameter=Inverted}">
-                                            <Image Source="/Images/deleteitem.png" Width="16" Height="16" />
-                                        </Button>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-                <DockPanel DockPanel.Dock="Top" Name="GroupFile" Visibility="Collapsed" Margin="0,10,0,0">
-                    <Border DockPanel.Dock="Top" MinHeight="40"
-                            Background="{DynamicResource MaterialDesignToolBarBackground}" Padding="10,0">
-                        <TextBlock Text="File Preview" FontWeight="Bold" VerticalAlignment="Center" />
-                    </Border>
-                    <controls:FileView x:Name="FileView" DockPanel.Dock="Top" />
-                </DockPanel>
+                <materialDesign:PopupBox Margin="10" DockPanel.Dock="Left"
+                                         x:Name="DropNewField"
+                                         materialDesign:RippleAssist.IsDisabled="True">
+                    <materialDesign:PopupBox.ToggleContent>
+                        <ToggleButton Style="{StaticResource MaterialDesignFlatToggleButtonFull}"
+                                      IsChecked="{Binding ElementName=DropNewField, Path=IsPopupOpen, Mode=TwoWay}"
+                                      materialDesign:RippleAssist.IsDisabled="False">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Images/addfield.png" Width="16" VerticalAlignment="Center" />
+                                <TextBlock Text="ADD FIELD" Margin="6,0,0,0" FontSize="14" FontWeight="Medium"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ToggleButton>
+                    </materialDesign:PopupBox.ToggleContent>
+                    <StackPanel Margin="0" MinWidth="140">
+                        <MenuItem Header="String" Click="NewFieldMenuItem_Click" />
+                        <MenuItem Header="Boolean" Click="NewFieldMenuItem_Click" />
+                        <MenuItem Header="Double" Click="NewFieldMenuItem_Click" />
+                        <MenuItem Header="Decimal" Click="NewFieldMenuItem_Click" />
+                        <MenuItem Header="Int32" Click="NewFieldMenuItem_Click" />
+                        <MenuItem Header="Int64" Click="NewFieldMenuItem_Click" />
+                        <MenuItem Header="DateTime" Click="NewFieldMenuItem_Click" />
+                        <MenuItem Header="Array" Click="NewFieldMenuItem_Click" />
+                        <MenuItem Header="Document" Click="NewFieldMenuItem_Click" />
+                    </StackPanel>
+                </materialDesign:PopupBox>
+                <Canvas />
             </DockPanel>
 
-            <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Height="1" BorderThickness="0,0,0,1"
-                    BorderBrush="{StaticResource MaterialDesignDivider}" />
-        </Grid>
-    </DockPanel>
+            <Grid DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Button Name="ButtonPrev" Grid.Column="0" Grid.Row="0" Margin="20"
+                        Command="local:DocumentViewerControl.PreviousItem"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniButton}">
+                    <materialDesign:PackIcon Kind="ArrowLeft" />
+                </Button>
+                <Button Name="ButtonNext" Grid.Column="2" Grid.Row="0" Margin="20"
+                        Command="local:DocumentViewerControl.NextItem"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniButton}">
+                    <materialDesign:PackIcon Kind="ArrowRight" />
+                </Button>
+
+                <DockPanel Grid.Column="1" Grid.Row="0">
+                    <ListView Name="ListItems" SizeChanged="ItemsField_SizeChanged"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              BorderThickness="0" DockPanel.Dock="Top">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem"
+                                   BasedOn="{StaticResource MaterialDesignGridViewItemNoBorder}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView>
+                                <GridView.ColumnHeaderContainerStyle>
+                                    <Style TargetType="GridViewColumnHeader">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </Style>
+                                </GridView.ColumnHeaderContainerStyle>
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}"
+                                                       TextAlignment="Right" Margin="3,11,6,3"
+                                                       VerticalAlignment="Top" TextTrimming="CharacterEllipsis" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ContentPresenter Content="{Binding EditControl}" MinHeight="32"
+                                                              Margin="0,3,0,3" VerticalAlignment="Top"
+                                                              ScrollViewer.VerticalScrollBarVisibility="Disabled" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="40">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button DockPanel.Dock="Right" Tag="{Binding Name}"
+                                                    Click="RemoveButton_Click"
+                                                    ToolTip="Remove Item"
+                                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                                    Padding="4" Height="32" Width="32"
+                                                    Visibility="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource InvertableBooleanToVisibilityConverter}, ConverterParameter=Inverted}">
+                                                <Image Source="/Images/deleteitem.png" Width="16" Height="16" />
+                                            </Button>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <DockPanel DockPanel.Dock="Top" Name="GroupFile" Visibility="Collapsed" Margin="0,10,0,0">
+                        <Border DockPanel.Dock="Top" MinHeight="40"
+                                Background="{DynamicResource MaterialDesignToolBarBackground}" Padding="10,0">
+                            <TextBlock Text="File Preview" FontWeight="Bold" VerticalAlignment="Center" />
+                        </Border>
+                        <controls:FileView x:Name="FileView" DockPanel.Dock="Top" />
+                    </DockPanel>
+                </DockPanel>
+
+                <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Height="1" BorderThickness="0,0,0,1"
+                        BorderBrush="{StaticResource MaterialDesignDivider}" />
+            </Grid>
+
+        </DockPanel>
+    </materialDesign:DialogHost>
 </UserControl>

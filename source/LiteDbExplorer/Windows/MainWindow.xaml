@@ -191,7 +191,7 @@
                         <MenuItem x:Name="CheckUpdatesMenuItem" Header="Check for updates..." 
                                   Command="{Binding Path=Current.CheckForUpdatesCommand, Source={StaticResource AppUpdateManager}}" >
                             <MenuItem.Icon>
-                                <materialDesign:PackIcon Kind="Update" />
+                                <materialDesign:PackIcon Kind="ArrowDownBoldCircleOutline" />
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
@@ -204,7 +204,8 @@
             <Border>
                 <materialDesign:PopupBox x:Name="DropNewUpdatePanel"
                                          PlacementMode="BottomAndAlignRightEdges"
-                                         materialDesign:RippleAssist.IsDisabled="False">
+                                         Padding="0"
+                                         materialDesign:RippleAssist.IsDisabled="True">
                     <materialDesign:PopupBox.ToggleContent>
                         <ToggleButton Visibility="{Binding Path=Current.HasUpdate, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource AppUpdateManager}}"
                                       IsChecked="{Binding ElementName=DropNewUpdatePanel, Path=IsPopupOpen, Mode=TwoWay}"
@@ -212,12 +213,15 @@
                                       Height="33"
                                       Foreground="White"
                                       Background="#FFCA00"
-                                      materialDesign:RippleAssist.IsDisabled="False">
-                            <materialDesign:PackIcon
-                                Kind="Update" Height="24" Width="24"/>
+                                      materialDesign:RippleAssist.IsDisabled="True">
+                            <Grid>
+                                <materialDesign:PackIcon
+                                    Kind="ArrowDownBoldCircleOutline" Height="24" Width="24"
+                                    SnapsToDevicePixels="True"/>
+                            </Grid>
                         </ToggleButton>
                     </materialDesign:PopupBox.ToggleContent>
-                    <StackPanel Orientation="Vertical" Margin="20,20,20,0" MinWidth="300" MinHeight="100">
+                    <StackPanel Orientation="Vertical" Margin="20" MinWidth="300" MinHeight="100">
                         <TextBlock Text="LiteDB Explorer update is available"
                                    Style="{StaticResource MaterialDesignBody2TextBlock}"/>
                         <TextBlock Text="{Binding Path=Current.UpdateMessage, Source={StaticResource AppUpdateManager}}" Margin="0,10"
@@ -606,6 +610,12 @@
                             </Border>
 
                             <StackPanel>
+                                <Button Command="New"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        HorizontalContentAlignment="Left"
+                                        FontWeight="Normal">
+                                    <TextBlock Padding="25,0" Text="New" TextTrimming="CharacterEllipsis" />
+                                </Button>
                                 <Button Command="Open"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         HorizontalContentAlignment="Left"
@@ -648,10 +658,6 @@
                         Visibility="{Binding Path=Current.HasSelectedDocument, Source={StaticResource StoreContext}, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                     <DockPanel DockPanel.Dock="Top">
-                        <!--<Border DockPanel.Dock="Top" MinHeight="40"
-                                Background="{DynamicResource MaterialDesignToolBarBackground}" Padding="10,0">
-                            <TextBlock Text="Document Preview" FontWeight="Bold" VerticalAlignment="Center" />
-                        </Border>-->
                         <Grid DockPanel.Dock="Top" MinHeight="40"
                               Background="{DynamicResource MaterialDesignToolBarBackground}">
                             <Grid.ColumnDefinitions>
@@ -690,28 +696,6 @@
                                                            DocumentSource="{Binding Path=Current.SelectedDocument, Source={StaticResource StoreContext}}"/>
                             </TabItem>
                         </TabControl>
-
-                        <!--<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top">
-                            <ItemsControl Name="ItemsDocPreview" Margin="5,0,5,0">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Grid.IsSharedSizeScope="True"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid MinHeight="32">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition SharedSizeGroup="ColumnOne" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{Binding Name}" TextAlignment="Right" Margin="3,11,6,3" VerticalAlignment="Top"/>
-                                            <ContentPresenter Content="{Binding EditControl}" Margin="3" Grid.Column="1" MinHeight="32" VerticalAlignment="Top" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>-->
                     </DockPanel>
                 </Border>
 

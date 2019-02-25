@@ -8,25 +8,26 @@ namespace LiteDbExplorer.Windows
     /// </summary>
     public partial class InputBoxWindow : MetroWindow
     {        
-        public string Text
-        {
-            get
-            {
-                return TextText.Text;
-            }
-        }
+        public string Text => TextText.Text;
 
         public InputBoxWindow()
         {
             InitializeComponent();
         }
 
-        public static bool? ShowDialog(string message, string caption, string predefined, out string input)
+        public static bool? ShowDialog(string message, string caption, string predefined,
+            out string input)
         {
-            var window = new InputBoxWindow();
-            window.TextMessage.Text = message;
-            window.Title = caption;
-            window.TextText.Text = predefined;
+            return ShowDialog(message, caption, predefined, null, out input);
+        }
+
+        public static bool? ShowDialog(string message, string caption, string predefined, Window owner, out string input)
+        {
+            var window = new InputBoxWindow
+            {
+                Owner = owner,
+                TextMessage = {Text = message}, Title = caption, TextText = {Text = predefined}
+            };
 
             var result = window.ShowDialog();
             input = window.Text;

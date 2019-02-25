@@ -29,7 +29,6 @@ namespace LiteDbExplorer
             get => _liteDocument;
             set
             {
-                if (Equals(value, _liteDocument)) return;
                 OnPropertyChanging();
                 _liteDocument = value;
                 OnPropertyChanged();
@@ -41,7 +40,6 @@ namespace LiteDbExplorer
             get => _collection;
             set
             {
-                if (Equals(value, _collection)) return;
                 OnPropertyChanging();
                 _collection = value;
                 OnPropertyChanged();

@@ -23,12 +23,7 @@ namespace LiteDbExplorer.Presentation.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value == null)
-            {
-                return null;
-            }
-
-            return new BsonValue(value);
+            return value == null ? null : new BsonValue(value);
         }
     }
 }

@@ -45,6 +45,14 @@ namespace LiteDbExplorer.Presentation.Converters
                     {
                         return bsonValue.AsInt64;
                     }
+                    if (bsonValue.IsDouble)
+                    {
+                        return bsonValue.AsDouble;
+                    }
+                    if (bsonValue.IsDecimal)
+                    {
+                        return bsonValue.AsDecimal;
+                    }
                     if (bsonValue.IsGuid)
                     {
                         return bsonValue.AsGuid;

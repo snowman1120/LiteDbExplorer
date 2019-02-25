@@ -46,6 +46,7 @@
                     <MenuItem Header="String" Click="NewFieldMenuItem_Click" />
                     <MenuItem Header="Boolean" Click="NewFieldMenuItem_Click" />
                     <MenuItem Header="Double" Click="NewFieldMenuItem_Click" />
+                    <MenuItem Header="Decimal" Click="NewFieldMenuItem_Click" />
                     <MenuItem Header="Int32" Click="NewFieldMenuItem_Click" />
                     <MenuItem Header="Int64" Click="NewFieldMenuItem_Click" />
                     <MenuItem Header="DateTime" Click="NewFieldMenuItem_Click" />
