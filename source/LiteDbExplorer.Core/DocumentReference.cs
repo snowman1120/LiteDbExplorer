@@ -6,6 +6,24 @@ using LiteDB;
 
 namespace LiteDbExplorer
 {
+    public enum DocumentType
+    {
+        BsonDocument,
+        File
+    }
+
+    public class TypedDocumentReference
+    {
+        public TypedDocumentReference(DocumentType type, DocumentReference documentReference)
+        {
+            Type = type;
+            DocumentReference = documentReference;
+        }
+
+        public DocumentType Type { get; }
+        public DocumentReference DocumentReference { get; }
+    }
+
     public class DocumentReference : INotifyPropertyChanging, INotifyPropertyChanged, IReferenceNode
     {
         private BsonDocument _liteDocument;

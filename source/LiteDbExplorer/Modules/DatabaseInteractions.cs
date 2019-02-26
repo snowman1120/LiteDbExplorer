@@ -4,12 +4,13 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using Caliburn.Micro;
 using CSharpFunctionalExtensions;
 using LiteDbExplorer.Windows;
 using LiteDB;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using NLog;
+using LogManager = NLog.LogManager;
 
 namespace LiteDbExplorer.Modules
 {
@@ -20,7 +21,7 @@ namespace LiteDbExplorer.Modules
         void OpenDatabase();
         void OpenDatabase(string path);
         void OpenDatabases(IEnumerable<string> paths);
-        Result AddFileToDatabase(DatabaseReference database);
+        Result<TypedDocumentReference> AddFileToDatabase(DatabaseReference database);
         void RemoveSelectedDocuments();
         void AddCollectionToSelectedDatabase();
         void RenameSelectedCollection();
@@ -30,16 +31,24 @@ namespace LiteDbExplorer.Modules
         void ExportSelectedDocuments();
         void ExportDocuments(ICollection<DocumentReference> documents);
         void CopySelectedDocuments();
+        void ShowDatabaseProperties(LiteDatabase database);
+        Result ImportDataFromText(CollectionReference collection, string textData);
+        Result<TypedDocumentReference> CreateItem(CollectionReference collection);
     }
 
     [Export(typeof(IDatabaseInteractions))]
     [PartCreationPolicy (CreationPolicy.Shared)]
     public class DatabaseInteractions : IDatabaseInteractions
     {
+        private readonly IEventAggregator _eventAggregator;
+        private readonly IInteractionResolver _interactionResolver;
         private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public DatabaseInteractions()
+        [ImportingConstructor]
+        public DatabaseInteractions(IEventAggregator eventAggregator, IInteractionResolver interactionResolver)
         {
+            _eventAggregator = eventAggregator;
+            _interactionResolver = interactionResolver;
             PathDefinitions = new Paths();
         }
 
@@ -139,8 +148,8 @@ namespace LiteDbExplorer.Modules
                 OpenDatabase(path);
             }
         }
-
-        public Result AddFileToDatabase(DatabaseReference database)
+        
+        public Result<TypedDocumentReference> AddFileToDatabase(DatabaseReference database)
         {
             var dialog = new OpenFileDialog
             {
@@ -150,7 +159,7 @@ namespace LiteDbExplorer.Modules
 
             if (dialog.ShowDialog() != true)
             {
-                return Result.Fail("FILE_OPEN_CANCELED");
+                return Result.Fail<TypedDocumentReference>("FILE_OPEN_CANCELED");
             }
 
             try
@@ -159,10 +168,8 @@ namespace LiteDbExplorer.Modules
                         out string id) == true)
                 {
                     var file = database.AddFile(id, dialog.FileName);
-                    Store.Current.SelectCollection(database.Collections.First(a => a.Name == "_files"));
-                    Store.Current.SelectDocument(file);
-
-                    return Result.Ok();
+                    
+                    return Result.Ok(new TypedDocumentReference(DocumentType.File, file));
                 }
             }
             catch (Exception exc)
@@ -171,7 +178,7 @@ namespace LiteDbExplorer.Modules
             }
 
 
-            return Result.Fail("FILE_OPEN_FAIL");
+            return Result.Fail<TypedDocumentReference>("FILE_OPEN_FAIL");
         }
 
         public void RemoveSelectedDocuments()
@@ -418,6 +425,72 @@ namespace LiteDbExplorer.Modules
         {
             var data = new BsonArray(Store.Current.SelectedDocuments.Select(a => a.LiteDocument));
             Clipboard.SetData(DataFormats.Text, JsonSerializer.Serialize(data, true, false));
+        }
+
+        public void ShowDatabaseProperties(LiteDatabase database)
+        {
+            _interactionResolver.ShowDatabaseProperties(database);
+        }
+        
+        public Result ImportDataFromText(CollectionReference collection, string textData)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(textData))
+                {
+                    return Result.Ok();
+                }
+
+                var newValue = JsonSerializer.Deserialize(textData);
+                var newDocs = new List<BsonDocument>();
+                if (newValue.IsArray)
+                {
+                    foreach (var value in newValue.AsArray)
+                    {
+                        var doc = value.AsDocument;
+                        collection.AddItem(doc);
+                        newDocs.Add(doc);
+                    }
+                }
+                else
+                {
+                    var doc = newValue.AsDocument;
+                    collection.AddItem(doc);
+                    newDocs.Add(doc);
+                }
+
+                _eventAggregator.BeginPublishOnUIThread(new InteractionEvents.DocumentsUpdated(nameof(ImportDataFromText), newDocs));
+            }
+            catch (Exception e)
+            {
+                var message = "Failed to import document from text content: " + e.Message;
+                Logger.Warn(e, "Cannot process clipboard data.");
+                ErrorInteraction(message, "Import Error");
+                return Result.Fail(message);
+            }
+
+            return Result.Ok();
+        }
+        
+        public Result<TypedDocumentReference> CreateItem(CollectionReference collection)
+        {
+            if (collection is FileCollectionReference)
+            {
+                return AddFileToDatabase(collection.Database);
+            }
+
+            var newDoc = new BsonDocument
+            {
+                ["_id"] = ObjectId.NewObjectId()
+            };
+
+            var documentReference = collection.AddItem(newDoc);
+
+            Store.Current.SelectDocument(documentReference);
+
+            _eventAggregator.BeginPublishOnUIThread(new InteractionEvents.DocumentsUpdated(nameof(CreateItem), newDoc));
+
+            return Result.Ok(new TypedDocumentReference(DocumentType.BsonDocument, documentReference));
         }
 
         protected bool ConfirmInteraction(string message, string title = "Are you sure?")

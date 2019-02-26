@@ -1,18 +1,17 @@
 ﻿using LiteDB;
 using LiteDbExplorer.Controls;
 using LiteDbExplorer.Windows;
-using NLog;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Caliburn.Micro;
 using LiteDbExplorer.Modules;
 using LiteDbExplorer.Presentation;
 using MahApps.Metro.Controls;
+using LogManager = NLog.LogManager;
 
 namespace LiteDbExplorer
 {
@@ -28,6 +27,7 @@ namespace LiteDbExplorer
 
         private readonly WindowPositionHandler _positionManager;
         private readonly DatabaseInteractions _databaseInteractions;
+        private EventAggregator _eventAggregator;
 
         public Paths PathDefinitions
         {
@@ -38,7 +38,9 @@ namespace LiteDbExplorer
         {
             InitializeComponent();
 
-            _databaseInteractions = new DatabaseInteractions();
+            _eventAggregator = new EventAggregator();
+
+            _databaseInteractions = new DatabaseInteractions(_eventAggregator, new MainWindowInteractionResolver{ Owner = this });
 
             _positionManager = new WindowPositionHandler(this, "Main");
             
@@ -154,15 +156,11 @@ namespace LiteDbExplorer
 
         private void EditDbPropertiesCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var window = new DatabasePropertiesWindow(Store.Current.SelectedDatabase.LiteDatabase)
-            {
-                Owner = this
-            };
-
-            window.ShowDialog();
+            _databaseInteractions.ShowDatabaseProperties(Store.Current.SelectedDatabase.LiteDatabase);
         }
-        #endregion EditDbProperties Command
 
+        #endregion EditDbProperties Command
+        
         #region AddFile Command
         private void AddFileCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -184,26 +182,26 @@ namespace LiteDbExplorer
 
         private void AddCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (Store.Current.SelectedCollection is FileCollectionReference)
+            var result = _databaseInteractions.CreateItem(Store.Current.SelectedCollection);
+            if (result.IsSuccess)
             {
-                AddFileToDatabase(Store.Current.SelectedCollection.Database);
-            }
-            else
-            {
-                var newDoc = new BsonDocument
+                var reference = result.Value;
+                
+                if (reference.Type == DocumentType.File)
                 {
-                    ["_id"] = ObjectId.NewObjectId()
-                };
-
-                var documentReference = Store.Current.SelectedCollection.AddItem(newDoc);
-                Store.Current.SelectDocument(documentReference);
+                    Store.Current.SelectCollection(Store.Current.SelectedCollection.Database.Collections.First(a => a.Name == "_files"));
+                    Store.Current.SelectDocument(reference.DocumentReference);
+                }
+                else
+                {
+                    Store.Current.SelectDocument(reference.DocumentReference);
+                    UpdateGridColumns(reference.DocumentReference.LiteDocument);
+                }
 
                 CollectionListView.ScrollIntoSelectedItem();
 
-                UpdateGridColumns(newDoc);
+                UpdateDocumentPreview();
             }
-
-            UpdateDocumentPreview();
         }
         #endregion Add Command
 
@@ -438,24 +436,11 @@ namespace LiteDbExplorer
                     return;
                 }
 
-                var newValue = JsonSerializer.Deserialize(textData);
-                if (newValue.IsArray)
+                var result = _databaseInteractions.ImportDataFromText(Store.Current.SelectedCollection, textData);
+                if (result.IsSuccess)
                 {
-                    foreach (var value in newValue.AsArray)
-                    {
-                        var doc = value.AsDocument;
-                        Store.Current.SelectedCollection.AddItem(doc);
-                        UpdateGridColumns(doc);
-                    }
+                    UpdateDocumentPreview();
                 }
-                else
-                {
-                    var doc = newValue.AsDocument;
-                    Store.Current.SelectedCollection.AddItem(doc);
-                    UpdateGridColumns(doc);
-                }
-
-                UpdateDocumentPreview();
             }
             catch (Exception exc)
             {
@@ -484,30 +469,6 @@ namespace LiteDbExplorer
         {
             DocumentTreeView.UpdateDocument();
             DocumentJsonView.UpdateDocument();
-
-            
-            /*if (DetailViewSelector.SelectedIndex == 1)
-            {
-                
-            }*/
-
-            // TODO: Update only changed node and keep tree state
-            /*var document = DbSelectedItems.FirstOrDefault();
-            if (document != null)
-            {
-                DocumentTreeView.ItemsSource = new DocumentTreeItemsSource(document);
-
-                if (document.Collection is FileCollectionReference reference)
-                {
-                    var fileInfo = reference.GetFileObject(document);
-                    FilePreview.LoadFile(fileInfo);
-                    BorderFilePreview.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    BorderFilePreview.Visibility = Visibility.Collapsed;
-                }
-            }*/
         }
 
         private void UpdateGridColumns(BsonDocument dbItem)
@@ -582,6 +543,9 @@ namespace LiteDbExplorer
             var result = _databaseInteractions.AddFileToDatabase(database);
             if (result.IsSuccess)
             {
+                Store.Current.SelectCollection(database.Collections.First(a => a.Name == "_files"));
+                Store.Current.SelectDocument(result.Value.DocumentReference);
+
                 CollectionListView.ScrollIntoSelectedItem();
             }
         }

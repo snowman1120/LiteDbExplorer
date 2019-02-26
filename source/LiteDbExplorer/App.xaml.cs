@@ -26,12 +26,18 @@ namespace LiteDbExplorer
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            /*if (Resources["bootstrapper"] == null)
+#if DEBUG
+            if (Resources["bootstrapper"] == null)
             {
                 StartupUri = new System.Uri(@"Windows\MainWindow.xaml", System.UriKind.Relative);
-            }*/
+            }
+            else
+            {
+                ShutdownMode = ShutdownMode.OnLastWindowClose;
+            }
+#else
             StartupUri = new System.Uri(@"Windows\MainWindow.xaml", System.UriKind.Relative);
-
+#endif
             base.OnStartup(e);
         }
 

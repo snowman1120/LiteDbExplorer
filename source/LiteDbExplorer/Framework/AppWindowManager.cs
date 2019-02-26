@@ -25,6 +25,7 @@ namespace LiteDbExplorer.Framework
                     window = new BaseDialogWindow
                     {
                         Content = view,
+                        WindowStartupLocation =  WindowStartupLocation.CenterOwner,
                         SizeToContent = SizeToContent.WidthAndHeight
                     };
                 }
@@ -53,13 +54,11 @@ namespace LiteDbExplorer.Framework
                 
                 window.SetValue(View.IsGeneratedProperty, true);
             }
-            else
+            
+            var owner = InferOwnerOf(window);
+            if (owner != null && isDialog)
             {
-                var owner = InferOwnerOf(window);
-                if (owner != null && isDialog)
-                {
-                    window.Owner = owner;
-                }
+                window.Owner = owner;
             }
 
             return window;

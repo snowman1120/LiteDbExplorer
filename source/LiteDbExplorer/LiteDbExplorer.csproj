@@ -201,13 +201,21 @@
       <DependentUpon>BaseWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\AppUpdateManager.cs" />
-    <Compile Include="Modules\DatabaseCommandsHandler.cs" />
+    <Compile Include="Modules\DefaultCommandsHandler.cs" />
     <Compile Include="Modules\DatabaseInteractions.cs" />
+    <Compile Include="Modules\Database\DatabasePropertiesView.xaml.cs">
+      <DependentUpon>DatabasePropertiesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\Database\DatabasePropertiesViewModel.cs" />
+    <Compile Include="Modules\Database\IDatabasePropertiesView.cs" />
     <Compile Include="Modules\Explorer\DatabasesExplorerView.xaml.cs">
       <DependentUpon>DatabasesExplorerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\Explorer\DatabasesExplorerViewModel.cs" />
     <Compile Include="Modules\Explorer\IFileDropProvider.cs" />
+    <Compile Include="Modules\IInteractionResolver.cs" />
+    <Compile Include="Modules\InteractionEvents.cs" />
+    <Compile Include="Modules\IoCInteractionResolver.cs" />
     <Compile Include="Modules\Main\DocumentSetView.xaml.cs">
       <DependentUpon>DocumentSetView.xaml</DependentUpon>
     </Compile>
@@ -267,6 +275,7 @@
     <Compile Include="Windows\InputBoxWindow.xaml.cs">
       <DependentUpon>InputBoxWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\MainWindowInteractionResolver.cs" />
     <Compile Include="Windows\ValueTypeSelectionWindow.xaml.cs">
       <DependentUpon>ValueTypeSelectionWindow.xaml</DependentUpon>
     </Compile>
@@ -307,6 +316,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Framework\Windows\BaseWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Modules\Database\DatabasePropertiesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

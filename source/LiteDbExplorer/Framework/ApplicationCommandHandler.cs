@@ -9,11 +9,11 @@ namespace LiteDbExplorer.Framework
     [InheritedExport(typeof(IApplicationCommandHandler))]
     public abstract class ApplicationCommandHandler : IApplicationCommandHandler
     {
-        private readonly IList<CommandBinding> _commands;
+        private readonly ICollection<CommandBinding> _commands;
 
         protected ApplicationCommandHandler()
         {
-            _commands = new List<CommandBinding>();
+            _commands = new HashSet<CommandBinding>();
         }
 
         public void Add(CommandBinding commandBinding)

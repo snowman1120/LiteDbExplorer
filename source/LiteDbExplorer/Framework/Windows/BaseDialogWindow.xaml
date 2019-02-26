@@ -6,6 +6,7 @@
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
         Height="450" Width="800"
+        WindowStartupLocation="CenterOwner"
         Style="{StaticResource DialogWindowStyle}">
     <mah:MetroWindow.IconTemplate>
         <DataTemplate>
