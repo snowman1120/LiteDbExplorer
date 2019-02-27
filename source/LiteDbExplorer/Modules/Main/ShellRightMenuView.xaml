@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="LiteDbExplorer.Modules.Main.ShellRightMenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:LiteDbExplorer.Modules.Main"
+             xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
+             xmlns:modules="clr-namespace:LiteDbExplorer.Modules"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <modules:AppUpdateManager x:Key="AppUpdateManager" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <Border>
+        <materialDesign:PopupBox x:Name="DropNewUpdatePanel"
+                                 PlacementMode="BottomAndAlignRightEdges"
+                                 Padding="0"
+                                 materialDesign:RippleAssist.IsDisabled="True">
+            <materialDesign:PopupBox.ToggleContent>
+                <ToggleButton
+                    Visibility="{Binding Path=Current.HasUpdate, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource AppUpdateManager}}"
+                    IsChecked="{Binding ElementName=DropNewUpdatePanel, Path=IsPopupOpen, Mode=TwoWay}"
+                    ToolTip="Update available"
+                    Height="33"
+                    Foreground="White"
+                    Background="#FFCA00"
+                    materialDesign:RippleAssist.IsDisabled="True">
+                    <Grid>
+                        <materialDesign:PackIcon
+                            Kind="ArrowDownBoldCircleOutline" Height="24" Width="24"
+                            SnapsToDevicePixels="True" />
+                    </Grid>
+                </ToggleButton>
+            </materialDesign:PopupBox.ToggleContent>
+            <StackPanel Orientation="Vertical" Margin="20" MinWidth="300" MinHeight="100">
+                <TextBlock Text="LiteDB Explorer update is available"
+                           Style="{StaticResource MaterialDesignBody2TextBlock}" />
+                <TextBlock Text="{Binding Path=Current.UpdateMessage, Source={StaticResource AppUpdateManager}}"
+                           Margin="0,10"
+                           Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                <Button Command="{Binding Path=Current.DoUpdateCommand, Source={StaticResource AppUpdateManager}}"
+                        Content="{Binding Path=Current.UpdateActionText, Source={StaticResource AppUpdateManager}}"
+                        Margin="0,10,0,0" HorizontalAlignment="Right"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Click="UpdatePanelButtonOnClick" />
+            </StackPanel>
+        </materialDesign:PopupBox>
+    </Border>
+</UserControl>

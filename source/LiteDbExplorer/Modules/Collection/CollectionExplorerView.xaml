@@ -1,0 +1,155 @@
+﻿<UserControl x:Class="LiteDbExplorer.Modules.Collection.CollectionExplorerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:LiteDbExplorer.Modules.Collection"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
+             xmlns:liteDbExplorer="clr-namespace:LiteDbExplorer"
+             xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <controls:StoreContext x:Key="StoreContext"/>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <DockPanel Grid.Column="2" x:Name="ListCollectionPanel"
+               Visibility="{Binding Path=Current.HasSelectedCollection, Source={StaticResource StoreContext}, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}">
+                <ToolBar.Resources>
+                    <ResourceDictionary>
+                        <Style TargetType="Image">
+                            <Setter Property="Height" Value="16" />
+                            <Setter Property="Width" Value="16" />
+                        </Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontFamily" Value="{StaticResource MaterialDesignFont}" />
+                            <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                            <Setter Property="FontSize" Value="15" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="Margin" Value="5,0,5,0" />
+                            <Setter Property="FontWeight" Value="Regular" />
+                        </Style>
+                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button"
+                               BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                            <Setter Property="Padding" Value="10" />
+                        </Style>
+                    </ResourceDictionary>
+                </ToolBar.Resources>
+                <Button Command="liteDbExplorer:Commands.Add">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/createitem.png" />
+                        <TextBlock Text="Add" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+                <Button Command="liteDbExplorer:Commands.Edit">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/updateitem.png" />
+                        <TextBlock Text="Edit" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+                <Button Command="liteDbExplorer:Commands.Remove">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/deleteitem.png" />
+                        <TextBlock Text="Delete" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+                <Button Command="liteDbExplorer:Commands.Export">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/export.png" />
+                        <TextBlock Text="Export" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+                <Separator />
+                <Button Command="liteDbExplorer:Commands.RefreshCollection">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/refresh.png" />
+                        <TextBlock Text="Refresh" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+
+        <Border Name="DockSearch" DockPanel.Dock="Top">
+            <materialDesign:Card Margin="10">
+                <StackPanel>
+                    <DockPanel Margin="10,5,10,0">
+                        <Button FontFamily="Marlett" Content="r" Padding="2"
+                                DockPanel.Dock="Right" Name="ButtonCloseSearch" 
+                                VerticalContentAlignment="Center" FontWeight="ExtraBold"
+                                Style="{StaticResource MaterialDesignFlatButton}" />
+                        <TextBlock Text="Search" FontWeight="Bold" VerticalAlignment="Center" />
+                    </DockPanel>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBox Grid.Column="0" Grid.Row="0" Name="TextSearch" Margin="5">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Return" Command="liteDbExplorer:Commands.FindNext" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <CheckBox Grid.Column="0" Grid.Row="1" Name="CheckSearchCase"
+                                  Content="Match case" VerticalContentAlignment="Center" Margin="5" />
+
+                        <Button Grid.Column="1" Grid.Row="0" Content="Find Next" Margin="5"
+                                Command="liteDbExplorer:Commands.FindNext" />
+                        <Button Grid.Column="1" Grid.Row="1" Content="Find Previous" Margin="5"
+                                Command="liteDbExplorer:Commands.FindPrevious" />
+                    </Grid>
+                </StackPanel>
+            </materialDesign:Card>
+        </Border>
+
+        <controls:CollectionListView x:Name="CollectionListView"
+                                     Visibility="{Binding Path=Current.HasSelectedCollection, Source={StaticResource StoreContext}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                     CollectionReference="{Binding Path=Current.SelectedCollection, Source={StaticResource StoreContext}}"
+                                     SelectedItem="{Binding Path=Current.SelectedDocument, Source={StaticResource StoreContext}}"
+                                     SelectedItems="{Binding Path=Current.SelectedDocuments, Source={StaticResource StoreContext}}"
+                                     DoubleClickCommand="liteDbExplorer:Commands.Edit">
+            <controls:CollectionListView.ListViewContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="liteDbExplorer:Commands.Add">
+                        <MenuItem.Icon>
+                            <Image Source="/Images/createitem.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Command="liteDbExplorer:Commands.Edit">
+                        <MenuItem.Icon>
+                            <Image Source="/Images/updateitem.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Command="liteDbExplorer:Commands.Remove">
+                        <MenuItem.Icon>
+                            <Image Source="/Images/deleteitem.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Command="liteDbExplorer:Commands.Export">
+                        <MenuItem.Icon>
+                            <Image Source="/Images/export.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Command="Copy">
+                        <MenuItem.Icon>
+                            <Image Source="/Images/copy.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Command="Paste">
+                        <MenuItem.Icon>
+                            <Image Source="/Images/paste.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </controls:CollectionListView.ListViewContextMenu>
+        </controls:CollectionListView>
+    </DockPanel>
+</UserControl>

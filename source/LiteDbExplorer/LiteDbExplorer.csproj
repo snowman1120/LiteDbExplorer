@@ -176,8 +176,8 @@
     <Compile Include="Controls\DocumentTreeView.xaml.cs">
       <DependentUpon>DocumentTreeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DocumentViewerControl.xaml.cs">
-      <DependentUpon>DocumentViewerControl.xaml</DependentUpon>
+    <Compile Include="Controls\DocumentEntryControl.xaml.cs">
+      <DependentUpon>DocumentEntryControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FileView.xaml.cs">
       <DependentUpon>FileView.xaml</DependentUpon>
@@ -185,15 +185,16 @@
     <Compile Include="Controls\ContentExpander.xaml.cs">
       <DependentUpon>ContentExpander.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Framework\ApplicationCommandHandler.cs" />
+    <Compile Include="Framework\Services\ApplicationCommandHandler.cs" />
     <Compile Include="Framework\AppWindowManager.cs" />
     <Compile Include="Framework\DataContextProxy.cs" />
     <Compile Include="Framework\Document.cs" />
-    <Compile Include="Framework\IApplicationCommandHandler.cs" />
+    <Compile Include="Framework\Services\IApplicationCommandHandler.cs" />
     <Compile Include="Framework\IDocument.cs" />
     <Compile Include="Framework\LayoutItemBase.cs" />
     <Compile Include="Framework\RelayCommand.cs" />
-    <Compile Include="Framework\Services\IShell.cs" />
+    <Compile Include="Framework\Shell\IShell.cs" />
+    <Compile Include="Framework\Shell\IShellRightMenu.cs" />
     <Compile Include="Framework\Windows\BaseDialogWindow.xaml.cs">
       <DependentUpon>BaseDialogWindow.xaml</DependentUpon>
     </Compile>
@@ -201,6 +202,10 @@
       <DependentUpon>BaseWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\AppUpdateManager.cs" />
+    <Compile Include="Modules\Collection\CollectionExplorerView.xaml.cs">
+      <DependentUpon>CollectionExplorerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\Collection\CollectionExplorerViewModel.cs" />
     <Compile Include="Modules\DefaultCommandsHandler.cs" />
     <Compile Include="Modules\DatabaseInteractions.cs" />
     <Compile Include="Modules\Database\DatabasePropertiesView.xaml.cs">
@@ -208,11 +213,11 @@
     </Compile>
     <Compile Include="Modules\Database\DatabasePropertiesViewModel.cs" />
     <Compile Include="Modules\Database\IDatabasePropertiesView.cs" />
-    <Compile Include="Modules\Explorer\DatabasesExplorerView.xaml.cs">
+    <Compile Include="Modules\Database\DatabasesExplorerView.xaml.cs">
       <DependentUpon>DatabasesExplorerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Modules\Explorer\DatabasesExplorerViewModel.cs" />
-    <Compile Include="Modules\Explorer\IFileDropProvider.cs" />
+    <Compile Include="Modules\Database\DatabasesExplorerViewModel.cs" />
+    <Compile Include="Framework\Services\IFileDropProvider.cs" />
     <Compile Include="Modules\IInteractionResolver.cs" />
     <Compile Include="Modules\InteractionEvents.cs" />
     <Compile Include="Modules\IoCInteractionResolver.cs" />
@@ -223,12 +228,16 @@
     <Compile Include="Modules\Main\IDocumentExplorer.cs" />
     <Compile Include="Modules\Main\IDocumentSet.cs" />
     <Compile Include="Modules\Main\InterTabClient.cs" />
-    <Compile Include="Modules\Main\IShellMenu.cs" />
-    <Compile Include="Modules\Main\IShellStatusBar.cs" />
+    <Compile Include="Framework\Shell\IShellMenu.cs" />
+    <Compile Include="Framework\Shell\IShellStatusBar.cs" />
     <Compile Include="Modules\Main\ShellMenuView.xaml.cs">
       <DependentUpon>ShellMenuView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\Main\ShellMenuViewModel.cs" />
+    <Compile Include="Modules\Main\ShellRightMenuView.xaml.cs">
+      <DependentUpon>ShellRightMenuView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\Main\ShellRightMenuViewModel.cs" />
     <Compile Include="Modules\Main\ShellStatusBarView.xaml.cs">
       <DependentUpon>ShellStatusBarView.xaml</DependentUpon>
     </Compile>
@@ -276,9 +285,6 @@
       <DependentUpon>InputBoxWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\MainWindowInteractionResolver.cs" />
-    <Compile Include="Windows\ValueTypeSelectionWindow.xaml.cs">
-      <DependentUpon>ValueTypeSelectionWindow.xaml</DependentUpon>
-    </Compile>
     <Page Include="Controls\ArrayViewerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -295,7 +301,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\DocumentViewerControl.xaml">
+    <Page Include="Controls\DocumentEntryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -319,11 +325,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Modules\Collection\CollectionExplorerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Modules\Database\DatabasePropertiesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Modules\Explorer\DatabasesExplorerView.xaml">
+    <Page Include="Modules\Database\DatabasesExplorerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -332,6 +342,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Modules\Main\ShellMenuView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Modules\Main\ShellRightMenuView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -401,10 +415,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Windows\InputBoxWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\ValueTypeSelectionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

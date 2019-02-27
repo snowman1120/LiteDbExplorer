@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using LiteDbExplorer.Controls;
 using LiteDbExplorer.Modules;
 using LiteDbExplorer.Windows;
 using LiteDB;
@@ -9,14 +10,27 @@ namespace LiteDbExplorer
     {
         public Window Owner { get; set; }
 
-        public void ShowDatabaseProperties(LiteDatabase database)
+        public bool ShowDatabaseProperties(LiteDatabase database)
         {
             var window = new DatabasePropertiesWindow(Store.Current.SelectedDatabase.LiteDatabase)
             {
                 Owner = Owner
             };
 
-            window.ShowDialog();    
+            return window.ShowDialog() == true;
+        }
+
+        public bool OpenEditDocument(DocumentReference document)
+        {
+            var windowController = new WindowController {Title = "Document Editor"};
+            var control = new DocumentViewerControl(document, windowController);
+            var window = new DialogWindow(control, windowController)
+            {
+                Owner = Owner,
+                Height = 600
+            };
+
+            return window.ShowDialog() == true;
         }
     }
 }

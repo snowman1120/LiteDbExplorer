@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using LiteDbExplorer.Framework.Services;
 using LiteDbExplorer.Presentation;
 
-namespace LiteDbExplorer.Modules.Explorer
+namespace LiteDbExplorer.Modules.Database
 {
     /// <summary>
     /// Interaction logic for DatabasesNavView.xaml

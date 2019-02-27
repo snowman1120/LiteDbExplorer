@@ -1,7 +1,6 @@
-﻿using System;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 
-namespace LiteDbExplorer.Framework.Services
+namespace LiteDbExplorer.Framework.Shell
 {
     public interface IShell : IGuardClose, IDeactivate
     {

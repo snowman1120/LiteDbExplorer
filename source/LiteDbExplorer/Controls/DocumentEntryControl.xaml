@@ -23,8 +23,7 @@
                         CanExecute="NextItemCommand_CanExecute" />
     </UserControl.CommandBindings>
     <materialDesign:DialogHost
-        x:Name="DocumentViewerDialogHost"
-        Identifier="DocumentViewerDialogHost"
+        Identifier="DocumentEntryDialogHost"
         DialogTheme="Inherit">
 
         <DockPanel>

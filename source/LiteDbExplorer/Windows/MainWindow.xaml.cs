@@ -156,7 +156,7 @@ namespace LiteDbExplorer
 
         private void EditDbPropertiesCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _databaseInteractions.ShowDatabaseProperties(Store.Current.SelectedDatabase.LiteDatabase);
+            _databaseInteractions.OpenDatabaseProperties(Store.Current.SelectedDatabase.LiteDatabase);
         }
 
         #endregion EditDbProperties Command
@@ -208,24 +208,17 @@ namespace LiteDbExplorer
         #region Edit Command
         private void EditCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Store.Current.SelectedDocumentsCount == 1; //DbItemsSelectedCount == 1;
+            e.CanExecute = Store.Current.SelectedDocumentsCount == 1;
         }
 
         private void EditCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var item = Store.Current.SelectedDocument;
 
-            var windowController = new WindowController {Title = "Document Editor"};
-            var control = new DocumentViewerControl(item, windowController);
-            var window = new DialogWindow(control, windowController)
+            var document = _databaseInteractions.OpenEditDocument(item);
+            if (document.HasValue)
             {
-                Owner = Application.Current.MainWindow,
-                Height = 600
-            };
-            
-            if (window.ShowDialog() == true)
-            {
-                UpdateGridColumns(item.LiteDocument);
+                UpdateGridColumns(document.Value.LiteDocument);
                 UpdateDocumentPreview();
             }
         }
@@ -234,24 +227,25 @@ namespace LiteDbExplorer
         #region Remove Command
         private void RemoveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Store.Current.SelectedDocumentsCount > 0; //DbItemsSelectedCount > 0;
+            e.CanExecute = Store.Current.SelectedDocumentsCount > 0;
         }
 
         private void RemoveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _databaseInteractions.RemoveSelectedDocuments();
+            var currentSelectedDocuments = Store.Current.SelectedDocuments.ToList();
+            _databaseInteractions.RemoveDocuments(currentSelectedDocuments);
         }
         #endregion Remove Command
 
         #region Export Command
         private void ExportCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Store.Current.SelectedDocumentsCount > 0; // DbItemsSelectedCount > 0;
+            e.CanExecute = Store.Current.SelectedDocumentsCount > 0;
         }
 
         private void ExportCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _databaseInteractions.ExportSelectedDocuments();
+            _databaseInteractions.ExportDocuments(Store.Current.SelectedDocuments);
         }
         #endregion Export Command
 
@@ -276,7 +270,7 @@ namespace LiteDbExplorer
 
         private void AddCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _databaseInteractions.AddCollectionToSelectedDatabase();
+            _databaseInteractions.AddCollection(Store.Current.SelectedDatabase);
         }
         #endregion AddCollection Command
 
@@ -288,7 +282,7 @@ namespace LiteDbExplorer
 
         private void RenameCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _databaseInteractions.RenameSelectedCollection();
+            _databaseInteractions.RenameCollection(Store.Current.SelectedCollection);
         }
 
         #endregion RenameCollection Command
@@ -301,7 +295,12 @@ namespace LiteDbExplorer
 
         private void DropCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _databaseInteractions.DropSelectedCollection();
+            var result = _databaseInteractions.DropCollection(Store.Current.SelectedCollection);
+            if (result.IsSuccess && result.Value)
+            {
+                Store.Current.ResetSelectedCollection();
+            }
+
         }
         #endregion DropCollection Command
 
@@ -313,7 +312,7 @@ namespace LiteDbExplorer
 
         private void ExportCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _databaseInteractions.ExportSelectedCollection();
+            _databaseInteractions.ExportCollection(Store.Current.SelectedCollection);
         }
 
         #endregion
@@ -416,7 +415,7 @@ namespace LiteDbExplorer
 
         private void CopyCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _databaseInteractions.CopySelectedDocuments();
+            _databaseInteractions.CopyDocuments(Store.Current.SelectedDocuments);
         }
         #endregion Copy Command
 

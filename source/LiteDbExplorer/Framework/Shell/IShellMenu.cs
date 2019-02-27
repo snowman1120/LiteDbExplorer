@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
-using Caliburn.Micro;
 
-namespace LiteDbExplorer.Modules.Main
+namespace LiteDbExplorer.Framework.Shell
 {
     public interface IShellMenu : INotifyPropertyChanged
     {

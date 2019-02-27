@@ -19,4 +19,9 @@
             <ContentControl x:Name="WindowMenu" cal:View.Model="{Binding WindowMenu}"/>
         </mah:WindowCommands>
     </mah:MetroWindow.LeftWindowCommands>
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands ShowSeparators="False">
+            <ContentControl x:Name="WindowRightMenu" cal:View.Model="{Binding WindowRightMenu}"/>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
 </mah:MetroWindow>

@@ -19,7 +19,7 @@ namespace LiteDbExplorer.Modules
             _windowManager = windowManager;
         }
 
-        public void ShowDatabaseProperties(LiteDatabase database)
+        public bool ShowDatabaseProperties(LiteDatabase database)
         {
             var vm = IoC.Get<IDatabasePropertiesView>();
             vm.Init(database);
@@ -29,7 +29,12 @@ namespace LiteDbExplorer.Modules
             settings.SizeToContent = SizeToContent.Height;
             settings.ResizeMode = ResizeMode.NoResize;
 
-            _windowManager.ShowDialog(vm, null, settings);    
+            return _windowManager.ShowDialog(vm, null, settings) == true;
+        }
+
+        public bool OpenEditDocument(DocumentReference document)
+        {
+            return false;
         }
     }
 }

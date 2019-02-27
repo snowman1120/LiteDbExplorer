@@ -22,18 +22,17 @@ namespace LiteDbExplorer.Modules
         void OpenDatabase(string path);
         void OpenDatabases(IEnumerable<string> paths);
         Result<TypedDocumentReference> AddFileToDatabase(DatabaseReference database);
-        void RemoveSelectedDocuments();
-        void AddCollectionToSelectedDatabase();
-        void RenameSelectedCollection();
-        void DropSelectedCollection();
-        void ExportSelectedCollection();
         void ExportCollection(CollectionReference collectionReference);
-        void ExportSelectedDocuments();
         void ExportDocuments(ICollection<DocumentReference> documents);
-        void CopySelectedDocuments();
-        void ShowDatabaseProperties(LiteDatabase database);
+        void OpenDatabaseProperties(LiteDatabase database);
         Result ImportDataFromText(CollectionReference collection, string textData);
         Result<TypedDocumentReference> CreateItem(CollectionReference collection);
+        Result CopyDocuments(IEnumerable<DocumentReference> documents);
+        Maybe<DocumentReference> OpenEditDocument(DocumentReference document);
+        Result<bool> AddCollection(DatabaseReference database);
+        Result<bool> RenameCollection(CollectionReference collection);
+        Result<bool> DropCollection(CollectionReference collection);
+        Result<bool> RemoveDocuments(IEnumerable<DocumentReference> documents);
     }
 
     [Export(typeof(IDatabaseInteractions))]
@@ -181,68 +180,80 @@ namespace LiteDbExplorer.Modules
             return Result.Fail<TypedDocumentReference>("FILE_OPEN_FAIL");
         }
 
-        public void RemoveSelectedDocuments()
+        public Result<bool> RemoveDocuments(IEnumerable<DocumentReference> documents)
         {
             if (!ConfirmInteraction("Are you sure you want to remove items?"))
             {
-                return;
+                return Result.Ok(false);
             }
 
-            var currentSelectedDocuments = Store.Current.SelectedDocuments.ToList();
+            Store.Current.SelectedCollection.RemoveItems(documents);
 
-            Store.Current.SelectedCollection.RemoveItems(currentSelectedDocuments);
+            return Result.Ok(true);
         }
 
-        public void AddCollectionToSelectedDatabase()
+        public Result<bool> AddCollection(DatabaseReference database)
         {
             try
             {
                 if (InputBoxWindow.ShowDialog("New collection name:", "Enter new collection name", "", out string name) == true)
                 {
-                    Store.Current.SelectedDatabase.AddCollection(name);
+                    database.AddCollection(name);
+
+                    return Result.Ok(true);
                 }
+
+                return Result.Ok(false);
             }
             catch (Exception exc)
             {
-                ErrorInteraction("Failed to add new collection:" + Environment.NewLine + exc.Message);
+                var message = "Failed to add new collection:" + Environment.NewLine + exc.Message;
+                ErrorInteraction(message);
+                return Result.Fail<bool>(message);
             }
         }
 
-        public void RenameSelectedCollection()
+        public Result<bool> RenameCollection(CollectionReference collection)
         {
             try
             {
-                if (InputBoxWindow.ShowDialog("New name:", "Enter new collection name", Store.Current.SelectedCollection.Name, out string name) == true)
+                var currentName = collection.Name;
+                if (InputBoxWindow.ShowDialog("New name:", "Enter new collection name", currentName, out string name) == true)
                 {
-                    Store.Current.SelectedDatabase.RenameCollection(Store.Current.SelectedCollection.Name, name);
+                    collection.Database.RenameCollection(currentName, name);
+                    return Result.Ok(true);
                 }
+
+                return Result.Ok(false);
             }
             catch (Exception exc)
             {
-                ErrorInteraction("Failed to rename collection:" + Environment.NewLine + exc.Message);
+                var message = "Failed to rename collection:" + Environment.NewLine + exc.Message;
+                ErrorInteraction(message);
+                return Result.Fail<bool>(message);
             }
         }
 
-        public void DropSelectedCollection()
+        public Result<bool> DropCollection(CollectionReference collection)
         {
             try
             {
-                if (ConfirmInteraction($"Are you sure you want to drop collection \"{Store.Current.SelectedCollection.Name}\"?"))
+                var collectionName = collection.Name;
+                if (ConfirmInteraction($"Are you sure you want to drop collection \"{collectionName}\"?"))
                 {
-                    Store.Current.SelectedDatabase.DropCollection(Store.Current.SelectedCollection.Name);
-                    Store.Current.ResetSelectedCollection();
+                    collection.Database.DropCollection(collectionName);
+                    
+                    return Result.Ok(true);
                 }
 
+                return Result.Ok(false);
             }
             catch (Exception exc)
             {
-                ErrorInteraction("Failed to drop collection:" + Environment.NewLine + exc.Message);
+                var message = "Failed to drop collection:" + Environment.NewLine + exc.Message;
+                ErrorInteraction(message);
+                return Result.Fail<bool>(message);
             }
-        }
-
-        public void ExportSelectedCollection()
-        {
-            ExportCollection(Store.Current.SelectedCollection);
         }
 
         public void ExportCollection(CollectionReference collectionReference)
@@ -265,83 +276,6 @@ namespace LiteDbExplorer.Modules
 
                 File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(data, true, false));
             }
-        }
-
-        public void ExportSelectedDocuments()
-        {
-            ExportDocuments(Store.Current.SelectedDocuments);
-
-            /*if (Store.Current.SelectedDocumentsCount == 0)
-            {
-                return;
-            }
-            
-            var documentReference = Store.Current.SelectedDocuments.First();
-
-            if (Store.Current.SelectedCollection is FileCollectionReference)
-            {
-                if (Store.Current.SelectedDocumentsCount == 1)
-                {
-                    var file = documentReference;
-
-                    var dialog = new SaveFileDialog
-                    {
-                        Filter = "All files|*.*",
-                        FileName = file.LiteDocument["filename"],
-                        OverwritePrompt = true
-                    };
-
-                    if (dialog.ShowDialog() == true)
-                    {
-                        (file.Collection as FileCollectionReference)?.SaveFile(file, dialog.FileName);
-                    }
-                }
-                else
-                {
-                    var dialog = new CommonOpenFileDialog
-                    {
-                        IsFolderPicker = true,
-                        Title = "Select folder to export files to..."
-                    };
-
-                    if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                    {
-                        foreach (var file in Store.Current.SelectedDocuments)
-                        {
-                            var path = Path.Combine(dialog.FileName, $"{file.LiteDocument["_id"].AsString}-{file.LiteDocument["filename"].AsString}");
-                            var dir = Path.GetDirectoryName(path);
-                            if (!Directory.Exists(dir))
-                            {
-                                Directory.CreateDirectory(dir);
-                            }
-
-                            (file.Collection as FileCollectionReference)?.SaveFile(file, path);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                var dialog = new SaveFileDialog
-                {
-                    Filter = "Json File|*.json",
-                    FileName = "export.json",
-                    OverwritePrompt = true
-                };
-
-                if (dialog.ShowDialog() == true)
-                {
-                    if (Store.Current.SelectedDocumentsCount == 1)
-                    {
-                        File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(documentReference.LiteDocument, true, false));
-                    }
-                    else
-                    {
-                        var data = new BsonArray(Store.Current.SelectedDocuments.Select(a => a.LiteDocument));
-                        File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(data, true, false));
-                    }
-                }
-            }*/
         }
 
         public void ExportDocuments(ICollection<DocumentReference> documents)
@@ -421,15 +355,27 @@ namespace LiteDbExplorer.Modules
             }
         }
 
-        public void CopySelectedDocuments()
+        public Result CopyDocuments(IEnumerable<DocumentReference> documents)
         {
-            var data = new BsonArray(Store.Current.SelectedDocuments.Select(a => a.LiteDocument));
+            var data = new BsonArray(documents.Select(a => a.LiteDocument));
             Clipboard.SetData(DataFormats.Text, JsonSerializer.Serialize(data, true, false));
+
+            return Result.Ok();
         }
 
-        public void ShowDatabaseProperties(LiteDatabase database)
+        public void OpenDatabaseProperties(LiteDatabase database)
         {
             _interactionResolver.ShowDatabaseProperties(database);
+        }
+
+        public Maybe<DocumentReference> OpenEditDocument(DocumentReference document)
+        {
+            var result = _interactionResolver.OpenEditDocument(document);
+            if (result)
+            {
+                return document;
+            }
+            return null;
         }
         
         public Result ImportDataFromText(CollectionReference collection, string textData)

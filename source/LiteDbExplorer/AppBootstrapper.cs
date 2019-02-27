@@ -11,6 +11,7 @@ using System.Windows.Input;
 using Caliburn.Micro;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Framework.Services;
+using LiteDbExplorer.Framework.Shell;
 
 namespace LiteDbExplorer
 {

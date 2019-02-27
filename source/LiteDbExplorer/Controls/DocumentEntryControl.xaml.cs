@@ -216,7 +216,7 @@ namespace LiteDbExplorer.Controls
 
         private async void NewFieldMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var maybeFieldName = await InputDialogView.Show("DocumentViewerDialogHost", "Enter name of new field.", "New field name");
+            var maybeFieldName = await InputDialogView.Show("DocumentEntryDialogHost", "Enter name of new field.", "New field name");
             if (maybeFieldName.HasNoValue)
             {
                 return;

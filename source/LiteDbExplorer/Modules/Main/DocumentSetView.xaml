@@ -19,7 +19,7 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="HeaderMemberPath" Value="DisplayName" />
             <Setter Property="ShowDefaultCloseButton" Value="True"/>
-            <Setter Property="ShowDefaultAddButton" Value="False"/>
+            <Setter Property="ShowDefaultAddButton" Value="True"/>
             <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}"/>
             <Setter Property="NewItemFactory" Value="{Binding Path=Data.NewDocumentFactory, Source={StaticResource DataContextProxy}}"/>
             <Setter Property="ContentTemplate">

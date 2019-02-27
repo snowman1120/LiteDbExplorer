@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using Caliburn.Micro;
-using LiteDbExplorer.Framework.Services;
+using LiteDbExplorer.Framework.Shell;
 using LogManager = NLog.LogManager;
 
 namespace LiteDbExplorer.Modules.Main
@@ -17,6 +17,8 @@ namespace LiteDbExplorer.Modules.Main
             
             WindowMenu = IoC.Get<IShellMenu>();
 
+            WindowRightMenu = IoC.Get<IShellRightMenu>();
+
             StatusBarContent = IoC.Get<IShellStatusBar>();
 
             LeftContent = IoC.Get<IDocumentExplorer>();
@@ -28,6 +30,8 @@ namespace LiteDbExplorer.Modules.Main
         }
         
         public object WindowMenu { get; }
+
+        public object WindowRightMenu { get; }
 
         public object StatusBarContent { get; set; }
 

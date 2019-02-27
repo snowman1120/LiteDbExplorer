@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LiteDbExplorer.Modules.Explorer
+namespace LiteDbExplorer.Framework.Services
 {
     public interface IFileDropSource
     {

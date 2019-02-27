@@ -4,9 +4,9 @@ using LiteDbExplorer.Framework.Shell;
 
 namespace LiteDbExplorer.Modules.Main
 {
-    [Export(typeof(IShellStatusBar))]
+    [Export(typeof(IShellRightMenu))]
     [PartCreationPolicy (CreationPolicy.Shared)]
-    public class ShellStatusBarViewModel : PropertyChangedBase, IShellStatusBar
+    public class ShellRightMenuViewModel : PropertyChangedBase, IShellRightMenu
     {
         
     }

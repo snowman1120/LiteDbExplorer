@@ -20,12 +20,12 @@
                  Style="{StaticResource MainWindowStyle}">
 
     <mah:MetroWindow.Resources>
+        <controls:StoreContext x:Key="StoreContext"/>
+        <modules:AppUpdateManager x:Key="AppUpdateManager"/>
         <converters:EnumConverter x:Key="EnumConverter" />
         <converters:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
         <converters:InverseVisibilityConverter x:Key="InverseVisibilityConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <controls:StoreContext x:Key="StoreContext"/>
-        <modules:AppUpdateManager x:Key="AppUpdateManager"/>
     </mah:MetroWindow.Resources>
 
     <mah:MetroWindow.CommandBindings>
@@ -189,7 +189,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem x:Name="CheckUpdatesMenuItem" Header="Check for updates..." 
-                                  Command="{Binding Path=Current.CheckForUpdatesCommand, Source={StaticResource AppUpdateManager}}" >
+                                  Command="{Binding Path=Current.CheckForUpdatesCommand, Source={StaticResource AppUpdateManager}}">
                             <MenuItem.Icon>
                                 <materialDesign:PackIcon Kind="ArrowDownBoldCircleOutline" />
                             </MenuItem.Icon>

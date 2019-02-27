@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using System.Diagnostics;
-using System.Windows;
 using Caliburn.Micro;
+using LiteDbExplorer.Framework.Shell;
 
 namespace LiteDbExplorer.Modules.Main
 {
@@ -21,7 +21,7 @@ namespace LiteDbExplorer.Modules.Main
         }
 
         public Paths PathDefinitions { get; }
-
+        
         public void OpenRecentItem(string path)
         {
             _databaseInteractions.OpenDatabase(path);

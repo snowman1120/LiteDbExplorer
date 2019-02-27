@@ -2,7 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Windows.Input;
 
-namespace LiteDbExplorer.Framework
+namespace LiteDbExplorer.Framework.Services
 {
     [Export(typeof(IApplicationCommandHandler))]
     [PartCreationPolicy (CreationPolicy.Shared)]

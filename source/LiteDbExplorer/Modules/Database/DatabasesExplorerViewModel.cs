@@ -5,9 +5,10 @@ using System.Windows.Input;
 using Caliburn.Micro;
 using JetBrains.Annotations;
 using LiteDbExplorer.Framework;
+using LiteDbExplorer.Framework.Services;
 using LiteDbExplorer.Modules.Main;
 
-namespace LiteDbExplorer.Modules.Explorer
+namespace LiteDbExplorer.Modules.Database
 {
     [Export(typeof(IDocumentExplorer))]
     [PartCreationPolicy (CreationPolicy.Shared)]

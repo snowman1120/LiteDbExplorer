@@ -97,7 +97,9 @@ namespace LiteDbExplorer.Modules.Main
         protected override void OnActivationProcessed(IDocument item, bool success)
         {
             if (!ReferenceEquals(ActiveLayoutItem, item))
+            {
                 ActiveLayoutItem = item;
+            }
 
             base.OnActivationProcessed(item, success);
         }

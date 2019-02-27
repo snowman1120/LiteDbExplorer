@@ -4,6 +4,7 @@ namespace LiteDbExplorer.Modules
 {
     public interface IInteractionResolver
     {
-        void ShowDatabaseProperties(LiteDatabase database);
+        bool ShowDatabaseProperties(LiteDatabase database);
+        bool OpenEditDocument(DocumentReference document);
     }
 }

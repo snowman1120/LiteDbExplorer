@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.Composition;
-using System.Windows;
 using LiteDbExplorer.Framework;
 
 namespace LiteDbExplorer.Modules.StartPage
