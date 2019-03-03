@@ -1,10 +1,12 @@
 ﻿using NLog;
 using NLog.Targets;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using LiteDbExplorer.Controls;
 using LiteDbExplorer.Presentation;
 using Onova;
 using Onova.Services;
@@ -49,6 +51,10 @@ namespace LiteDbExplorer
             Config.ConfigureLogger();
 
             ThemeManager.SetColorTheme(Settings.ColorTheme);
+
+
+            Settings.PropertyChanged -= Settings_PropertyChanged;
+            Settings.PropertyChanged += Settings_PropertyChanged;
             
             // For now we want to allow multiple instances if app is started without args
             if (Mutex.TryOpenExisting(_instanceMuxet, out var mutex))
@@ -67,6 +73,21 @@ namespace LiteDbExplorer
                 _appMutex = new Mutex(true, _instanceMuxet);
                 OriginalInstance = true;
             }
+        }
+
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(Settings.ColorTheme):
+                    SetColorTheme();
+                    break;
+            }
+        }
+
+        private void SetColorTheme()
+        {
+            ThemeManager.SetColorTheme(Settings.ColorTheme);
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

@@ -23,7 +23,7 @@ namespace LiteDbExplorer
         public bool OpenEditDocument(DocumentReference document)
         {
             var windowController = new WindowController {Title = "Document Editor"};
-            var control = new DocumentViewerControl(document, windowController);
+            var control = new DocumentEntryControl(document, windowController);
             var window = new DialogWindow(control, windowController)
             {
                 Owner = Owner,

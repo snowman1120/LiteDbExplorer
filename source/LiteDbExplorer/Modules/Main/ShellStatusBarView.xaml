@@ -8,19 +8,24 @@
              xmlns:liteDbExplorer="clr-namespace:LiteDbExplorer"
              xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="25" d:DesignWidth="450">
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:EnumConverter x:Key="EnumConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <StatusBar DockPanel.Dock="Bottom" Background="{DynamicResource AccentColorBrush}" MinHeight="24"
-               HorizontalAlignment="Stretch" Padding="15,0,45,0">
-        <StatusBarItem Padding="5,0" HorizontalAlignment="Right">
-            <StackPanel Orientation="Horizontal">
+               HorizontalAlignment="Stretch" Padding="15,0,15,0">
+        <StatusBarItem Padding="10,0" DockPanel.Dock="Right">
+            <Border ToolTip="Version" Background="{DynamicResource AccentColorBrush2}" BorderThickness="1" Padding="4,0" CornerRadius="2">
+                <TextBlock Text="{Binding CurrentVersion}" HorizontalAlignment="Center"/>
+            </Border>
+        </StatusBarItem>
+        <StatusBarItem Padding="10,0" DockPanel.Dock="Right">
+            <StackPanel ToolTip="Change Theme" Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="InvertColors" VerticalAlignment="Center" Background="Transparent"
                                          MouseLeftButtonUp="ChangeThemeLabel_OnMouseLeftButtonUp" />
-                <ComboBox Padding="3,3" BorderThickness="0"
+                <ComboBox Padding="3" BorderThickness="0"
                           BorderBrush="{DynamicResource PrimaryHueDarkForegroundBrush}"
                           materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
                           x:Name="ChangeThemeComboBox">
@@ -33,5 +38,6 @@
                 </ComboBox>
             </StackPanel>
         </StatusBarItem>
+        <StatusBarItem></StatusBarItem>
     </StatusBar>
 </UserControl>

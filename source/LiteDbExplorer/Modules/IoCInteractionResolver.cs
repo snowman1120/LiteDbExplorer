@@ -3,6 +3,7 @@ using System.Dynamic;
 using System.Windows;
 using Caliburn.Micro;
 using LiteDbExplorer.Modules.Database;
+using LiteDbExplorer.Modules.DbDocument;
 using LiteDB;
 
 namespace LiteDbExplorer.Modules
@@ -34,7 +35,15 @@ namespace LiteDbExplorer.Modules
 
         public bool OpenEditDocument(DocumentReference document)
         {
-            return false;
+            var vm = IoC.Get<DocumentEntryViewModel>();
+            vm.Init(document);
+
+            dynamic settings = new ExpandoObject();
+            settings.Height = 600;
+            settings.Width = 640;
+            settings.SizeToContent = SizeToContent.Manual;
+
+            return _windowManager.ShowDialog(vm, null, settings) == true;
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
-using LiteDbExplorer.Annotations;
+using JetBrains.Annotations;
 
 namespace LiteDbExplorer
 {

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
-using LiteDbExplorer.Annotations;
+using JetBrains.Annotations;
 
 namespace LiteDbExplorer.Controls
 {

@@ -149,7 +149,7 @@ namespace LiteDbExplorer.Modules
                 
             }, (sender, e) =>
             {
-                e.CanExecute = Store.Current.SelectedDocumentsCount == 1;
+                e.CanExecute = Store.Current.HasSelectedDocument;
             });
 
             Add(Commands.Remove, (sender, args) =>

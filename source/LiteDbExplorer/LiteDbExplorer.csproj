@@ -71,6 +71,12 @@
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
+    <Reference Include="JetBrains.Annotations, Version=2018.3.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.2018.3.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="LiteDB, Version=4.1.4.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiteDB.4.1.4\lib\net40\LiteDB.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
     </Reference>
@@ -129,23 +135,20 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -169,8 +172,8 @@
     <Compile Include="Controls\WindowController.cs" />
     <Compile Include="Application\Commands.cs" />
     <Compile Include="Application\Config.cs" />
-    <Compile Include="Controls\ArrayViewerControl.xaml.cs">
-      <DependentUpon>ArrayViewerControl.xaml</DependentUpon>
+    <Compile Include="Controls\ArrayEntryControl.xaml.cs">
+      <DependentUpon>ArrayEntryControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\BsonValueEditor.cs" />
     <Compile Include="Controls\DocumentTreeView.xaml.cs">
@@ -202,10 +205,14 @@
       <DependentUpon>BaseWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\AppUpdateManager.cs" />
-    <Compile Include="Modules\Collection\CollectionExplorerView.xaml.cs">
+    <Compile Include="Modules\DbCollection\CollectionExplorerView.xaml.cs">
       <DependentUpon>CollectionExplorerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Modules\Collection\CollectionExplorerViewModel.cs" />
+    <Compile Include="Modules\DbCollection\CollectionExplorerViewModel.cs" />
+    <Compile Include="Modules\DbCollection\CollectionQueryView.xaml.cs">
+      <DependentUpon>CollectionQueryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\DbCollection\CollectionQueryViewModel.cs" />
     <Compile Include="Modules\DefaultCommandsHandler.cs" />
     <Compile Include="Modules\DatabaseInteractions.cs" />
     <Compile Include="Modules\Database\DatabasePropertiesView.xaml.cs">
@@ -218,6 +225,10 @@
     </Compile>
     <Compile Include="Modules\Database\DatabasesExplorerViewModel.cs" />
     <Compile Include="Framework\Services\IFileDropProvider.cs" />
+    <Compile Include="Modules\DbDocument\DocumentEntryView.xaml.cs">
+      <DependentUpon>DocumentEntryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\DbDocument\DocumentEntryViewModel.cs" />
     <Compile Include="Modules\IInteractionResolver.cs" />
     <Compile Include="Modules\InteractionEvents.cs" />
     <Compile Include="Modules\IoCInteractionResolver.cs" />
@@ -252,8 +263,11 @@
     </Compile>
     <Compile Include="Modules\StartPage\StartPageViewModel.cs" />
     <Compile Include="Presentation\Behaviors\BsonValueForeground.cs" />
+    <Compile Include="Presentation\Behaviors\MouseDoubleClick.cs" />
     <Compile Include="Presentation\Controls\DataContextProxy.cs" />
     <Compile Include="Presentation\Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Presentation\Converters\BrushToContrastForegroundConverter.cs" />
+    <Compile Include="Presentation\IconProvider.cs" />
     <Compile Include="Presentation\StyleKit.cs" />
     <Compile Include="Presentation\Converters\BsonValueToForegroundConverter.cs" />
     <Compile Include="Presentation\Converters\BsonValueToNetValueConverter.cs" />
@@ -270,7 +284,6 @@
     <Compile Include="Presentation\Behaviors\BubbleScrollEvent.cs" />
     <Compile Include="Presentation\ThemeManager.cs" />
     <Compile Include="Presentation\VisualTreeExtensions.cs" />
-    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Application\Settings.cs" />
     <Compile Include="Application\Update.cs" />
     <Compile Include="Application\Versions.cs" />
@@ -285,7 +298,7 @@
       <DependentUpon>InputBoxWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\MainWindowInteractionResolver.cs" />
-    <Page Include="Controls\ArrayViewerControl.xaml">
+    <Page Include="Controls\ArrayEntryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -325,7 +338,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Modules\Collection\CollectionExplorerView.xaml">
+    <Page Include="Modules\DbCollection\CollectionExplorerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Modules\DbCollection\CollectionQueryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -334,6 +351,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Modules\Database\DatabasesExplorerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Modules\DbDocument\DocumentEntryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

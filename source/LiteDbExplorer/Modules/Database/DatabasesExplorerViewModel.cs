@@ -6,6 +6,7 @@ using Caliburn.Micro;
 using JetBrains.Annotations;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Framework.Services;
+using LiteDbExplorer.Modules.DbCollection;
 using LiteDbExplorer.Modules.Main;
 
 namespace LiteDbExplorer.Modules.Database
@@ -25,11 +26,15 @@ namespace LiteDbExplorer.Modules.Database
             PathDefinitions = databaseInteractions.PathDefinitions;
 
             OpenRecentItemCommand = new RelayCommand<string>(OpenRecentItem);
+
+            ItemDoubleClickCommand = new RelayCommand<CollectionReference>(NodeDoubleClick);
         }
         
         public Paths PathDefinitions { get; }
 
         public ICommand OpenRecentItemCommand { get; }
+
+        public ICommand ItemDoubleClickCommand { get; }
         
         [UsedImplicitly]
         public void OpenDatabase()
@@ -52,9 +57,15 @@ namespace LiteDbExplorer.Modules.Database
         [UsedImplicitly]
         public void OnSelectedItemChanged(RoutedPropertyChangedEventArgs<object> e)
         {
-            Store.Current.SelectNode(e.NewValue as IReferenceNode);
+            // Store.Current.SelectNode(e.NewValue as IReferenceNode);
         }
         
+        public void NodeDoubleClick(CollectionReference value)
+        {
+            var documentSet = IoC.Get<IDocumentSet>();
+            documentSet.OpenDocument<CollectionExplorerViewModel, CollectionReference>(value);
+        }
+
         protected override void OnViewLoaded(object view)
         {
             _view = view as IFileDropSource;

@@ -13,7 +13,7 @@ namespace LiteDbExplorer.Modules.Main
 
         public ShellViewModel()
         {
-            DisplayName = $"LiteDB Explorer {Versions.CurrentVersion}";
+            DisplayName = "LiteDB Explorer";
             
             WindowMenu = IoC.Get<IShellMenu>();
 
@@ -25,7 +25,7 @@ namespace LiteDbExplorer.Modules.Main
 
             MainContent = IoC.Get<IDocumentSet>();
             
-            MainContent.Documents.Add(MainContent.NewDocumentFactory());
+            MainContent.OpenDocument(MainContent.NewDocumentFactory());
             
         }
         

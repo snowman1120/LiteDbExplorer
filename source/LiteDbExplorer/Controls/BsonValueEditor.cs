@@ -53,7 +53,7 @@ namespace LiteDbExplorer.Controls
                         arrayValue = bindingValue as BsonArray;
 
                         var windowController = new WindowController {Title = "Array Editor"};
-                        var control = new ArrayViewerControl(arrayValue, readOnly, windowController);
+                        var control = new ArrayEntryControl(arrayValue, readOnly, windowController);
                         var window = new DialogWindow(control, windowController)
                         {
                             Owner = Application.Current.MainWindow,
@@ -85,7 +85,7 @@ namespace LiteDbExplorer.Controls
                     if (contentView.ContentLoaded) return;
 
                     arrayValue = bindingValue as BsonArray;
-                    var control = new ArrayViewerControl(arrayValue, readOnly);
+                    var control = new ArrayEntryControl(arrayValue, readOnly);
                     control.CloseRequested += (sender, args) => { contentView.Content = null; };
                     contentView.Content = control;
                 };
@@ -108,7 +108,7 @@ namespace LiteDbExplorer.Controls
                     {
                         var windowController = new WindowController {Title = "Document Editor"};
                         var bsonDocument = bindingValue as BsonDocument;
-                        var control = new DocumentViewerControl(bsonDocument, readOnly, windowController);
+                        var control = new DocumentEntryControl(bsonDocument, readOnly, windowController);
                         var window = new DialogWindow(control, windowController)
                         {
                             Owner = Application.Current.MainWindow,
@@ -134,7 +134,7 @@ namespace LiteDbExplorer.Controls
                     if (contentView.ContentLoaded) return;
 
                     var bsonDocument = bindingValue as BsonDocument;
-                    var control = new DocumentViewerControl(bsonDocument, readOnly);
+                    var control = new DocumentEntryControl(bsonDocument, readOnly);
                     control.CloseRequested += (sender, args) => { contentView.Content = null; };
 
                     contentView.Content = control;

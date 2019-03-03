@@ -1,5 +1,10 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using LiteDbExplorer.Framework;
+using LiteDbExplorer.Presentation;
 
 namespace LiteDbExplorer.Modules.StartPage
 {
@@ -18,6 +23,8 @@ namespace LiteDbExplorer.Modules.StartPage
         }
 
         public override string DisplayName => "Start";
+
+        public override object IconContent => IconProvider.GetImageIcon("/Images/icon.png", new ImageIconOptions{Height = 16});
 
         public Paths PathDefinitions { get; }
 

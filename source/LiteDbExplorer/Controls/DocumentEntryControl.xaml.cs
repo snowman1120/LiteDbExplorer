@@ -12,15 +12,9 @@ namespace LiteDbExplorer.Controls
 {
     public class DocumentFieldData
     {
-        public string Name
-        {
-            get; set;
-        }
+        public string Name { get; set; }
 
-        public FrameworkElement EditControl
-        {
-            get; set;
-        }
+        public FrameworkElement EditControl { get; set; }
 
         public DocumentFieldData(string name, FrameworkElement editControl)
         {
@@ -32,7 +26,7 @@ namespace LiteDbExplorer.Controls
     /// <summary>
     ///     Interaction logic for DocumentViewerControl.xaml
     /// </summary>
-    public partial class DocumentViewerControl : UserControl
+    public partial class DocumentEntryControl : UserControl
     {
         public static readonly RoutedUICommand PreviousItem = new RoutedUICommand
         (
@@ -62,11 +56,8 @@ namespace LiteDbExplorer.Controls
 
         private bool _loaded = false;
 
-        private DocumentViewerControl(WindowController windowController = null)
+        public DocumentEntryControl()
         {
-
-            _windowController = windowController;
-
             InitializeComponent();
 
             ListItems.Loaded += (sender, args) =>
@@ -82,7 +73,13 @@ namespace LiteDbExplorer.Controls
             };
         }
 
-        public DocumentViewerControl(BsonDocument document, bool readOnly, WindowController windowController = null) : this(windowController)
+        private DocumentEntryControl(WindowController windowController) : this()
+        {
+            _windowController = windowController;
+        }
+
+        public DocumentEntryControl(BsonDocument document, bool readOnly, WindowController windowController = null) :
+            this(windowController)
         {
             IsReadOnly = readOnly;
 
@@ -109,7 +106,25 @@ namespace LiteDbExplorer.Controls
             }
         }
 
-        public DocumentViewerControl(DocumentReference document, WindowController windowController = null) : this(windowController)
+        public static readonly DependencyProperty DocumentReferenceProperty = DependencyProperty.Register(
+            nameof(DocumentReference), typeof(DocumentReference), typeof(DocumentEntryControl),
+            new PropertyMetadata(default(DocumentReference), OnDocumentReferenceChanged));
+
+        private static void OnDocumentReferenceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as DocumentEntryControl;
+            var documentReference = e.NewValue as DocumentReference;
+            control?.LoadDocument(documentReference);
+        }
+
+        public DocumentReference DocumentReference
+        {
+            get => (DocumentReference) GetValue(DocumentReferenceProperty);
+            set => SetValue(DocumentReferenceProperty, value);
+        }
+
+        public DocumentEntryControl(DocumentReference document, WindowController windowController = null) : this(
+            windowController)
         {
             LoadDocument(document);
         }
@@ -118,7 +133,7 @@ namespace LiteDbExplorer.Controls
 
         public bool DialogResult { get; set; }
 
-        private void LoadDocument(DocumentReference document)
+        public void LoadDocument(DocumentReference document)
         {
             if (document.Collection is FileCollectionReference reference)
             {
@@ -150,11 +165,11 @@ namespace LiteDbExplorer.Controls
 
             var valueEdit =
                 BsonValueEditor.GetBsonValueEditor(
-                    openMode: expandMode, 
-                    bindingPath: $"[{key}]", 
-                    bindingValue: _currentDocument[key], 
-                    bindingSource: _currentDocument, 
-                    readOnly: readOnly, 
+                    openMode: expandMode,
+                    bindingPath: $"[{key}]",
+                    bindingValue: _currentDocument[key],
+                    bindingSource: _currentDocument,
+                    readOnly: readOnly,
                     keyName: key);
 
             return new DocumentFieldData(key, valueEdit);
@@ -162,10 +177,12 @@ namespace LiteDbExplorer.Controls
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            var key = (sender as Button).Tag as string;
-            var item = _customControls.First(a => a.Name == key);
-            _customControls.Remove(item);
-            _currentDocument.Remove(key);
+            if ((sender as Button)?.Tag is string key)
+            {
+                var item = _customControls.First(a => a.Name == key);
+                _customControls.Remove(item);
+                _currentDocument.Remove(key);
+            }
         }
 
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
@@ -216,7 +233,8 @@ namespace LiteDbExplorer.Controls
 
         private async void NewFieldMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var maybeFieldName = await InputDialogView.Show("DocumentEntryDialogHost", "Enter name of new field.", "New field name");
+            var maybeFieldName = await InputDialogView.Show("DocumentEntryDialogHost", "Enter name of new field.",
+                "New field name");
             if (maybeFieldName.HasNoValue)
             {
                 return;
@@ -230,7 +248,7 @@ namespace LiteDbExplorer.Controls
                     MessageBoxImage.Error);
                 return;
             }
-            
+
             var menuItem = sender as MenuItem;
             BsonValue newValue;
 
@@ -301,7 +319,7 @@ namespace LiteDbExplorer.Controls
             {
                 await Task.Delay(50);
             }
-            
+
             _invalidatingSize = false;
         }
 

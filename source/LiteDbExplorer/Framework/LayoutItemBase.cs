@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Input;
+using System.Windows.Media;
 using Caliburn.Micro;
 
 namespace LiteDbExplorer.Framework
@@ -32,5 +33,7 @@ namespace LiteDbExplorer.Framework
 
         [Browsable(false)]
         public virtual bool ShouldReopenOnStart => false;
+
+        public virtual object IconContent { get; set; }
     }
 }

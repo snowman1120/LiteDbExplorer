@@ -10,6 +10,7 @@
              xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:framework="clr-namespace:LiteDbExplorer.Framework"
+             xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -91,7 +92,7 @@
                   HorizontalContentAlignment="Stretch"
                   ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                   mah:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="False"
-                  cal:Message.Attach="[Event SelectedItemChanged] = [OnSelectedItemChanged($eventArgs)]">
+                  cal:Message.Attach="[Event SelectedItemChanged] = [OnSelectedItemChanged($eventArgs)];">
             <TreeView.Resources>
                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItemFullRow}">
                     <Setter Property="IsExpanded" Value="True" />
@@ -127,6 +128,10 @@
                                           ItemsSource="{Binding Collections}">
                     <HierarchicalDataTemplate.ItemContainerStyle>
                         <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItemFullRow}">
+                            <Setter Property="behaviors:MouseDoubleClick.Command"
+                                    Value="{Binding Path=Data.ItemDoubleClickCommand, Source={StaticResource DataContextProxy}}"/>
+                            <Setter Property="behaviors:MouseDoubleClick.CommandParameter"
+                                    Value="{Binding}"/>
                             <Setter Property="ToolTip" Value="{Binding Name}" />
                             <Setter Property="ContextMenu">
                                 <Setter.Value>

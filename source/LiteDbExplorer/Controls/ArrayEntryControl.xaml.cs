@@ -22,7 +22,7 @@ namespace LiteDbExplorer.Controls
     /// <summary>
     /// Interaction logic for ArrayViewerControl.xaml
     /// </summary>
-    public partial class ArrayViewerControl : UserControl
+    public partial class ArrayEntryControl : UserControl
     {
         private readonly WindowController _windowController;
 
@@ -39,7 +39,7 @@ namespace LiteDbExplorer.Controls
 
         public event EventHandler CloseRequested;
 
-        public ArrayViewerControl(BsonArray array, bool readOnly, WindowController windowController = null)
+        public ArrayEntryControl(BsonArray array, bool readOnly, WindowController windowController = null)
         {
             _windowController = windowController;
 
