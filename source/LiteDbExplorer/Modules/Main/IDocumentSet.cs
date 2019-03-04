@@ -16,12 +16,8 @@ namespace LiteDbExplorer.Modules.Main
         void DeactivateItem(IDocument item, bool close);
         void OpenDocument<TDoc>() where TDoc : IDocument;
 
-        void OpenDocument<TDoc, TNode>(TDoc model, TNode init)
+        TDoc OpenDocument<TDoc, TNode>(TDoc model, TNode init)
             where TDoc : IDocument<TNode> where TNode : IReferenceNode;
-
-        void OpenDocument<TDoc, TNode>(TNode init) where TDoc : IDocument<TNode> where TNode : IReferenceNode;
-
-        // void OpenDocument(IDocument<IReferenceNode> model, IReferenceNode init);
-        // void OpenDocument<TDoc, TNode>(IReferenceNode init) where TDoc : IDocument<TNode> where TNode : IReferenceNode;
+        TDoc OpenDocument<TDoc, TNode>(TNode init) where TDoc : IDocument<TNode> where TNode : IReferenceNode;
     }
 }

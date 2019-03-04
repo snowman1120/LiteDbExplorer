@@ -35,32 +35,37 @@
                         </Style>
                     </ResourceDictionary>
                 </ToolBar.Resources>
-                <Button Command="liteDbExplorer:Commands.Add">
+                <Button Command="liteDbExplorer:Commands.Add"
+                        CommandParameter="{Binding CollectionReference}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Images/createitem.png" />
                         <TextBlock Text="Add" VerticalAlignment="Center" />
                     </StackPanel>
                 </Button>
-                <Button Command="liteDbExplorer:Commands.Edit">
+                <Button Command="liteDbExplorer:Commands.Edit"
+                        CommandParameter="{Binding SelectedDocument}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Images/updateitem.png" />
                         <TextBlock Text="Edit" VerticalAlignment="Center" />
                     </StackPanel>
                 </Button>
-                <Button Command="liteDbExplorer:Commands.Remove">
+                <Button Command="liteDbExplorer:Commands.Remove"
+                        CommandParameter="{Binding SelectedDocuments}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Images/deleteitem.png" />
                         <TextBlock Text="Delete" VerticalAlignment="Center" />
                     </StackPanel>
                 </Button>
-                <Button Command="liteDbExplorer:Commands.Export">
+                <Button Command="liteDbExplorer:Commands.Export"
+                        CommandParameter="{Binding SelectedDocuments}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Images/export.png" />
                         <TextBlock Text="Export" VerticalAlignment="Center" />
                     </StackPanel>
                 </Button>
                 <Separator />
-                <Button Command="liteDbExplorer:Commands.RefreshCollection">
+                <Button Command="liteDbExplorer:Commands.RefreshCollection"
+                        CommandParameter="{Binding CollectionReference}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Images/refresh.png" />
                         <TextBlock Text="Refresh" VerticalAlignment="Center" />
@@ -107,39 +112,45 @@
         </Border>
 
         <controls:CollectionListView x:Name="CollectionListView"
-                                     CollectionReference="{Binding Path=SelectedCollection}"
+                                     CollectionReference="{Binding Path=CollectionReference}"
                                      SelectedItem="{Binding Path=SelectedDocument}"
                                      SelectedItems="{Binding Path=SelectedDocuments}"
                                      DoubleClickCommand="liteDbExplorer:Commands.Edit">
             <controls:CollectionListView.ListViewContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="liteDbExplorer:Commands.Add">
+                    <MenuItem Command="liteDbExplorer:Commands.Add"
+                              CommandParameter="{Binding CollectionReference}">
                         <MenuItem.Icon>
                             <Image Source="/Images/createitem.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Command="liteDbExplorer:Commands.Edit">
+                    <MenuItem Command="liteDbExplorer:Commands.Edit"
+                              CommandParameter="{Binding SelectedDocument}">
                         <MenuItem.Icon>
                             <Image Source="/Images/updateitem.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Command="liteDbExplorer:Commands.Remove">
+                    <MenuItem Command="liteDbExplorer:Commands.Remove"
+                              CommandParameter="{Binding SelectedDocuments}">
                         <MenuItem.Icon>
                             <Image Source="/Images/deleteitem.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Command="liteDbExplorer:Commands.Export">
+                    <MenuItem Command="liteDbExplorer:Commands.Export"
+                              CommandParameter="{Binding SelectedDocuments}">
                         <MenuItem.Icon>
                             <Image Source="/Images/export.png" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Command="Copy">
+                    <MenuItem Command="Copy"
+                              CommandParameter="{Binding SelectedDocuments}">
                         <MenuItem.Icon>
                             <Image Source="/Images/copy.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Command="Paste">
+                    <MenuItem Command="Paste"
+                              CommandParameter="{Binding CollectionReference}">
                         <MenuItem.Icon>
                             <Image Source="/Images/paste.png" />
                         </MenuItem.Icon>

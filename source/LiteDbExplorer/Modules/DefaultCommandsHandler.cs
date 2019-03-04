@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
-using LiteDbExplorer.Framework;
+using CSharpFunctionalExtensions;
 using LiteDbExplorer.Framework.Services;
 using LogManager = NLog.LogManager;
 
@@ -15,12 +16,28 @@ namespace LiteDbExplorer.Modules
         private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IDatabaseInteractions _databaseInteractions;
+        private readonly IViewInteractionResolver _viewInteractionResolver;
+        private readonly IEventAggregator _eventAggregator;
 
         [ImportingConstructor]
         public DefaultCommandsHandler(
-            IDatabaseInteractions databaseInteractions)
+            IDatabaseInteractions databaseInteractions,
+            IViewInteractionResolver viewInteractionResolver,
+            IEventAggregator eventAggregator)
         {
             _databaseInteractions = databaseInteractions;
+            _viewInteractionResolver = viewInteractionResolver;
+            _eventAggregator = eventAggregator;
+
+            Add(Commands.Exit, (sender, args) =>
+            {
+                Store.Current.CloseDatabases();
+
+                if (Application.Current.MainWindow != null)
+                {
+                    Application.Current.MainWindow.Close();
+                }
+            });
 
             Add(ApplicationCommands.Open, (sender, args) =>
             {
@@ -34,27 +51,39 @@ namespace LiteDbExplorer.Modules
 
             Add(ApplicationCommands.Close, (sender, args) =>
             {
-                Store.Current.CloseSelectedDatabase();
-            }, (sender, e) =>
+                GetDatabaseReference(sender, args)
+                    .OnSuccess(reference =>
+                    {
+                        _databaseInteractions.CloseDatabase(reference);
+                        _eventAggregator.PublishOnUIThread(new InteractionEvents.DatabaseClosed(reference));
+                    });
+
+            }, (sender, args) =>
             {
-                e.CanExecute = Store.Current.HasSelectedDatabase;
+                args.CanExecute = HasDatabaseReference(sender, args);
             });
 
             Add(ApplicationCommands.Copy, (sender, args) =>
             {
-                _databaseInteractions.CopyDocuments(Store.Current.SelectedDocuments);
+                GetManyDocumentsReference(sender, args)
+                    .OnSuccess(references => _databaseInteractions.CopyDocuments(references));
 
             }, (sender, e) =>
             {
-                e.CanExecute = Store.Current.SelectedDocumentsCount > 0 && Store.Current.SelectedCollection != null && Store.Current.SelectedCollection.Name != "_files";
+                e.CanExecute = HasAnyDocumentsReference(sender, e, DocumentTypeFilter.BsonDocument);
             });
 
             Add(ApplicationCommands.Paste, (sender, args) =>
             {
                 try
                 {
-                    var textData = Clipboard.GetText();
-                    _databaseInteractions.ImportDataFromText(Store.Current.SelectedCollection, textData);
+                    GetCollectionReference(sender, args)
+                        .OnSuccess(reference =>
+                        {
+                            var textData = Clipboard.GetText();
+                            return _databaseInteractions.ImportDataFromText(reference, textData);
+                        })
+                        .OnSuccess(update => _eventAggregator.PublishOnUIThread(update));
                 }
                 catch (Exception exc)
                 {
@@ -64,165 +93,278 @@ namespace LiteDbExplorer.Modules
 
             }, (sender, e) =>
             {
-                e.CanExecute = Store.Current.SelectedCollection != null && Store.Current.SelectedCollection.Name != "_files" && Clipboard.ContainsText();
+                e.CanExecute = NotIsFilesCollection(sender, e) && Clipboard.ContainsText();
             });
 
 
             Add(Commands.EditDbProperties, (sender, args) =>
             {
-                _databaseInteractions.OpenDatabaseProperties(Store.Current.SelectedDatabase.LiteDatabase);
+                GetDatabaseReference(sender, args)
+                    .OnSuccess(reference => _viewInteractionResolver.OpenDatabaseProperties(reference.LiteDatabase));
 
-            }, (sender, e) =>
+            }, (sender, args) =>
             {
-                e.CanExecute = Store.Current.HasSelectedDatabase;
+                args.CanExecute = HasDatabaseReference(sender, args);
             });
-
-
-            Add(Commands.Exit, (sender, args) =>
-            {
-                Store.Current.CloseDatabases();
-
-                if (Application.Current.MainWindow != null)
-                {
-                    Application.Current.MainWindow.Close();
-                }
-            });
-
+            
             Add(Commands.Add, (sender, args) =>
             {
-                
-                var result = _databaseInteractions.CreateItem(Store.Current.SelectedCollection);
-                if (result.IsSuccess)
-                {
-                    var reference = result.Value;
-                
-                    if (reference.Type == DocumentType.File)
+                GetCollectionReference(sender, args)
+                    .OnSuccess(reference => _databaseInteractions.CreateItem(reference))
+                    .OnSuccess(reference =>
                     {
-                        Store.Current.SelectCollection(Store.Current.SelectedCollection.Database.Collections.First(a => a.Name == "_files"));
-                        Store.Current.SelectDocument(reference.DocumentReference);
-                    }
-                    else
-                    {
-                        Store.Current.SelectDocument(reference.DocumentReference);
-                        // UpdateGridColumns(reference.DocumentReference.LiteDocument);
-                    }
+                        _viewInteractionResolver.ActivateCollection(reference.CollectionReference, reference.NewDocuments);
+                        _eventAggregator.PublishOnUIThread(reference);
+                    });
 
-                    // CollectionListView.ScrollIntoSelectedItem();
-
-                    // UpdateDocumentPreview();
-                }
-
-            }, (sender, e) =>
+            }, (sender, args) =>
             {
-                e.CanExecute = Store.Current.HasSelectedDatabase;
+                args.CanExecute = HasCollectionReference(sender, args);
             });
 
             Add(Commands.AddFile, (sender, args) =>
             {
-
-                var database = Store.Current.SelectedDatabase;
-                var result = _databaseInteractions.AddFileToDatabase(database);
-                if (result.IsSuccess)
-                {
-                    Store.Current.SelectCollection(database.Collections.First(a => a.Name == "_files"));
-                    Store.Current.SelectDocument(result.Value.DocumentReference);
-
-                    // CollectionListView.ScrollIntoSelectedItem();
-                }
+                GetDatabaseReference(sender, args)
+                    .OnSuccess(reference => _databaseInteractions.AddFileToDatabase(reference))
+                    .OnSuccess(reference =>
+                    {
+                        _viewInteractionResolver.ActivateCollection(reference.CollectionReference, reference.NewDocuments);
+                        _eventAggregator.PublishOnUIThread(reference);
+                    });
                 
-            }, (sender, e) =>
+            }, (sender, args) =>
             {
-                e.CanExecute = Store.Current.HasSelectedDatabase;
+                args.CanExecute = HasDatabaseReference(sender, args);
             });
 
             Add(Commands.Edit, (sender, args) =>
             {
-                var item = Store.Current.SelectedDocument;
 
-                var document = _databaseInteractions.OpenEditDocument(item);
-                if (document.HasValue)
-                {
-                    // UpdateGridColumns(document.Value.LiteDocument);
-                    // UpdateDocumentPreview();
-                }
+                GetDocumentReference(sender, args)
+                    .OnSuccess(reference => _databaseInteractions.OpenEditDocument(reference))
+                    .OnSuccess(maybe =>
+                    {
+                        maybe.Execute(value => _eventAggregator.PublishOnUIThread(new InteractionEvents.DocumentUpdated(value)));
+                    });
                 
-                
-            }, (sender, e) =>
+            }, (sender, args) =>
             {
-                e.CanExecute = Store.Current.HasSelectedDocument;
-            });
-
-            Add(Commands.Remove, (sender, args) =>
-            {
-                var currentSelectedDocuments = Store.Current.SelectedDocuments.ToList();
-                _databaseInteractions.RemoveDocuments(currentSelectedDocuments);
-            }, (sender, e) =>
-            {
-                e.CanExecute = Store.Current.SelectedDocumentsCount > 0;
-            });
-
-            Add(Commands.Export, (sender, args) =>
-            {
-                _databaseInteractions.ExportDocuments(Store.Current.SelectedDocuments);
-            }, (sender, e) =>
-            {
-                e.CanExecute = Store.Current.SelectedDocumentsCount > 0;
-            });
-
-            Add(Commands.RefreshCollection, (sender, args) =>
-            {
-                Store.Current.SelectedCollection?.Refresh();
-            }, (sender, e) =>
-            {
-                e.CanExecute = Store.Current.HasSelectedCollection;
+                args.CanExecute = HasDocumentReference(sender, args);
             });
 
             Add(Commands.AddCollection, (sender, args) =>
             {
-                _databaseInteractions.AddCollection(Store.Current.SelectedDatabase);
-            }, (sender, e) =>
+                GetDatabaseReference(sender, args)
+                    .OnSuccess(reference =>
+                    {
+                        var addCollection = _databaseInteractions.AddCollection(reference);
+                        if (addCollection.IsSuccess)
+                        {
+                            _viewInteractionResolver.ActivateCollection(addCollection.Value);
+                        }
+                    });
+
+            }, (sender, args) =>
             {
-                e.CanExecute = Store.Current.HasSelectedDatabase;
+                args.CanExecute = HasDatabaseReference(sender, args);
             });
 
-            Add(Commands.RenameCollection, (sender, args) =>
+            Add(Commands.Remove, (sender, args) =>
             {
-                _databaseInteractions.RenameCollection(Store.Current.SelectedCollection);
+                GetManyDocumentsReference(sender, args)
+                    .OnSuccess(references => _databaseInteractions.RemoveDocuments(references));
+
+            }, (sender, args) =>
+            {
+                args.CanExecute = HasAnyDocumentsReference(sender, args);
+            });
+
+            Add(Commands.Export, (sender, args) =>
+            {
+                GetManyDocumentsReference(sender, args)
+                    .OnSuccess(references => _databaseInteractions.ExportDocuments(references.ToList()));
+               
+            }, (sender, args) =>
+            {
+                args.CanExecute = HasAnyDocumentsReference(sender, args);
+            });
+
+            Add(Commands.RefreshCollection, (sender, args) =>
+            {
+                GetCollectionReference(sender, args)
+                    .OnSuccess(reference => reference.Refresh());
+                
             }, (sender, e) =>
             {
-                e.CanExecute = Store.Current.SelectedCollection != null && Store.Current.SelectedCollection.Name != "_files" && Store.Current.SelectedCollection.Name != "_chunks";
+                e.CanExecute = HasCollectionReference(sender, e);
+            });
+            
+            Add(Commands.RenameCollection, (sender, args) =>
+            {
+                GetCollectionReference(sender, args)
+                    .OnSuccess(reference => _databaseInteractions.RenameCollection(reference));
+
+            }, (sender, args) =>
+            {
+                args.CanExecute = NotIsFilesCollection(sender, args);
             });
 
             Add(Commands.DropCollection, (sender, args) =>
             {
-                var result = _databaseInteractions.DropCollection(Store.Current.SelectedCollection);
-                if (result.IsSuccess && result.Value)
-                {
-                    Store.Current.ResetSelectedCollection();
-                }
-            }, (sender, e) =>
+                GetCollectionReference(sender, args)
+                    .OnSuccess(reference =>
+                    {
+                        var dropCollection = _databaseInteractions.DropCollection(reference);
+                        if (dropCollection.IsSuccess)
+                        {
+                            _eventAggregator.PublishOnUIThread(new InteractionEvents.CollectionRemoved(reference));
+                        }
+                    });
+            }, (sender, args) =>
             {
-                e.CanExecute = Store.Current.SelectedCollection != null && Store.Current.SelectedCollection.Name != "_files" && Store.Current.SelectedCollection.Name != "_chunks";
+                args.CanExecute = HasCollectionReference(sender, args);
             });
 
 
             Add(Commands.ExportCollection, (sender, args) =>
             {
-                _databaseInteractions.ExportCollection(Store.Current.SelectedCollection);   
-            }, (sender, e) =>
+                GetCollectionReference(sender, args)
+                    .OnSuccess(reference => _databaseInteractions.ExportCollection(reference));
+
+            }, (sender, args) =>
             {
-                e.CanExecute = Store.Current.SelectedCollection != null && Store.Current.SelectedCollection.Name != "_files" && Store.Current.SelectedCollection.Name != "_chunks";
+                args.CanExecute = HasCollectionReference(sender, args);
             });
 
 
             Add(Commands.RefreshDatabase, (sender, args) =>
             {
-                Store.Current.ResetSelectedCollection();
-                Store.Current.SelectedDatabase.Refresh();   
-            }, (sender, e) =>
+                GetDatabaseReference(sender, args)
+                    .OnSuccess(reference => reference.Refresh());
+                
+            }, (sender, args) =>
             {
-                e.CanExecute = Store.Current.HasSelectedDatabase;
+                args.CanExecute = HasDatabaseReference(sender, args);
             });
+
+            Add(Commands.RevealInExplorer, (sender, args) =>
+            {
+                GetDatabaseReference(sender, args)
+                    .OnSuccess(reference => _databaseInteractions.RevealInExplorer(reference));
+
+            }, (sender, args) =>
+            {
+                args.CanExecute = HasDatabaseReference(sender, args);
+            });
+        }
+
+        private Result<DatabaseReference> GetDatabaseReference(object sender, ExecutedRoutedEventArgs args)
+        {
+            Maybe<DatabaseReference> maybe;
+            if (args.Parameter is DatabaseReference databaseReference)
+            {
+                maybe = databaseReference;
+            }
+            else if (args.Parameter is CollectionReference collectionReference)
+            {
+                maybe = collectionReference.Database;
+            }
+            else
+            {
+                maybe = Store.Current.SelectedDatabase;
+            }
+
+            return maybe.ToResult($"{nameof(DatabaseReference)} not provided.");
+        }
+
+        private bool HasDatabaseReference(object sender, CanExecuteRoutedEventArgs args)
+        {
+            if (args.Parameter is CollectionReference collectionReference)
+            {
+                return collectionReference.Database != null;
+            }
+
+            return args.Parameter is DatabaseReference || Store.Current.HasSelectedDatabase;
+        }
+
+        private Result<CollectionReference> GetCollectionReference(object sender, ExecutedRoutedEventArgs args)
+        {
+            Maybe<CollectionReference> maybe;
+            if (args.Parameter is CollectionReference collectionReference)
+            {
+                maybe = collectionReference;
+            }
+            else
+            {
+                maybe = Store.Current.SelectedCollection;
+            }
+
+            return maybe.ToResult($"{nameof(CollectionReference)} not provided.");
+        }
+
+        private bool HasCollectionReference(object sender, CanExecuteRoutedEventArgs args)
+        {
+            return args.Parameter is CollectionReference || Store.Current.HasSelectedCollection;
+        }
+
+        Result<DocumentReference> GetDocumentReference(object sender, ExecutedRoutedEventArgs args)
+        {
+            Maybe<DocumentReference> maybe;
+            if (args.Parameter is DocumentReference documentReference)
+            {
+                maybe = documentReference;
+            }
+            else
+            {
+                maybe = Store.Current.SelectedDocument;
+            }
+
+            return maybe.ToResult($"{nameof(DocumentReference)} not provided.");
+        }
+
+        private bool HasDocumentReference(object sender, CanExecuteRoutedEventArgs args)
+        {
+            return args.Parameter is DocumentReference || Store.Current.HasSelectedDocument;
+        }
+
+        Result<IEnumerable<DocumentReference>> GetManyDocumentsReference(object sender, ExecutedRoutedEventArgs args)
+        {
+            Maybe<IEnumerable<DocumentReference>> maybe;
+            if (args.Parameter is IEnumerable<DocumentReference> documentReference)
+            {
+                maybe = Maybe<IEnumerable<DocumentReference>>.From(documentReference);
+            }
+            else
+            {
+                maybe = Maybe<IEnumerable<DocumentReference>>.From(Store.Current.SelectedDocuments);
+            }
+
+            return maybe.ToResult($"{nameof(DocumentReference)} not provided.");
+        }
+
+        private bool HasAnyDocumentsReference(object sender, CanExecuteRoutedEventArgs args, DocumentTypeFilter filter = DocumentTypeFilter.All)
+        {
+            var documentReferences = args.Parameter as IEnumerable<DocumentReference> ?? Store.Current.SelectedDocuments;
+
+            if (filter == DocumentTypeFilter.All)
+            {
+                return documentReferences != null && documentReferences.Any();
+            }
+
+            return documentReferences != null && documentReferences
+                       .Where(p => p.Collection != null)
+                       .All(p => filter == DocumentTypeFilter.File ? p.Collection.IsFilesOrChunks : !p.Collection.IsFilesOrChunks);
+        }
+
+        public bool NotIsFilesCollection(object sender, CanExecuteRoutedEventArgs args)
+        {
+            var collectionReference = args.Parameter as CollectionReference ?? Store.Current.SelectedCollection;
+            if (collectionReference == null)
+            {
+                return false;
+            }
+
+            return !collectionReference.IsFilesOrChunks;
         }
     }
 }

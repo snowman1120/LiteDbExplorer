@@ -76,6 +76,13 @@ namespace LiteDbExplorer
         }
 
         public LiteCollection<BsonDocument> LiteCollection => Database.LiteDatabase.GetCollection(Name);
+
+        public bool IsFilesOrChunks => IsFilesOrChunksCollection(this);
+
+        public bool InstanceEquals(CollectionReference collectionReference)
+        {
+            return InstanceId.Equals(collectionReference?.InstanceId);
+        }
         
         public virtual void UpdateItem(DocumentReference document)
         {
@@ -133,6 +140,16 @@ namespace LiteDbExplorer
             }
 
             OnPropertyChanged(string.Empty);
+        }
+
+        public static bool IsFilesOrChunksCollection(CollectionReference reference)
+        {
+            if (reference == null)
+            {
+                return false;
+            }
+
+            return reference.Name == @"_files" || reference.Name == @"_chunks";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

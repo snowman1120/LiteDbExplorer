@@ -54,10 +54,40 @@ namespace LiteDbExplorer.Modules.Database
             _databaseInteractions.OpenDatabases(paths);
         }
 
+        public DatabaseReference SelectedDatabase { get; private set; }
+
+        public CollectionReference SelectedCollection { get; private set; }
+
         [UsedImplicitly]
         public void OnSelectedItemChanged(RoutedPropertyChangedEventArgs<object> e)
         {
-            // Store.Current.SelectNode(e.NewValue as IReferenceNode);
+            var value = e.NewValue as IReferenceNode;
+
+            switch (value)
+            {
+                case null:
+                    SelectedDatabase = null;
+                    SelectedCollection = null;
+                    break;
+                case CollectionReference collection:
+                    SelectedDatabase = collection.Database;
+                    SelectedCollection = collection;
+                    break;
+                case DatabaseReference reference:
+                {
+                    SelectedDatabase = reference;
+                    if (SelectedCollection != null && SelectedCollection.Database != SelectedDatabase)
+                    {
+                        SelectedCollection = null;
+                    }
+
+                    break;
+                }
+                default:
+                    SelectedDatabase = null;
+                    SelectedCollection = null;
+                    break;
+            }
         }
         
         public void NodeDoubleClick(CollectionReference value)

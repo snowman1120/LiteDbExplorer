@@ -5,25 +5,58 @@ namespace LiteDbExplorer.Modules
 {
     public class InteractionEvents
     {
-        public class DocumentsUpdated
+        public class DocumentUpdated
         {
-            public string Source { get; }
-
-            public IReadOnlyCollection<BsonDocument> Documents { get; }
-
-            public DocumentsUpdated(string source, BsonDocument document) : this(source, new []{document})
+            public DocumentUpdated(DocumentReference documentReference)
             {
+                DocumentReference = documentReference;
             }
 
-            public DocumentsUpdated(string source, IReadOnlyCollection<BsonDocument> documents)
-            {
-                Source = source;
-                Documents = documents;
+            public DocumentReference DocumentReference { get; }
+        }
 
-                // TODO: Handle UpdateGridColumns(doc);
-                // TODO: Handle UpdateDocumentPreview();
-                // TODO: Handle CollectionListView.ScrollIntoSelectedItem();
+        public abstract class CollectionEvent
+        {
+            protected CollectionEvent(CollectionReference collectionReference)
+            {
+                CollectionReference = collectionReference;
             }
+
+            public CollectionReference CollectionReference { get; }
+        }
+
+        public class CollectionUpdated : CollectionEvent
+        {
+            public CollectionUpdated(CollectionReference collectionReference) : base(collectionReference)
+            {
+            }
+        }
+
+        public class CollectionRemoved : CollectionEvent
+        {
+            public CollectionRemoved(CollectionReference collectionReference) : base(collectionReference)
+            {
+            }
+        }
+
+        public class CollectionDocumentsCreated : CollectionEvent
+        {
+            public CollectionDocumentsCreated(CollectionReference collectionReference, IEnumerable<DocumentReference> newDocuments) : base(collectionReference)
+            {
+                NewDocuments = newDocuments;
+            }
+
+            public IEnumerable<DocumentReference> NewDocuments { get; }
+        }
+
+        public class DatabaseClosed
+        {
+            public DatabaseClosed(DatabaseReference databaseReference)
+            {
+                DatabaseReference = databaseReference;
+            }
+
+            public DatabaseReference DatabaseReference { get; }
         }
     }
 }

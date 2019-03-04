@@ -28,6 +28,7 @@ namespace LiteDbExplorer
         private readonly WindowPositionHandler _positionManager;
         private readonly DatabaseInteractions _databaseInteractions;
         private EventAggregator _eventAggregator;
+        private MainWindowViewInteractionResolver _viewInteractionResolver;
 
         public Paths PathDefinitions
         {
@@ -40,7 +41,9 @@ namespace LiteDbExplorer
 
             _eventAggregator = new EventAggregator();
 
-            _databaseInteractions = new DatabaseInteractions(_eventAggregator, new MainWindowInteractionResolver{ Owner = this });
+             _viewInteractionResolver = new MainWindowViewInteractionResolver{ Owner = this };
+
+            _databaseInteractions = new DatabaseInteractions(_viewInteractionResolver);
 
             _positionManager = new WindowPositionHandler(this, "Main");
             
@@ -156,7 +159,7 @@ namespace LiteDbExplorer
 
         private void EditDbPropertiesCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _databaseInteractions.OpenDatabaseProperties(Store.Current.SelectedDatabase.LiteDatabase);
+            _viewInteractionResolver.OpenDatabaseProperties(Store.Current.SelectedDatabase.LiteDatabase);
         }
 
         #endregion EditDbProperties Command
@@ -187,17 +190,13 @@ namespace LiteDbExplorer
             {
                 var reference = result.Value;
                 
-                if (reference.Type == DocumentType.File)
+                Store.Current.SelectCollection(reference.CollectionReference);
+                Store.Current.SelectDocument(reference.NewDocuments?.FirstOrDefault());
+                if (!reference.CollectionReference.IsFilesOrChunks)
                 {
-                    Store.Current.SelectCollection(Store.Current.SelectedCollection.Database.Collections.First(a => a.Name == "_files"));
-                    Store.Current.SelectDocument(reference.DocumentReference);
+                    UpdateGridColumns(Store.Current.SelectedDocument.LiteDocument);
                 }
-                else
-                {
-                    Store.Current.SelectDocument(reference.DocumentReference);
-                    UpdateGridColumns(reference.DocumentReference.LiteDocument);
-                }
-
+                
                 CollectionListView.ScrollIntoSelectedItem();
 
                 UpdateDocumentPreview();
@@ -296,7 +295,7 @@ namespace LiteDbExplorer
         private void DropCollectionCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var result = _databaseInteractions.DropCollection(Store.Current.SelectedCollection);
-            if (result.IsSuccess && result.Value)
+            if (result.IsSuccess)
             {
                 Store.Current.ResetSelectedCollection();
             }
@@ -542,8 +541,9 @@ namespace LiteDbExplorer
             var result = _databaseInteractions.AddFileToDatabase(database);
             if (result.IsSuccess)
             {
-                Store.Current.SelectCollection(database.Collections.First(a => a.Name == "_files"));
-                Store.Current.SelectDocument(result.Value.DocumentReference);
+                var documentsCreated = result.Value;
+                Store.Current.SelectCollection(documentsCreated.CollectionReference);
+                Store.Current.SelectDocument(documentsCreated.NewDocuments?.FirstOrDefault());
 
                 CollectionListView.ScrollIntoSelectedItem();
             }

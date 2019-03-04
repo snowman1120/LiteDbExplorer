@@ -6,10 +6,17 @@ using LiteDB;
 
 namespace LiteDbExplorer
 {
+    public enum DocumentTypeFilter
+    {
+        All = -1,
+        BsonDocument = 0,
+        File = 1
+    }
+
     public enum DocumentType
     {
-        BsonDocument,
-        File
+        BsonDocument = 0,
+        File = 1
     }
 
     public class TypedDocumentReference
@@ -62,6 +69,21 @@ namespace LiteDbExplorer
                 _collection = value;
                 OnPropertyChanged();
             }
+        }
+
+        public bool BelongsToCollectionInstance(CollectionReference collectionReference)
+        {
+            if (Collection == null)
+            {
+                return false;
+            }
+
+            return Collection.InstanceId.Equals(collectionReference?.InstanceId);
+        }
+
+        public void RemoveSelf()
+        {
+            Collection?.RemoveItem(this);
         }
 
         [UsedImplicitly]

@@ -139,5 +139,12 @@ namespace LiteDbExplorer
             nameof(RefreshDatabase),
             typeof(Commands)
         );
+
+        public static readonly RoutedUICommand RevealInExplorer = new RoutedUICommand
+        (
+            "Reveal in Explorer",
+            nameof(RevealInExplorer),
+            typeof(Commands)
+        );
     }
 }

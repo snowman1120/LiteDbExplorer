@@ -144,16 +144,16 @@ namespace LiteDbExplorer.Controls
             collectionListView._modelHandled = false;
         }
 
-        public void ScrollIntoSelectedItem()
-        {
-            ListCollectionData.ScrollIntoView(ListCollectionData.SelectedItem);
-        }
-
-        public void ScrollIntoView(object item)
+        public void ScrollIntoItem(object item)
         {
             ListCollectionData.ScrollIntoView(item);
         }
 
+        public void ScrollIntoSelectedItem()
+        {
+            ListCollectionData.ScrollIntoView(ListCollectionData.SelectedItem);
+        }
+        
         public void UpdateGridColumns(BsonDocument dbItem)
         {
             var headers = GridCollectionData.Columns.Select(a => (a.Header as GridViewColumnHeader)?.Name).ToArray();

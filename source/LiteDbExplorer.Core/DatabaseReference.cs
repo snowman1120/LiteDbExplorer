@@ -68,6 +68,16 @@ namespace LiteDbExplorer
             }
         }
 
+        public bool ContainsCollectionInstance(CollectionReference collectionReference)
+        {
+            if (Collections == null)
+            {
+                return false;
+            }
+
+            return Collections.Any(p => p.InstanceId == collectionReference?.InstanceId);
+        }
+
         public void Dispose()
         {
             LiteDatabase.Dispose();
@@ -92,10 +102,12 @@ namespace LiteDbExplorer
             return collection.Items.First(a => a.LiteDocument["_id"] == id);
         }
 
-        public void AddCollection(string name)
+        public CollectionReference AddCollection(string name)
         {
             if (LiteDatabase.GetCollectionNames().Contains(name))
+            {
                 throw new Exception($"Cannot add collection \"{name}\", collection with that name already exists.");
+            }
 
             var coll = LiteDatabase.GetCollection(name);
             var newDoc = new BsonDocument
@@ -106,6 +118,8 @@ namespace LiteDbExplorer
             coll.Insert(newDoc);
             coll.Delete(newDoc["_id"]);
             UpdateCollections();
+
+            return Collections.FirstOrDefault(p => p.Name.Equals(name));
         }
 
         public void RenameCollection(string oldName, string newName)

@@ -79,24 +79,27 @@ namespace LiteDbExplorer.Modules.Main
             OpenDocument(doc);
         }
 
-        public void OpenDocument<TDoc, TNode>(TDoc model, TNode init)
+        public TDoc OpenDocument<TDoc, TNode>(TDoc model, TNode init)
             where TDoc : IDocument<TNode> where TNode : IReferenceNode
         {
-            var instance = Items.OfType<IDocument<TNode>>().FirstOrDefault(p => p.InstanceId.Equals(init.InstanceId));
+            var instance = Items.OfType<TDoc>().FirstOrDefault(p => p.InstanceId.Equals(init.InstanceId));
             if (instance != null)
             {
                 ActiveItem = instance;
-                return;
+                return instance;
             }
 
             model.Init(init);
             OpenDocument(model);
+
+            return model;
         }
 
-        public void OpenDocument<TDoc, TNode>(TNode init) where TDoc : IDocument<TNode> where TNode : IReferenceNode
+        public TDoc OpenDocument<TDoc, TNode>(TNode init) where TDoc : IDocument<TNode> where TNode : IReferenceNode
         {
-            var doc = IoC.Get<TDoc>();
-            OpenDocument(doc, init);
+            var model = IoC.Get<TDoc>();
+            OpenDocument(model, init);
+            return model;
         }
 
         public void CloseDocument(IDocument document)

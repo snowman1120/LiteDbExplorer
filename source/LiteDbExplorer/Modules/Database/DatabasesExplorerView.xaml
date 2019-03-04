@@ -101,25 +101,32 @@
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
-                                <MenuItem Command="liteDbExplorer:Commands.AddFile">
+                                <MenuItem Command="liteDbExplorer:Commands.AddFile"
+                                          CommandParameter="{Binding}">
                                     <MenuItem.Icon>
                                         <Image Source="/Images/uploadfile.png" />
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Command="liteDbExplorer:Commands.AddCollection">
+                                <MenuItem Command="liteDbExplorer:Commands.AddCollection"
+                                          CommandParameter="{Binding}">
                                     <MenuItem.Icon>
                                         <Image Source="/Images/table.png" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <Separator />
-                                <MenuItem Command="liteDbExplorer:Commands.RefreshDatabase">
+                                <MenuItem Command="liteDbExplorer:Commands.RefreshDatabase"
+                                          CommandParameter="{Binding}">
                                     <MenuItem.Icon>
                                         <Image Source="/Images/refresh.png" />
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Command="liteDbExplorer:Commands.EditDbProperties" />
+                                <MenuItem Command="liteDbExplorer:Commands.EditDbProperties" 
+                                          CommandParameter="{Binding}"/>
                                 <Separator />
-                                <MenuItem Command="Close" />
+                                <MenuItem Command="liteDbExplorer:Commands.RevealInExplorer" 
+                                          CommandParameter="{Binding}"/>
+                                <MenuItem Command="Close" 
+                                          CommandParameter="{Binding}"/>
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
@@ -136,11 +143,15 @@
                             <Setter Property="ContextMenu">
                                 <Setter.Value>
                                     <ContextMenu>
-                                        <MenuItem Command="liteDbExplorer:Commands.AddCollection" />
-                                        <MenuItem Command="liteDbExplorer:Commands.RenameCollection" />
-                                        <MenuItem Command="liteDbExplorer:Commands.DropCollection" />
+                                        <MenuItem Command="liteDbExplorer:Commands.AddCollection" 
+                                                  CommandParameter="{Binding}"/>
+                                        <MenuItem Command="liteDbExplorer:Commands.RenameCollection" 
+                                                  CommandParameter="{Binding}"/>
+                                        <MenuItem Command="liteDbExplorer:Commands.DropCollection" 
+                                                  CommandParameter="{Binding}"/>
                                         <Separator />
-                                        <MenuItem Command="liteDbExplorer:Commands.ExportCollection" />
+                                        <MenuItem Command="liteDbExplorer:Commands.ExportCollection" 
+                                                  CommandParameter="{Binding}"/>
                                     </ContextMenu>
                                 </Setter.Value>
                             </Setter>

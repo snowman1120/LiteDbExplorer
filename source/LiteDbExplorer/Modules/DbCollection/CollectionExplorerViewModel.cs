@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows.Input;
+using Caliburn.Micro;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Presentation;
 
@@ -8,12 +9,23 @@ namespace LiteDbExplorer.Modules.DbCollection
 {
     [Export(typeof(CollectionExplorerViewModel))]
     [PartCreationPolicy (CreationPolicy.NonShared)]
-    public class CollectionExplorerViewModel : Document<CollectionReference>
+    public class CollectionExplorerViewModel : Document<CollectionReference>, 
+        IHandle<InteractionEvents.DocumentUpdated>, 
+        IHandle<InteractionEvents.CollectionRemoved>,
+        IHandle<InteractionEvents.CollectionDocumentsCreated>,
+        IHandle<InteractionEvents.DatabaseClosed>
     {
         private DocumentReference _selectedDocument;
         private IList<DocumentReference> _selectedDocuments;
+        private ICollectionListView _view;
 
-        public override string InstanceId => SelectedCollection?.InstanceId;
+        public override string InstanceId => CollectionReference?.InstanceId;
+
+        [ImportingConstructor]
+        public CollectionExplorerViewModel(IEventAggregator eventAggregator)
+        {
+            eventAggregator.Subscribe(this);
+        }
 
         public override void Init(CollectionReference value)
         {
@@ -26,12 +38,12 @@ namespace LiteDbExplorer.Modules.DbCollection
             DisplayName = value.Name;
             GroupDisplayName = value.Database.Name;
 
-            SelectedCollection = value;
+            CollectionReference = value;
 
             IconContent = IconProvider.GetImageIcon(value is FileCollectionReference ? "/Images/file-table.png" : "/Images/table.png", new ImageIconOptions{ Height = 15 });
         }
         
-        public CollectionReference SelectedCollection { get; private set; }
+        public CollectionReference CollectionReference { get; private set; }
 
         public DocumentReference SelectedDocument
         {
@@ -55,12 +67,17 @@ namespace LiteDbExplorer.Modules.DbCollection
         }
 
         public bool IsSearchOpen { get; private set; }
-        
+
+        protected override void OnViewLoaded(object view)
+        {
+            _view = view as ICollectionListView;
+        }
+
         protected override void OnActivate()
         {
             base.OnActivate();
-            Store.Current.SelectDatabase(SelectedCollection.Database);
-            Store.Current.SelectCollection(SelectedCollection);
+            Store.Current.SelectDatabase(CollectionReference.Database);
+            Store.Current.SelectCollection(CollectionReference);
             CommandManager.InvalidateRequerySuggested();
         }
 
@@ -72,6 +89,45 @@ namespace LiteDbExplorer.Modules.DbCollection
             Store.Current.SelectedDocuments = null;
             Store.Current.ResetSelectedCollection();
             CommandManager.InvalidateRequerySuggested();
+        }
+
+        public void ScrollIntoSelectedDocument()
+        {
+            _view?.ScrollIntoItem(SelectedDocument);
+        }
+
+        public void Handle(InteractionEvents.DocumentUpdated message)
+        {
+            // TODO: Handle UpdateDocumentPreview();
+            if (message.DocumentReference.BelongsToCollectionInstance(CollectionReference))
+            {
+                _view?.UpdateView(message.DocumentReference);
+                _view?.ScrollIntoItem(message.DocumentReference);
+            }
+        }
+
+        public void Handle(InteractionEvents.CollectionRemoved message)
+        {
+            if (message.CollectionReference.InstanceEquals(CollectionReference))
+            {
+                TryClose();
+            }
+        }
+
+        public void Handle(InteractionEvents.DatabaseClosed message)
+        {
+            if (message.DatabaseReference.ContainsCollectionInstance(CollectionReference))
+            {
+                TryClose();
+            }
+        }
+
+        public void Handle(InteractionEvents.CollectionDocumentsCreated message)
+        {
+            if (message.CollectionReference.InstanceEquals(CollectionReference))
+            {
+                _view?.UpdateView(CollectionReference);
+            }
         }
     }
 }

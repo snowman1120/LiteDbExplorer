@@ -196,6 +196,7 @@
     <Compile Include="Framework\IDocument.cs" />
     <Compile Include="Framework\LayoutItemBase.cs" />
     <Compile Include="Framework\RelayCommand.cs" />
+    <Compile Include="Framework\Services\IListViewInteractionProvider.cs" />
     <Compile Include="Framework\Shell\IShell.cs" />
     <Compile Include="Framework\Shell\IShellRightMenu.cs" />
     <Compile Include="Framework\Windows\BaseDialogWindow.xaml.cs">
@@ -213,6 +214,7 @@
       <DependentUpon>CollectionQueryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\DbCollection\CollectionQueryViewModel.cs" />
+    <Compile Include="Modules\DbCollection\ICollectionListView.cs" />
     <Compile Include="Modules\DefaultCommandsHandler.cs" />
     <Compile Include="Modules\DatabaseInteractions.cs" />
     <Compile Include="Modules\Database\DatabasePropertiesView.xaml.cs">
@@ -229,9 +231,10 @@
       <DependentUpon>DocumentEntryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\DbDocument\DocumentEntryViewModel.cs" />
-    <Compile Include="Modules\IInteractionResolver.cs" />
+    <Compile Include="Modules\Fails.cs" />
+    <Compile Include="Modules\IViewInteractionResolver.cs" />
     <Compile Include="Modules\InteractionEvents.cs" />
-    <Compile Include="Modules\IoCInteractionResolver.cs" />
+    <Compile Include="Modules\IoCViewInteractionResolver.cs" />
     <Compile Include="Modules\Main\DocumentSetView.xaml.cs">
       <DependentUpon>DocumentSetView.xaml</DependentUpon>
     </Compile>
@@ -297,7 +300,7 @@
     <Compile Include="Windows\InputBoxWindow.xaml.cs">
       <DependentUpon>InputBoxWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\MainWindowInteractionResolver.cs" />
+    <Compile Include="Windows\MainWindowViewInteractionResolver.cs" />
     <Page Include="Controls\ArrayEntryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

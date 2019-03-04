@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using JetBrains.Annotations;
@@ -40,6 +41,23 @@ namespace LiteDbExplorer.Controls
             });
         }
         
+        public virtual Window InferOwnerOf(Window window)
+        {
+            var current = Application.Current;
+            if (current == null)
+            {
+                return null;
+            }
+
+            var ownerWindow = current.Windows.OfType<Window>().FirstOrDefault(x => x.IsActive) ?? (PresentationSource.FromVisual(current.MainWindow) == null ? null : current.MainWindow);
+            if (ownerWindow != window)
+            {
+                return ownerWindow;
+            }
+
+            return null;
+        }
+
         private void UnbindWindow()
         {
             if (_window != null)
