@@ -7,11 +7,17 @@
              xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
              xmlns:liteDbExplorer="clr-namespace:LiteDbExplorer"
              xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
+             xmlns:commands="clr-namespace:LiteDbExplorer.Framework.Commands"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <commands:DataContextCommandBinding Command="liteDbExplorer:Commands.EditDbProperties"
+                                            Executed="EditDbProperties"
+                                            CanExecute="CanEditDbProperties"/>
+    </UserControl.CommandBindings>
     <DockPanel>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}">

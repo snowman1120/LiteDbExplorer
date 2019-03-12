@@ -408,7 +408,6 @@
                                 <TextBlock Grid.Column="1" Text="{Binding Name}" Padding="8,4"
                                            FontSize="14" FontWeight="Regular"
                                            FontFamily="{StaticResource MaterialDesignFont}"
-                                           Foreground="{DynamicResource MaterialDesignBody}" 
                                            TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
                             </Grid>
                         </HierarchicalDataTemplate>
@@ -431,7 +430,6 @@
                                 <TextBlock Grid.Column="1" Text="{Binding Name}" Padding="8,4"
                                            FontSize="14" FontWeight="Regular"
                                            FontFamily="{StaticResource MaterialDesignFont}"
-                                           Foreground="{DynamicResource MaterialDesignBody}" 
                                            TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
                             </Grid>
                         </DataTemplate>

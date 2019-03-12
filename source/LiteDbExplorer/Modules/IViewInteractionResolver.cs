@@ -5,7 +5,7 @@ namespace LiteDbExplorer.Modules
 {
     public interface IViewInteractionResolver
     {
-        bool OpenDatabaseProperties(LiteDatabase database);
+        bool OpenDatabaseProperties(DatabaseReference database);
         bool OpenEditDocument(DocumentReference document);
         bool RevealInExplorer(string filePath);
         void ActivateDocument(DocumentReference document);

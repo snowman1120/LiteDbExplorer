@@ -4,7 +4,6 @@ using System.Windows;
 using LiteDbExplorer.Controls;
 using LiteDbExplorer.Modules;
 using LiteDbExplorer.Windows;
-using LiteDB;
 
 namespace LiteDbExplorer
 {
@@ -12,9 +11,9 @@ namespace LiteDbExplorer
     {
         public Window Owner { get; set; }
 
-        public bool OpenDatabaseProperties(LiteDatabase database)
+        public bool OpenDatabaseProperties(DatabaseReference database)
         {
-            var window = new DatabasePropertiesWindow(Store.Current.SelectedDatabase.LiteDatabase)
+            var window = new DatabasePropertiesWindow(database.LiteDatabase)
             {
                 Owner = Owner
             };

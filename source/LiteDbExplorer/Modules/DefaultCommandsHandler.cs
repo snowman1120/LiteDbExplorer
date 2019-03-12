@@ -100,7 +100,7 @@ namespace LiteDbExplorer.Modules
             Add(Commands.EditDbProperties, (sender, args) =>
             {
                 GetDatabaseReference(sender, args)
-                    .OnSuccess(reference => _viewInteractionResolver.OpenDatabaseProperties(reference.LiteDatabase));
+                    .OnSuccess(reference => _viewInteractionResolver.OpenDatabaseProperties(reference));
 
             }, (sender, args) =>
             {
@@ -284,6 +284,9 @@ namespace LiteDbExplorer.Modules
                 return collectionReference.Database != null;
             }
 
+            // var element = args.OriginalSource as FrameworkElement;
+            // var dataContext = element?.DataContext;
+
             return args.Parameter is DatabaseReference || Store.Current.HasSelectedDatabase;
         }
 
@@ -344,27 +347,37 @@ namespace LiteDbExplorer.Modules
 
         private bool HasAnyDocumentsReference(object sender, CanExecuteRoutedEventArgs args, DocumentTypeFilter filter = DocumentTypeFilter.All)
         {
-            var documentReferences = args.Parameter as IEnumerable<DocumentReference> ?? Store.Current.SelectedDocuments;
-
-            if (filter == DocumentTypeFilter.All)
-            {
-                return documentReferences != null && documentReferences.Any();
-            }
-
-            return documentReferences != null && documentReferences
-                       .Where(p => p.Collection != null)
-                       .All(p => filter == DocumentTypeFilter.File ? p.Collection.IsFilesOrChunks : !p.Collection.IsFilesOrChunks);
+            return (args.Parameter as IEnumerable<DocumentReference> ?? Store.Current.SelectedDocuments).HasAnyDocumentsReference(filter);
         }
 
         public bool NotIsFilesCollection(object sender, CanExecuteRoutedEventArgs args)
         {
-            var collectionReference = args.Parameter as CollectionReference ?? Store.Current.SelectedCollection;
-            if (collectionReference == null)
+            return !(args.Parameter as CollectionReference ?? Store.Current.SelectedCollection).IsFilesCollection();
+        }
+    }
+
+    public static class LiteDbReferenceExtensions
+    {
+        public static bool HasAnyDocumentsReference(this IEnumerable<DocumentReference> documentReferences, DocumentTypeFilter filter = DocumentTypeFilter.All)
+        {
+            if (documentReferences == null)
             {
                 return false;
             }
 
-            return !collectionReference.IsFilesOrChunks;
+            if (filter == DocumentTypeFilter.All)
+            {
+                return documentReferences.Any();
+            }
+
+            return documentReferences
+                       .Where(p => p.Collection != null)
+                       .All(p => filter == DocumentTypeFilter.File ? p.Collection.IsFilesOrChunks : !p.Collection.IsFilesOrChunks);
+        }
+        
+        public static bool IsFilesCollection(this CollectionReference collectionReference)
+        {
+            return collectionReference != null && collectionReference.IsFilesOrChunks;
         }
     }
 }

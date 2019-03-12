@@ -16,12 +16,14 @@ namespace LiteDbExplorer.Modules.Database
     public class DatabasesExplorerViewModel : Screen, IDocumentExplorer
     {
         private readonly IDatabaseInteractions _databaseInteractions;
+        private readonly IViewInteractionResolver _viewInteractionResolver;
         private IFileDropSource _view;
 
         [ImportingConstructor]
-        public DatabasesExplorerViewModel(IDatabaseInteractions databaseInteractions)
+        public DatabasesExplorerViewModel(IDatabaseInteractions databaseInteractions, IViewInteractionResolver viewInteractionResolver)
         {
             _databaseInteractions = databaseInteractions;
+            _viewInteractionResolver = viewInteractionResolver;
 
             PathDefinitions = databaseInteractions.PathDefinitions;
 
@@ -88,12 +90,25 @@ namespace LiteDbExplorer.Modules.Database
                     SelectedCollection = null;
                     break;
             }
+
+            Store.Current.SelectDatabase(SelectedDatabase);
+            Store.Current.SelectCollection(SelectedCollection);
         }
         
         public void NodeDoubleClick(CollectionReference value)
         {
             var documentSet = IoC.Get<IDocumentSet>();
             documentSet.OpenDocument<CollectionExplorerViewModel, CollectionReference>(value);
+        }
+
+        public void EditDbProperties()
+        {
+            _viewInteractionResolver.OpenDatabaseProperties(SelectedDatabase);
+        }
+
+        public bool CanEditDbProperties()
+        {
+            return SelectedDatabase != null;
         }
 
         protected override void OnViewLoaded(object view)

@@ -126,11 +126,7 @@
 
                         <materialDesign:ScaleHost x:Name="ScaleHost" />
 
-                        <ToggleButton Grid.Row="0" Grid.Column="0" x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" 
-                                      Style="{StaticResource MaterialDesignExpandCollapseToggleStyle}"
-                                      Foreground="{TemplateBinding Foreground}"
-                                      Margin="6,0,6,0"
-                                      VerticalAlignment="Center"/>
+                        
 
                         <Border x:Name="MouseOverBorder"
                                 Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"
@@ -145,6 +141,20 @@
                                 SnapsToDevicePixels="true"
                                 Opacity="0"
                                 Background="{TemplateBinding Foreground, Converter={StaticResource BrushRoundConverter}}"/>
+
+                        <Border x:Name="SelectedFocusedBorder"
+                                Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"
+                                IsHitTestVisible="False"
+                                SnapsToDevicePixels="true"
+                                Visibility="Hidden"
+                                Opacity="1"
+                                Background="{DynamicResource AccentBaseColorBrush}"/>
+
+                        <ToggleButton Grid.Row="0" Grid.Column="0" x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" 
+                                      Style="{StaticResource MaterialDesignExpandCollapseToggleStyle}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      Margin="6,0,6,0"
+                                      VerticalAlignment="Center"/>
 
                         <Grid Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" x:Name="ContentGrid" Background="Transparent">
                             <materialDesign:Ripple Feedback="{TemplateBinding Foreground, Converter={StaticResource BrushRoundConverter}}"
@@ -198,6 +208,14 @@
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Opacity" Value=".56"/>
                         </Trigger>
+
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}" 
+                                     Value="true">
+                            <!--<Setter Property="Opacity" TargetName="SelectedBorder" Value="1"/>
+                            <Setter Property="Background" TargetName="SelectedBorder" Value="{DynamicResource AccentColorBrush}"/>-->
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Visibility" TargetName="SelectedFocusedBorder" Value="Visible"/>
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

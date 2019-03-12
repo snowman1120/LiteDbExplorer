@@ -62,6 +62,16 @@ namespace LiteDbExplorer
 
         });
 
+        public void InsertRecentFile(string path)
+        {
+            if (RecentFiles.Contains(path))
+            {
+                RecentFiles.Remove(path);
+            }
+
+            RecentFiles.Insert(0, path);
+        }
+
         private static void RecentFiles_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (sender is ObservableCollection<string> collection)

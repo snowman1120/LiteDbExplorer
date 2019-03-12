@@ -25,7 +25,7 @@ namespace LiteDbExplorer.Modules
             _windowManager = windowManager;
         }
 
-        public bool OpenDatabaseProperties(LiteDatabase database)
+        public bool OpenDatabaseProperties(DatabaseReference database)
         {
             var vm = IoC.Get<IDatabasePropertiesView>();
             vm.Init(database);

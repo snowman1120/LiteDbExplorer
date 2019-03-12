@@ -20,7 +20,7 @@
                     cal:Message.Attach="[Event Click] = [AcceptButton()]"/>
         </DockPanel>
 
-        <Grid DockPanel.Dock="Top" Background="{DynamicResource MaterialDesignBackground}">
+        <Grid DockPanel.Dock="Top" Background="{DynamicResource MaterialDesignPaper}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="3*"/>

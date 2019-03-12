@@ -159,7 +159,7 @@ namespace LiteDbExplorer
 
         private void EditDbPropertiesCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            _viewInteractionResolver.OpenDatabaseProperties(Store.Current.SelectedDatabase.LiteDatabase);
+            _viewInteractionResolver.OpenDatabaseProperties(Store.Current.SelectedDatabase);
         }
 
         #endregion EditDbProperties Command

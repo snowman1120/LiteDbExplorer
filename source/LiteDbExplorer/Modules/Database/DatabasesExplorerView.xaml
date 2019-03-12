@@ -11,15 +11,42 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:framework="clr-namespace:LiteDbExplorer.Framework"
              xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors"
+             xmlns:database="clr-namespace:LiteDbExplorer.Modules.Database"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:commands="clr-namespace:LiteDbExplorer.Framework.Commands"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Focusable="True">
+    <i:Interaction.Behaviors>
+        <behaviors:FocusActiveGroup/>
+    </i:Interaction.Behaviors>
     <UserControl.Resources>
         <controls:StoreContext x:Key="StoreContext"/>
         <framework:DataContextProxy x:Key="DataContextProxy" Data="{Binding}"/>
     </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <commands:DataContextCommandBinding Command="liteDbExplorer:Commands.EditDbProperties"
+                                            Executed="EditDbProperties"
+                                            CanExecute="CanEditDbProperties"/>
+    </UserControl.CommandBindings>
+    <UserControl.Style>
+        <Style TargetType="UserControl">
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="{StaticResource MaterialDesignPaper}"/>
+            <Style.Triggers>
+                <Trigger Property="behaviors:FocusGroupState.IsFocusActive" Value="True">
+                    <Setter Property="BorderBrush" Value="#2CFFFFFF"/>
+                    <!--<Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect ShadowDepth="1"/>
+                        </Setter.Value>
+                    </Setter>-->
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>
     <DockPanel AllowDrop="True"
                Background="Transparent" Drop="DockPanel_OnDrop">
-
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}">
                 <ToolBar.Resources>
@@ -89,6 +116,7 @@
 
         <TreeView Name="TreeDatabase" DockPanel.Dock="Top"
                   ItemsSource="{Binding Current.Databases, Source={StaticResource StoreContext}}"
+                  Focusable="True"
                   HorizontalContentAlignment="Stretch"
                   ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                   mah:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="False"
@@ -167,7 +195,6 @@
                         <TextBlock Grid.Column="1" Text="{Binding Name}" Padding="8,4"
                                    FontSize="14" FontWeight="Regular"
                                    FontFamily="{StaticResource MaterialDesignFont}"
-                                   Foreground="{DynamicResource MaterialDesignBody}"
                                    TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                     </Grid>
                 </HierarchicalDataTemplate>
@@ -190,7 +217,6 @@
                         <TextBlock Grid.Column="1" Text="{Binding Name}" Padding="8,4"
                                    FontSize="14" FontWeight="Regular"
                                    FontFamily="{StaticResource MaterialDesignFont}"
-                                   Foreground="{DynamicResource MaterialDesignBody}"
                                    TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                     </Grid>
                 </DataTemplate>

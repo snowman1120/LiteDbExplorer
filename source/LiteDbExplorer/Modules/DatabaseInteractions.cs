@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
-using Caliburn.Micro;
 using CSharpFunctionalExtensions;
 using LiteDbExplorer.Windows;
 using LiteDB;
@@ -19,7 +19,7 @@ namespace LiteDbExplorer.Modules
         Paths PathDefinitions { get; }
         void CreateAndOpenDatabase();
         void OpenDatabase();
-        void OpenDatabase(string path);
+        void OpenDatabase(string path, string password = "");
         void OpenDatabases(IEnumerable<string> paths);
         void ExportCollection(CollectionReference collectionReference);
         void ExportDocuments(ICollection<DocumentReference> documents);
@@ -97,7 +97,15 @@ namespace LiteDbExplorer.Modules
             }
         }
 
-        public void OpenDatabase(string path)
+        public void OpenDatabases(IEnumerable<string> paths)
+        {
+            foreach (var path in paths)
+            {
+                OpenDatabase(path);
+            }
+        }
+
+        public void OpenDatabase(string path, string password = "")
         {
             if (Store.Current.IsDatabaseOpen(path))
             {
@@ -107,46 +115,50 @@ namespace LiteDbExplorer.Modules
             if (!File.Exists(path))
             {
                 ErrorInteraction("Cannot open database, file not found.", "File not found");
-
                 return;
             }
-
-            string password = null;
-            if (DatabaseReference.IsDbPasswordProtected(path))
+            
+            try
             {
-                if (InputBoxWindow.ShowDialog("Database is password protected, enter password:", "Database password.",
-                        "", out password) != true)
+                if (DatabaseReference.IsDbPasswordProtected(path) && 
+                    InputBoxWindow.ShowDialog("Database is password protected, enter password:", "Database password.", password, out password) != true)
                 {
                     return;
                 }
-            }
 
-            if (PathDefinitions.RecentFiles.Contains(path))
-            {
-                PathDefinitions.RecentFiles.Remove(path);
-            }
-
-            PathDefinitions.RecentFiles.Insert(0, path);
-
-            try
-            {
                 Store.Current.AddDatabase(new DatabaseReference(path, password));
+
+                PathDefinitions.InsertRecentFile(path);
+            }
+            catch (LiteException liteException)
+            {
+                OpenDatabaseExceptionHandler(liteException, path, password);
+            }
+            catch (NotSupportedException notSupportedException)
+            {
+                ErrorInteraction("Failed to open database [NotSupportedException]:" + Environment.NewLine + notSupportedException.Message);
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Failed to process update: ");
-                ErrorInteraction("Failed to open database:" + Environment.NewLine + e.Message);
+                Logger.Error(e, "Failed to open database: ");
+                ErrorInteraction("Failed to open database [Exception]:" + Environment.NewLine + e.Message);
             }
         }
 
-        public void OpenDatabases(IEnumerable<string> paths)
+        protected virtual void OpenDatabaseExceptionHandler(LiteException liteException, string path, string password = "")
         {
-            foreach (var path in paths)
+            if (liteException.ErrorCode == LiteException.DATABASE_WRONG_PASSWORD)
             {
-                OpenDatabase(path);
+                if (!string.IsNullOrEmpty(password))
+                {
+                    ErrorInteraction("Failed to open database [LiteException]:" + Environment.NewLine + liteException.Message);
+                }
+                    
+                OpenDatabase(path, password);
+                return;
             }
         }
-
+        
         public void CloseDatabase(DatabaseReference database)
         {
             Store.Current.CloseDatabase(database);
@@ -308,7 +320,12 @@ namespace LiteDbExplorer.Modules
                 {
                     var data = new BsonArray(collectionReference.LiteCollection.FindAll());
 
-                    File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(data, true, false));
+                    using (var writer = new StreamWriter(dialog.FileName))
+                    {
+                        JsonSerializer.Serialize(data, writer, true, false);
+                    }
+
+                    // File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(data, true, false));
                 }   
             }
         }
@@ -378,13 +395,22 @@ namespace LiteDbExplorer.Modules
                 {
                     if (documents.Count == 1)
                     {
-                        File.WriteAllText(dialog.FileName,
-                            JsonSerializer.Serialize(documentReference.LiteDocument, true, false));
+
+                        using (var writer = new StreamWriter(dialog.FileName))
+                        {
+                            JsonSerializer.Serialize(documentReference.LiteDocument, writer, true, false);
+                        }
+
+                        // File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(documentReference.LiteDocument, true, false));
                     }
                     else
                     {
                         var data = new BsonArray(documents.Select(a => a.LiteDocument));
-                        File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(data, true, false));
+                        using (var writer = new StreamWriter(dialog.FileName))
+                        {
+                            JsonSerializer.Serialize(data, writer, true, false);
+                        }
+                        // File.WriteAllText(dialog.FileName, JsonSerializer.Serialize(data, true, false));
                     }
                 }
             }
@@ -393,6 +419,7 @@ namespace LiteDbExplorer.Modules
         public Result CopyDocuments(IEnumerable<DocumentReference> documents)
         {
             var data = new BsonArray(documents.Select(a => a.LiteDocument));
+            
             Clipboard.SetData(DataFormats.Text, JsonSerializer.Serialize(data, true, false));
 
             return Result.Ok();

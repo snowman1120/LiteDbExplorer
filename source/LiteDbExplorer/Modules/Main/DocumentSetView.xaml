@@ -11,6 +11,8 @@
              xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -31,7 +33,7 @@
             <Setter Property="ContentTemplate">
                 <Setter.Value>
                     <DataTemplate>
-                        <ContentControl cal:View.Model="{Binding}" />
+                        <ContentControl cal:View.Model="{Binding}"/>
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
@@ -150,6 +152,9 @@
                     </DataTemplate.Triggers>
                 </DataTemplate>
             </TabControl.ItemTemplate>
+            <i:Interaction.Behaviors>
+                <behaviors:FocusActiveGroup/>
+            </i:Interaction.Behaviors>
         </TabControl>
     </DockPanel>
 </UserControl>

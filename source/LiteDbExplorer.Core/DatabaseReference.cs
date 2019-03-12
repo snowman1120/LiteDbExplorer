@@ -145,7 +145,10 @@ namespace LiteDbExplorer
                 }
                 catch (LiteException e)
                 {
-                    if (e.Message.Contains("password")) return true;
+                    if (e.ErrorCode == LiteException.DATABASE_WRONG_PASSWORD || e.Message.Contains("password"))
+                    {
+                        return true;
+                    }
 
                     throw;
                 }

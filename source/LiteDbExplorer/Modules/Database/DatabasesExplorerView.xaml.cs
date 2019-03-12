@@ -17,7 +17,7 @@ namespace LiteDbExplorer.Modules.Database
         {
             InitializeComponent();
         }
-
+        
         public Action<IEnumerable<string>> FilesDropped { get; set; }
 
         private void DockPanel_OnDrop(object sender, DragEventArgs e)

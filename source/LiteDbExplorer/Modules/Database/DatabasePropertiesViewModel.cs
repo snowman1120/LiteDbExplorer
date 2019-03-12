@@ -17,10 +17,13 @@ namespace LiteDbExplorer.Modules.Database
             DisplayName = "Database Properties";
         }
 
-        public void Init(LiteDatabase database)
+        public void Init(DatabaseReference database)
         {
-            _database = database;
-            UserVersion = database.Engine.UserVersion;
+            _database = database.LiteDatabase;
+
+            DisplayName = $"Database Properties - {database.Name}";
+
+            UserVersion = _database.Engine.UserVersion;
         }
 
         public ushort UserVersion

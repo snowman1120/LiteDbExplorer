@@ -188,6 +188,11 @@
     <Compile Include="Controls\ContentExpander.xaml.cs">
       <DependentUpon>ContentExpander.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Framework\Commands\CommandExecutionManager.cs" />
+    <Compile Include="Framework\Commands\DataContextCommandAdapter.cs" />
+    <Compile Include="Framework\Commands\DataContextCommandBinding.cs" />
+    <Compile Include="Framework\Commands\RoutedCommandBinding.cs" />
+    <Compile Include="Framework\Commands\RoutedCommandMonitor.cs" />
     <Compile Include="Framework\Services\ApplicationCommandHandler.cs" />
     <Compile Include="Framework\AppWindowManager.cs" />
     <Compile Include="Framework\DataContextProxy.cs" />
@@ -266,6 +271,7 @@
     </Compile>
     <Compile Include="Modules\StartPage\StartPageViewModel.cs" />
     <Compile Include="Presentation\Behaviors\BsonValueForeground.cs" />
+    <Compile Include="Presentation\Behaviors\FocusActiveGroup.cs" />
     <Compile Include="Presentation\Behaviors\MouseDoubleClick.cs" />
     <Compile Include="Presentation\Controls\DataContextProxy.cs" />
     <Compile Include="Presentation\Converters\BooleanToVisibilityConverter.cs" />

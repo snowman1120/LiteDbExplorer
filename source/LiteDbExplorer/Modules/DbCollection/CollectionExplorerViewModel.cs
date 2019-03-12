@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
 using LiteDbExplorer.Framework;
@@ -15,6 +16,7 @@ namespace LiteDbExplorer.Modules.DbCollection
         IHandle<InteractionEvents.CollectionDocumentsCreated>,
         IHandle<InteractionEvents.DatabaseClosed>
     {
+        private readonly IViewInteractionResolver _viewInteractionResolver;
         private DocumentReference _selectedDocument;
         private IList<DocumentReference> _selectedDocuments;
         private ICollectionListView _view;
@@ -22,8 +24,9 @@ namespace LiteDbExplorer.Modules.DbCollection
         public override string InstanceId => CollectionReference?.InstanceId;
 
         [ImportingConstructor]
-        public CollectionExplorerViewModel(IEventAggregator eventAggregator)
+        public CollectionExplorerViewModel(IEventAggregator eventAggregator, IViewInteractionResolver viewInteractionResolver)
         {
+            _viewInteractionResolver = viewInteractionResolver;
             eventAggregator.Subscribe(this);
         }
 
@@ -52,7 +55,6 @@ namespace LiteDbExplorer.Modules.DbCollection
             {
                 _selectedDocument = value;
                 Store.Current.SelectDocument(_selectedDocument);
-                CommandManager.InvalidateRequerySuggested();
             }
         }
 
@@ -76,19 +78,29 @@ namespace LiteDbExplorer.Modules.DbCollection
         protected override void OnActivate()
         {
             base.OnActivate();
-            Store.Current.SelectDatabase(CollectionReference.Database);
-            Store.Current.SelectCollection(CollectionReference);
-            CommandManager.InvalidateRequerySuggested();
+            // Store.Current.SelectDatabase(CollectionReference.Database);
+            // Store.Current.SelectCollection(CollectionReference);
+            // CommandManager.InvalidateRequerySuggested();
         }
 
         protected override void OnDeactivate(bool close)
         {
             base.OnDeactivate(close);
-            Store.Current.SelectDatabase(null);
             Store.Current.SelectDocument(null);
             Store.Current.SelectedDocuments = null;
-            Store.Current.ResetSelectedCollection();
-            CommandManager.InvalidateRequerySuggested();
+            // Store.Current.SelectDatabase(null);
+            // Store.Current.ResetSelectedCollection();
+            // CommandManager.InvalidateRequerySuggested();
+        }
+
+        public void EditDbProperties()
+        {
+            _viewInteractionResolver.OpenDatabaseProperties(CollectionReference.Database);
+        }
+
+        public bool CanEditDbProperties()
+        {
+            return CollectionReference?.Database != null;
         }
 
         public void ScrollIntoSelectedDocument()
