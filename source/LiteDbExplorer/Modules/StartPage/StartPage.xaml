@@ -33,8 +33,12 @@
                 </StackPanel>
 
                 <Border Grid.Row="2" Margin="50,10" Background="#C95100" CornerRadius="3">
-                    <TextBlock FontWeight="SemiBold" FontSize="12" Foreground="White"
-                               Text="Not ready for production." Margin="0,2" Padding="8,4"/>
+                    <TextBlock Foreground="White"
+                               Margin="0,2" Padding="8">
+                        <Run FontSize="14" FontWeight="SemiBold" Text="This is a pre-release"/>
+                        <LineBreak/>
+                        <Run FontSize="12" FontWeight="Normal" Text="We’ll point out that this release is identified as non-production ready."/>
+                    </TextBlock>
                 </Border>
 
                 <StackPanel Grid.Row="1" Margin="10">
