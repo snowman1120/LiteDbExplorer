@@ -168,6 +168,7 @@
       <DependentUpon>InputDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\JsonViewer\BraceFoldingStrategy.cs" />
+    <Compile Include="Controls\SplitContainer.cs" />
     <Compile Include="Controls\StoreContext.cs" />
     <Compile Include="Controls\WindowController.cs" />
     <Compile Include="Application\Commands.cs" />
@@ -220,6 +221,11 @@
     </Compile>
     <Compile Include="Modules\DbCollection\CollectionQueryViewModel.cs" />
     <Compile Include="Modules\DbCollection\ICollectionListView.cs" />
+    <Compile Include="Modules\DbDocument\DocumentPreviewView.xaml.cs">
+      <DependentUpon>DocumentPreviewView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\DbDocument\DocumentPreviewViewModel.cs" />
+    <Compile Include="Modules\DbDocument\IDocumentPreview.cs" />
     <Compile Include="Modules\DefaultCommandsHandler.cs" />
     <Compile Include="Modules\DatabaseInteractions.cs" />
     <Compile Include="Modules\Database\DatabasePropertiesView.xaml.cs">
@@ -367,6 +373,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Modules\DbDocument\DocumentPreviewView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Modules\Main\DocumentSetView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -390,6 +400,10 @@
     <Page Include="Modules\StartPage\StartPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Controls.SplitContainer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\MaterialDesignTheme.ButtonChrome.xaml">
       <SubType>Designer</SubType>

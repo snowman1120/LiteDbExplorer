@@ -1,0 +1,98 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:LiteDbExplorer.Controls">
+
+    <Style TargetType="{x:Type controls:SplitContainer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:SplitContainer}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid x:Name="PART_Grid">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions> <!--Horizontal -->
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid x:Name="PART_FirstChildGrid"
+                                  Grid.Column="0"
+                                  Grid.Row="0"
+                                  Grid.RowSpan="3">
+                                <ContentPresenter Content="{TemplateBinding FirstChild}" />
+                            </Grid>
+
+                            <GridSplitter x:Name="PART_Splitter"
+                                          Grid.Column="1"
+                                          Grid.Row="0"
+                                          Grid.RowSpan="3"
+                                          Grid.ColumnSpan="1"
+                                          Width="5"
+                                          VerticalAlignment="Stretch"
+                                          HorizontalAlignment="Center"
+                                          ShowsPreview="True" />
+
+                            <Grid x:Name="PART_SecondChildGrid"
+                                  Grid.Column="2"
+                                  Grid.Row="0"
+                                  Grid.RowSpan="3">
+                                <ContentPresenter Content="{TemplateBinding SecondChild}" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Orientation" Value="Vertical">
+                            <Setter TargetName="PART_FirstChildGrid" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="PART_FirstChildGrid" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="PART_FirstChildGrid" Property="Grid.ColumnSpan" Value="3" />
+                            <Setter TargetName="PART_FirstChildGrid" Property="Grid.RowSpan" Value="1" />
+
+                            <Setter TargetName="PART_Splitter" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="PART_Splitter" Property="Grid.Row" Value="1" />
+                            <Setter TargetName="PART_Splitter" Property="Grid.ColumnSpan" Value="3" />
+                            <Setter TargetName="PART_Splitter" Property="Grid.RowSpan" Value="1" />
+                            <Setter TargetName="PART_Splitter" Property="VerticalAlignment" Value="Center" />
+                            <Setter TargetName="PART_Splitter" Property="HorizontalAlignment" Value="Stretch" />
+                            <Setter TargetName="PART_Splitter" Property="Width" Value="Auto" />
+                            <Setter TargetName="PART_Splitter" Property="Height" Value="5" />
+
+                            <Setter TargetName="PART_SecondChildGrid" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="PART_SecondChildGrid" Property="Grid.Row" Value="2" />
+                            <Setter TargetName="PART_SecondChildGrid" Property="Grid.ColumnSpan" Value="3" />
+                            <Setter TargetName="PART_SecondChildGrid" Property="Grid.RowSpan" Value="1" />
+                        </Trigger>
+                        
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="SecondChildIsCollapsed" Value="True"/>
+                                <Condition Property="Orientation" Value="Horizontal"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Splitter" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="PART_SecondChildGrid" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="PART_FirstChildGrid" Property="Grid.ColumnSpan" Value="3" />
+                        </MultiTrigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="SecondChildIsCollapsed" Value="True"/>
+                                <Condition Property="Orientation" Value="Vertical"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Splitter" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="PART_SecondChildGrid" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="PART_FirstChildGrid" Property="Grid.RowSpan" Value="3" />
+                        </MultiTrigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

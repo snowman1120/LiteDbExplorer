@@ -7,6 +7,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using LiteDbExplorer.Core;
+using LiteDbExplorer.Presentation.Behaviors;
 using LiteDB;
 
 namespace LiteDbExplorer.Controls
@@ -141,9 +144,6 @@ namespace LiteDbExplorer.Controls
     public class DocumentFieldNode : INotifyPropertyChanged
     {
         private bool _isExpanded;
-#pragma warning disable CS0414 // The field 'DocumentFieldNode._loaded' is assigned but its value is never used
-        private bool _loaded;
-#pragma warning restore CS0414 // The field 'DocumentFieldNode._loaded' is assigned but its value is never used
 
         private readonly Func<BsonDocument, ObservableCollection<DocumentFieldNode>> _loadNodes;
 
@@ -166,10 +166,14 @@ namespace LiteDbExplorer.Controls
         
         public BsonValue Value { get; set; }
 
+        public string DisplayValue { get; set; }
+
         public bool IsSelected { get; set; }
 
         public BsonType? ValueType { get; set; }
         
+        public SolidColorBrush Foreground { get; set; }
+
         public bool IsExpanded
         {
             get => _isExpanded;
@@ -186,6 +190,10 @@ namespace LiteDbExplorer.Controls
         {
             Key = key;
             Value = value;
+
+            // Improve performance by removing converters
+            DisplayValue = value.ToDisplayValue();
+            Foreground = BsonValueForeground.GetBsonValueForeground(value);
 
             // TODO: Infer Null value type to handle
             if (Value != null)
@@ -218,7 +226,7 @@ namespace LiteDbExplorer.Controls
                 };
             }
         }
-
+        
         private void OnNodeExpanded()
         {
             if(IsExpanded == false)
@@ -228,13 +236,11 @@ namespace LiteDbExplorer.Controls
 
             if (_loadNodes != null && Value is BsonDocument document)
             {
-                _loaded = true;
                 Nodes = _loadNodes(document);
             }
 
             if (_loadNodes != null && Value is BsonArray array)
             {
-                _loaded = true;
                 var index = 0;
                 var nodes = new ObservableCollection<DocumentFieldNode>();
                 foreach (var arrayDoc in array)

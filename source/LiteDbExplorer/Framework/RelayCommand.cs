@@ -22,7 +22,7 @@ namespace LiteDbExplorer.Framework
             : this(execute, null)
         {
         }
-
+        
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));

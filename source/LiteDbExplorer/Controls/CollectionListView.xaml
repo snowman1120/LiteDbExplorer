@@ -45,7 +45,10 @@
     </UserControl.Resources>
     <Grid>
         <ListView Name="ListCollectionData"
-                  GridViewColumnHeader.Click="ListCollectionData_OnHeaderClick">
+                  GridViewColumnHeader.Click="ListCollectionData_OnHeaderClick"
+                  VirtualizingStackPanel.IsVirtualizing="True"
+                  VirtualizingStackPanel.VirtualizationMode="Standard"
+                  ScrollViewer.IsDeferredScrollingEnabled="True">
             <ListView.View>
                 <GridView x:Name="GridCollectionData" />
             </ListView.View>

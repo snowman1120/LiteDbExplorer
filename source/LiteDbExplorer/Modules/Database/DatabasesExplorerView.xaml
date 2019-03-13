@@ -25,6 +25,38 @@
         <framework:DataContextProxy x:Key="DataContextProxy" Data="{Binding}"/>
     </UserControl.Resources>
     <UserControl.CommandBindings>
+        <commands:DataContextCommandBinding Command="Close"
+                                            Executed="CloseDatabase"
+                                            CanExecute="CanCloseDatabase"/>
+
+        <commands:DataContextCommandBinding Command="liteDbExplorer:Commands.AddFile"
+                                            Executed="AddFile"
+                                            CanExecute="CanAddFile"/>
+
+        <commands:DataContextCommandBinding Command="liteDbExplorer:Commands.AddCollection"
+                                            Executed="AddCollection"
+                                            CanExecute="CanAddCollection"/>
+
+        <commands:DataContextCommandBinding Command="liteDbExplorer:Commands.RefreshDatabase"
+                                            Executed="RefreshDatabase"
+                                            CanExecute="CanRefreshDatabase"/>
+
+        <commands:DataContextCommandBinding Command="liteDbExplorer:Commands.RevealInExplorer"
+                                            Executed="RevealInExplorer"
+                                            CanExecute="CanRevealInExplorer"/>
+
+        <commands:DataContextCommandBinding Command="liteDbExplorer:Commands.RenameCollection"
+                                            Executed="RenameCollection"
+                                            CanExecute="CanRenameCollection"/>
+
+        <commands:DataContextCommandBinding Command="liteDbExplorer:Commands.DropCollection"
+                                            Executed="DropCollection"
+                                            CanExecute="CanDropCollection"/>
+
+        <commands:DataContextCommandBinding Command="liteDbExplorer:Commands.ExportCollection"
+                                            Executed="ExportCollection"
+                                            CanExecute="CanExportCollection"/>
+
         <commands:DataContextCommandBinding Command="liteDbExplorer:Commands.EditDbProperties"
                                             Executed="EditDbProperties"
                                             CanExecute="CanEditDbProperties"/>
@@ -36,11 +68,6 @@
             <Style.Triggers>
                 <Trigger Property="behaviors:FocusGroupState.IsFocusActive" Value="True">
                     <Setter Property="BorderBrush" Value="#2CFFFFFF"/>
-                    <!--<Setter Property="Effect">
-                        <Setter.Value>
-                            <DropShadowEffect ShadowDepth="1"/>
-                        </Setter.Value>
-                    </Setter>-->
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -201,10 +228,11 @@
                 <DataTemplate DataType="{x:Type liteDbExplorerCore:CollectionReference}">
                     <Grid>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="6" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ContentPresenter Content="{Binding}">
+                        <ContentPresenter Grid.Column="1" Content="{Binding}">
                             <ContentPresenter.Resources>
                                 <DataTemplate DataType="{x:Type liteDbExplorerCore:FileCollectionReference}">
                                     <Image Source="/Images/file-table.png" />
@@ -214,7 +242,7 @@
                                 </DataTemplate>
                             </ContentPresenter.Resources>
                         </ContentPresenter>
-                        <TextBlock Grid.Column="1" Text="{Binding Name}" Padding="8,4"
+                        <TextBlock Grid.Column="2" Text="{Binding Name}" Padding="8,4"
                                    FontSize="14" FontWeight="Regular"
                                    FontFamily="{StaticResource MaterialDesignFont}"
                                    TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />

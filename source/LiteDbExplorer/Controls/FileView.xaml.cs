@@ -28,6 +28,29 @@ namespace LiteDbExplorer.Controls
             InitializeComponent();
         }
 
+
+        public static readonly DependencyProperty FileSourceProperty = DependencyProperty.Register(
+            nameof(FileSource), typeof(object), typeof(FileView), new PropertyMetadata(null, OnFileSourceChanged));
+
+        private static void OnFileSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var fileView = d as FileView;
+            if (e.NewValue is LiteFileInfo liteFileInfo)
+            {
+                fileView?.LoadFile(liteFileInfo);
+            }
+            else
+            {
+                fileView?.Reset();
+            }
+        }
+
+        public object FileSource
+        {
+            get => (object) GetValue(FileSourceProperty);
+            set => SetValue(FileSourceProperty, value);
+        }
+
         public void LoadFile(LiteFileInfo file)
         {
             var textRegex = new Regex("text|json|script|xml");
@@ -65,6 +88,19 @@ namespace LiteDbExplorer.Controls
                     }
                 }
             }
+            else
+            {
+                Reset();
+            }
         }
+
+        public void Reset()
+        {
+            TextText.Text = string.Empty;
+            ImageImage.Source = null;
+            TextText.Visibility = Visibility.Collapsed;
+            ImageImage.Visibility = Visibility.Collapsed;
+        }
+
     }
 }

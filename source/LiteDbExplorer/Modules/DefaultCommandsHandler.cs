@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
 using CSharpFunctionalExtensions;
+using LiteDbExplorer.Core;
 using LiteDbExplorer.Framework.Services;
 using LogManager = NLog.LogManager;
 
@@ -49,7 +50,7 @@ namespace LiteDbExplorer.Modules
                 _databaseInteractions.CreateAndOpenDatabase();
             });
 
-            Add(ApplicationCommands.Close, (sender, args) =>
+            /*Add(ApplicationCommands.Close, (sender, args) =>
             {
                 GetDatabaseReference(sender, args)
                     .OnSuccess(reference =>
@@ -61,9 +62,9 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = HasDatabaseReference(sender, args);
-            });
+            });*/
 
-            Add(ApplicationCommands.Copy, (sender, args) =>
+            /*Add(ApplicationCommands.Copy, (sender, args) =>
             {
                 GetManyDocumentsReference(sender, args)
                     .OnSuccess(references => _databaseInteractions.CopyDocuments(references));
@@ -71,9 +72,9 @@ namespace LiteDbExplorer.Modules
             }, (sender, e) =>
             {
                 e.CanExecute = HasAnyDocumentsReference(sender, e, DocumentTypeFilter.BsonDocument);
-            });
+            });*/
 
-            Add(ApplicationCommands.Paste, (sender, args) =>
+            /*Add(ApplicationCommands.Paste, (sender, args) =>
             {
                 try
                 {
@@ -94,10 +95,10 @@ namespace LiteDbExplorer.Modules
             }, (sender, e) =>
             {
                 e.CanExecute = NotIsFilesCollection(sender, e) && Clipboard.ContainsText();
-            });
+            });*/
 
 
-            Add(Commands.EditDbProperties, (sender, args) =>
+            /*Add(Commands.EditDbProperties, (sender, args) =>
             {
                 GetDatabaseReference(sender, args)
                     .OnSuccess(reference => _viewInteractionResolver.OpenDatabaseProperties(reference));
@@ -105,9 +106,9 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = HasDatabaseReference(sender, args);
-            });
+            });*/
             
-            Add(Commands.Add, (sender, args) =>
+            /*Add(Commands.Add, (sender, args) =>
             {
                 GetCollectionReference(sender, args)
                     .OnSuccess(reference => _databaseInteractions.CreateItem(reference))
@@ -120,9 +121,9 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = HasCollectionReference(sender, args);
-            });
+            });*/
 
-            Add(Commands.AddFile, (sender, args) =>
+            /*Add(Commands.AddFile, (sender, args) =>
             {
                 GetDatabaseReference(sender, args)
                     .OnSuccess(reference => _databaseInteractions.AddFileToDatabase(reference))
@@ -135,9 +136,9 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = HasDatabaseReference(sender, args);
-            });
+            });*/
 
-            Add(Commands.Edit, (sender, args) =>
+            /*Add(Commands.Edit, (sender, args) =>
             {
 
                 GetDocumentReference(sender, args)
@@ -150,9 +151,9 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = HasDocumentReference(sender, args);
-            });
+            });*/
 
-            Add(Commands.AddCollection, (sender, args) =>
+            /*Add(Commands.AddCollection, (sender, args) =>
             {
                 GetDatabaseReference(sender, args)
                     .OnSuccess(reference =>
@@ -167,9 +168,9 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = HasDatabaseReference(sender, args);
-            });
+            });*/
 
-            Add(Commands.Remove, (sender, args) =>
+            /*Add(Commands.Remove, (sender, args) =>
             {
                 GetManyDocumentsReference(sender, args)
                     .OnSuccess(references => _databaseInteractions.RemoveDocuments(references));
@@ -177,9 +178,9 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = HasAnyDocumentsReference(sender, args);
-            });
+            });*/
 
-            Add(Commands.Export, (sender, args) =>
+            /*Add(Commands.Export, (sender, args) =>
             {
                 GetManyDocumentsReference(sender, args)
                     .OnSuccess(references => _databaseInteractions.ExportDocuments(references.ToList()));
@@ -187,9 +188,9 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = HasAnyDocumentsReference(sender, args);
-            });
+            });*/
 
-            Add(Commands.RefreshCollection, (sender, args) =>
+            /*Add(Commands.RefreshCollection, (sender, args) =>
             {
                 GetCollectionReference(sender, args)
                     .OnSuccess(reference => reference.Refresh());
@@ -197,9 +198,9 @@ namespace LiteDbExplorer.Modules
             }, (sender, e) =>
             {
                 e.CanExecute = HasCollectionReference(sender, e);
-            });
+            });*/
             
-            Add(Commands.RenameCollection, (sender, args) =>
+            /*Add(Commands.RenameCollection, (sender, args) =>
             {
                 GetCollectionReference(sender, args)
                     .OnSuccess(reference => _databaseInteractions.RenameCollection(reference));
@@ -207,9 +208,9 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = NotIsFilesCollection(sender, args);
-            });
+            });*/
 
-            Add(Commands.DropCollection, (sender, args) =>
+            /*Add(Commands.DropCollection, (sender, args) =>
             {
                 GetCollectionReference(sender, args)
                     .OnSuccess(reference =>
@@ -223,10 +224,10 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = HasCollectionReference(sender, args);
-            });
+            });*/
 
 
-            Add(Commands.ExportCollection, (sender, args) =>
+            /*Add(Commands.ExportCollection, (sender, args) =>
             {
                 GetCollectionReference(sender, args)
                     .OnSuccess(reference => _databaseInteractions.ExportCollection(reference));
@@ -234,10 +235,10 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = HasCollectionReference(sender, args);
-            });
+            });*/
 
 
-            Add(Commands.RefreshDatabase, (sender, args) =>
+            /*Add(Commands.RefreshDatabase, (sender, args) =>
             {
                 GetDatabaseReference(sender, args)
                     .OnSuccess(reference => reference.Refresh());
@@ -245,9 +246,9 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = HasDatabaseReference(sender, args);
-            });
+            });*/
 
-            Add(Commands.RevealInExplorer, (sender, args) =>
+            /*Add(Commands.RevealInExplorer, (sender, args) =>
             {
                 GetDatabaseReference(sender, args)
                     .OnSuccess(reference => _databaseInteractions.RevealInExplorer(reference));
@@ -255,7 +256,7 @@ namespace LiteDbExplorer.Modules
             }, (sender, args) =>
             {
                 args.CanExecute = HasDatabaseReference(sender, args);
-            });
+            });*/
         }
 
         private Result<DatabaseReference> GetDatabaseReference(object sender, ExecutedRoutedEventArgs args)
@@ -353,31 +354,6 @@ namespace LiteDbExplorer.Modules
         public bool NotIsFilesCollection(object sender, CanExecuteRoutedEventArgs args)
         {
             return !(args.Parameter as CollectionReference ?? Store.Current.SelectedCollection).IsFilesCollection();
-        }
-    }
-
-    public static class LiteDbReferenceExtensions
-    {
-        public static bool HasAnyDocumentsReference(this IEnumerable<DocumentReference> documentReferences, DocumentTypeFilter filter = DocumentTypeFilter.All)
-        {
-            if (documentReferences == null)
-            {
-                return false;
-            }
-
-            if (filter == DocumentTypeFilter.All)
-            {
-                return documentReferences.Any();
-            }
-
-            return documentReferences
-                       .Where(p => p.Collection != null)
-                       .All(p => filter == DocumentTypeFilter.File ? p.Collection.IsFilesOrChunks : !p.Collection.IsFilesOrChunks);
-        }
-        
-        public static bool IsFilesCollection(this CollectionReference collectionReference)
-        {
-            return collectionReference != null && collectionReference.IsFilesOrChunks;
         }
     }
 }

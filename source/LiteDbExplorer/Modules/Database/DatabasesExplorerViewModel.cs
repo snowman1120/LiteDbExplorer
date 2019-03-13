@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
+using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Framework.Services;
@@ -15,13 +16,18 @@ namespace LiteDbExplorer.Modules.Database
     [PartCreationPolicy (CreationPolicy.Shared)]
     public class DatabasesExplorerViewModel : Screen, IDocumentExplorer
     {
+        private readonly IEventAggregator _eventAggregator;
         private readonly IDatabaseInteractions _databaseInteractions;
         private readonly IViewInteractionResolver _viewInteractionResolver;
         private IFileDropSource _view;
 
         [ImportingConstructor]
-        public DatabasesExplorerViewModel(IDatabaseInteractions databaseInteractions, IViewInteractionResolver viewInteractionResolver)
+        public DatabasesExplorerViewModel(
+            IEventAggregator eventAggregator,
+            IDatabaseInteractions databaseInteractions, 
+            IViewInteractionResolver viewInteractionResolver)
         {
+            _eventAggregator = eventAggregator;
             _databaseInteractions = databaseInteractions;
             _viewInteractionResolver = viewInteractionResolver;
 
@@ -101,16 +107,132 @@ namespace LiteDbExplorer.Modules.Database
             documentSet.OpenDocument<CollectionExplorerViewModel, CollectionReference>(value);
         }
 
+        #region Routed Commands
+
+        [UsedImplicitly]
+        public void CloseDatabase()
+        {
+            _databaseInteractions.CloseDatabase(SelectedDatabase);
+            _eventAggregator.PublishOnUIThread(new InteractionEvents.DatabaseClosed(SelectedDatabase));
+        }
+
+        [UsedImplicitly]
+        public bool CanCloseDatabase()
+        {
+            return SelectedDatabase != null;
+        }
+
+        [UsedImplicitly]
+        public void AddFile()
+        {
+            _databaseInteractions.AddFileToDatabase(SelectedDatabase)
+                .OnSuccess(reference =>
+                {
+                    _viewInteractionResolver.ActivateCollection(reference.CollectionReference, reference.NewDocuments);
+                    _eventAggregator.PublishOnUIThread(reference);
+                });
+        }
+
+        [UsedImplicitly]
+        public bool CanAddFile()
+        {
+            return SelectedDatabase != null;
+        }
+
+        [UsedImplicitly]
+        public void AddCollection()
+        {
+            _databaseInteractions.AddCollection(SelectedDatabase)
+                .OnSuccess(reference =>
+                {
+                    _viewInteractionResolver.ActivateCollection(reference);
+                });
+        }
+
+        [UsedImplicitly]
+        public bool CanAddCollection()
+        {
+            return SelectedDatabase != null;
+        }
+
+        [UsedImplicitly]
+        public void RefreshDatabase()
+        {
+            SelectedDatabase?.Refresh();
+        }
+
+        [UsedImplicitly]
+        public bool CanRefreshDatabase()
+        {
+            return SelectedDatabase != null;
+        }
+
+        [UsedImplicitly]
+        public void RevealInExplorer()
+        {
+            _databaseInteractions.RevealInExplorer(SelectedDatabase);
+        }
+
+        [UsedImplicitly]
+        public bool CanRevealInExplorer()
+        {
+            return SelectedDatabase != null;
+        }
+
+        [UsedImplicitly]
+        public void RenameCollection()
+        {
+            _databaseInteractions.RenameCollection(SelectedCollection);
+        }
+
+        [UsedImplicitly]
+        public bool CanRenameCollection()
+        {
+            return SelectedCollection != null && !SelectedCollection.IsFilesOrChunks;
+        }
+
+        [UsedImplicitly]
+        public void DropCollection()
+        {
+            _databaseInteractions.DropCollection(SelectedCollection)
+                .OnSuccess(reference =>
+                {
+                    _eventAggregator.PublishOnUIThread(new InteractionEvents.CollectionRemoved(reference));
+                });
+        }
+
+        [UsedImplicitly]
+        public bool CanDropCollection()
+        {
+            return SelectedCollection != null;
+        }
+
+        [UsedImplicitly]
+        public void ExportCollection()
+        {
+            _databaseInteractions.ExportCollection(SelectedCollection);
+        }
+
+        [UsedImplicitly]
+        public bool CanExportCollection()
+        {
+            return SelectedCollection != null;
+        }
+
+        [UsedImplicitly]
         public void EditDbProperties()
         {
             _viewInteractionResolver.OpenDatabaseProperties(SelectedDatabase);
         }
 
+        [UsedImplicitly]
         public bool CanEditDbProperties()
         {
             return SelectedDatabase != null;
         }
 
+        #endregion
+        
         protected override void OnViewLoaded(object view)
         {
             _view = view as IFileDropSource;
@@ -118,7 +240,6 @@ namespace LiteDbExplorer.Modules.Database
             {
                 _view.FilesDropped = OpenDatabases;
             }
-            base.OnViewLoaded(view);
         }
     }
 }

@@ -5,6 +5,8 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+             xmlns:dock="clr-namespace:LiteDbExplorer.Controls"
+             xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes"
              ShutdownMode="OnExplicitShutdown"
              Startup="Application_Startup" Exit="Application_Exit">
     <Application.Resources>
@@ -17,118 +19,134 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
                 <!-- Material Design -->
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Blue.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Blue.xaml" />
                 <!-- Material Design: MahApps Compatibility -->
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Flyout.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Fonts.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Flyout.xaml" />
                 <!-- Dragablz Material Design -->
-                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml" />
                 <!-- Local Styles -->
-                <ResourceDictionary Source="Themes/MaterialDesignTheme.Button.xaml"/>
-                <ResourceDictionary Source="Themes/MaterialDesignTheme.TreeViewFullRow.xaml"/>
-                <ResourceDictionary Source="Themes/MaterialDesignTheme.ListView.xaml"/>
-                <ResourceDictionary Source="Themes/MaterialDesignTheme.ButtonChrome.xaml"/>
-                <ResourceDictionary Source="Themes/MaterialDesignTheme.ButtonSpinner.xaml"/>
-                <ResourceDictionary Source="Themes/MaterialDesignTheme.NumericUpDown.xaml"/>
-                <ResourceDictionary Source="Themes/MaterialDesignTheme.DateTimePicker.xaml"/>
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.TreeViewFullRow.xaml" />
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.ListView.xaml" />
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.ButtonChrome.xaml" />
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.ButtonSpinner.xaml" />
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.NumericUpDown.xaml" />
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.DateTimePicker.xaml" />
+                <!-- Local Controls -->
+                <ResourceDictionary Source="Themes/Controls.SplitContainer.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <!-- MahApps Brushes -->
-            <SolidColorBrush x:Key="HighlightBrush" Color="{DynamicResource Primary700}"/>
+            <SolidColorBrush x:Key="HighlightBrush" Color="{DynamicResource Primary700}" />
             <SolidColorBrush x:Key="AccentBaseColorBrush" Color="{DynamicResource Primary600}" />
-            <SolidColorBrush x:Key="AccentColorBrush" Color="{DynamicResource Primary500}"/>
-            <SolidColorBrush x:Key="AccentColorBrush2" Color="{DynamicResource Primary400}"/>
-            <SolidColorBrush x:Key="AccentColorBrush3" Color="{DynamicResource Primary300}"/>
-            <SolidColorBrush x:Key="AccentColorBrush4" Color="{DynamicResource Primary200}"/>
-            <SolidColorBrush x:Key="WindowTitleColorBrush" Color="{Binding Source={StaticResource MaterialDesignPaper}, Path=Color}"/>
-            <SolidColorBrush x:Key="AccentSelectedColorBrush" Color="{DynamicResource Primary500Foreground}"/>
+            <SolidColorBrush x:Key="AccentColorBrush" Color="{DynamicResource Primary500}" />
+            <SolidColorBrush x:Key="AccentColorBrush2" Color="{DynamicResource Primary400}" />
+            <SolidColorBrush x:Key="AccentColorBrush3" Color="{DynamicResource Primary300}" />
+            <SolidColorBrush x:Key="AccentColorBrush4" Color="{DynamicResource Primary200}" />
+            <SolidColorBrush x:Key="WindowTitleColorBrush"
+                             Color="{Binding Source={StaticResource MaterialDesignPaper}, Path=Color}" />
+            <SolidColorBrush x:Key="AccentSelectedColorBrush" Color="{DynamicResource Primary500Foreground}" />
             <LinearGradientBrush x:Key="ProgressBrush" EndPoint="0.001,0.5" StartPoint="1.002,0.5">
-                <GradientStop Color="{DynamicResource Primary700}" Offset="0"/>
-                <GradientStop Color="{DynamicResource Primary300}" Offset="1"/>
+                <GradientStop Color="{DynamicResource Primary700}" Offset="0" />
+                <GradientStop Color="{DynamicResource Primary300}" Offset="1" />
             </LinearGradientBrush>
-            <SolidColorBrush x:Key="CheckmarkFill" Color="{DynamicResource Primary500}"/>
-            <SolidColorBrush x:Key="RightArrowFill" Color="{DynamicResource Primary500}"/>
-            <SolidColorBrush x:Key="IdealForegroundColorBrush" Color="{DynamicResource Primary500Foreground}"/>
-            <SolidColorBrush x:Key="IdealForegroundDisabledBrush" Color="{DynamicResource Primary500}" Opacity="0.4"/>
-            <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.OnSwitchBrush.Win10" Color="{DynamicResource Primary500}" />
-            <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.OnSwitchMouseOverBrush.Win10" Color="{DynamicResource Primary400}" />
-            <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.ThumbIndicatorCheckedBrush.Win10" Color="{DynamicResource Primary500Foreground}" />
+            <SolidColorBrush x:Key="CheckmarkFill" Color="{DynamicResource Primary500}" />
+            <SolidColorBrush x:Key="RightArrowFill" Color="{DynamicResource Primary500}" />
+            <SolidColorBrush x:Key="IdealForegroundColorBrush" Color="{DynamicResource Primary500Foreground}" />
+            <SolidColorBrush x:Key="IdealForegroundDisabledBrush" Color="{DynamicResource Primary500}" Opacity="0.4" />
+            <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.OnSwitchBrush.Win10"
+                             Color="{DynamicResource Primary500}" />
+            <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.OnSwitchMouseOverBrush.Win10"
+                             Color="{DynamicResource Primary400}" />
+            <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.ThumbIndicatorCheckedBrush.Win10"
+                             Color="{DynamicResource Primary500Foreground}" />
 
             <!-- Dragablz Material Design -->
-            <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
+            <Style TargetType="{x:Type dragablz:TabablzControl}"
+                   BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
 
             <system:Double x:Key="WindowTitleFontSize">14</system:Double>
 
             <Style TargetType="{x:Type Window}">
-                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
-                <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}"/>
-                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}"/>
-                <Setter Property="TextElement.FontWeight" Value="Regular"/>
-                <Setter Property="TextElement.FontSize" Value="13"/>
-                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
-                <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="TextElement.FontWeight" Value="Regular" />
+                <Setter Property="TextElement.FontSize" Value="13" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+                <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
             </Style>
 
-            <Style x:Key="MainWindowStyle" TargetType="{x:Type controls:MetroWindow}" BasedOn="{StaticResource {x:Type controls:MetroWindow}}">
-                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
-                <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}"/>
-                <Setter Property="TitleForeground" Value="{DynamicResource MaterialDesignBody}"/>
-                <Setter Property="WindowTitleBrush" Value="{DynamicResource MaterialDesignPaper}"/>
-                <Setter Property="OverrideDefaultWindowCommandsBrush" Value="{DynamicResource MaterialDesignBody}"/>
-                <Setter Property="GlowBrush" Value="Black"/>
-                <Setter Property="TitleCharacterCasing" Value="Normal"/>
-                <Setter Property="TitleAlignment" Value="Center"/>
-                <Setter Property="TitlebarHeight" Value="35"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}"/>
-                <Setter Property="TextElement.FontWeight" Value="Regular"/>
-                <Setter Property="TextElement.FontSize" Value="13"/>
-                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
-                <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
+            <Style x:Key="MainWindowStyle" TargetType="{x:Type controls:MetroWindow}"
+                   BasedOn="{StaticResource {x:Type controls:MetroWindow}}">
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+                <Setter Property="TitleForeground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="WindowTitleBrush" Value="{DynamicResource MaterialDesignPaper}" />
+                <Setter Property="OverrideDefaultWindowCommandsBrush" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="GlowBrush" Value="Black" />
+                <Setter Property="TitleCharacterCasing" Value="Normal" />
+                <Setter Property="TitleAlignment" Value="Center" />
+                <Setter Property="TitlebarHeight" Value="35" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="TextElement.FontWeight" Value="Regular" />
+                <Setter Property="TextElement.FontSize" Value="13" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+                <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
             </Style>
 
-            <Style x:Key="DialogWindowStyle" TargetType="{x:Type controls:MetroWindow}" BasedOn="{StaticResource {x:Type controls:MetroWindow}}">
-                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
-                <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}"/>
-                <Setter Property="TitleForeground" Value="{DynamicResource MaterialDesignBody}"/>
-                <Setter Property="WindowTitleBrush" Value="{DynamicResource MaterialDesignPaper}"/>
-                <Setter Property="OverrideDefaultWindowCommandsBrush" Value="{DynamicResource MaterialDesignBody}"/>
-                <Setter Property="TitleCharacterCasing" Value="Normal"/>
-                <Setter Property="TitleAlignment" Value="Center"/>
-                <Setter Property="TitlebarHeight" Value="35"/>
-                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}"/>
-                <Setter Property="TextElement.FontWeight" Value="Regular"/>
-                <Setter Property="TextElement.FontSize" Value="13"/>
-                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
-                <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
+            <Style x:Key="DialogWindowStyle" TargetType="{x:Type controls:MetroWindow}"
+                   BasedOn="{StaticResource {x:Type controls:MetroWindow}}">
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
+                <Setter Property="TitleForeground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="WindowTitleBrush" Value="{DynamicResource MaterialDesignPaper}" />
+                <Setter Property="OverrideDefaultWindowCommandsBrush" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="TitleCharacterCasing" Value="Normal" />
+                <Setter Property="TitleAlignment" Value="Center" />
+                <Setter Property="TitlebarHeight" Value="35" />
+                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                <Setter Property="TextElement.FontWeight" Value="Regular" />
+                <Setter Property="TextElement.FontSize" Value="13" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+                <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
             </Style>
 
-            <Style x:Key="LocalLightWindowButtonStyle" TargetType="{x:Type Button}" 
+            <Style x:Key="LocalLightWindowButtonStyle" TargetType="{x:Type Button}"
                    BasedOn="{StaticResource LightMetroWindowButtonStyle}">
                 <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
             </Style>
 
-            <Style x:Key="LocalDarkWindowButtonStyle" TargetType="{x:Type Button}" 
+            <Style x:Key="LocalDarkWindowButtonStyle" TargetType="{x:Type Button}"
                    BasedOn="{StaticResource DarkMetroWindowButtonStyle}">
                 <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
             </Style>
 
-            <Style x:Key="LocalLightCloseButtonStyle" TargetType="{x:Type Button}" 
+            <Style x:Key="LocalLightCloseButtonStyle" TargetType="{x:Type Button}"
                    BasedOn="{StaticResource MahApps.Metro.Styles.WindowButton.Close.Light.Win10}">
                 <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
             </Style>
 
-            <Style x:Key="LocalDarkCloseButtonStyle" TargetType="{x:Type Button}" 
+            <Style x:Key="LocalDarkCloseButtonStyle" TargetType="{x:Type Button}"
                    BasedOn="{StaticResource MahApps.Metro.Styles.WindowButton.Close.Dark.Win10}">
                 <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
             </Style>
 
-            <Style TargetType="{x:Type controls:WindowButtonCommands}" 
+            <Style TargetType="{x:Type controls:WindowButtonCommands}"
                    BasedOn="{StaticResource MahApps.Metro.Styles.WindowButtonCommands.Win10}">
                 <Setter Property="LightMinButtonStyle" Value="{StaticResource LocalLightWindowButtonStyle}" />
                 <Setter Property="LightMaxButtonStyle" Value="{StaticResource LocalLightWindowButtonStyle}" />
@@ -153,6 +171,58 @@
                                 Value="{Binding Path=NonActiveWindowTitleBrush, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}}" />
                     </DataTrigger>
                 </Style.Triggers>
+            </Style>
+
+            <Style x:Key="MaterialDesignToolToggleButton" TargetType="{x:Type ToggleButton}" 
+                   BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                <Setter Property="TextBlock.FontWeight" Value="DemiBold"/>
+                <Setter Property="TextBlock.FontSize" Value="18"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                
+                <Setter Property="Padding" Value="14 6 14 6" />
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                                    Background="{TemplateBinding Background}"
+                                    Padding="{TemplateBinding Padding}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="2">
+                                <ContentPresenter HorizontalAlignment="Center"                  
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Resources>
+                                <Style TargetType="{x:Type wpf:PackIcon}">
+                                    <Setter Property="Width" Value="22" />
+                                    <Setter Property="Height" Value="22" />
+                                    <Setter Property="Foreground" 
+                                            Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"/>
+                                </Style>
+                            </ControlTemplate.Resources>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter> 
+                <Style.Triggers>
+                    <Trigger Property="IsChecked" Value="True">
+                        <!--<Setter Property="Foreground" Value="{DynamicResource AccentColorBrush}"/>-->
+                        <Setter Property="Background" Value="{DynamicResource MaterialDesignDivider}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="BottomToolBarPanel" TargetType="{x:Type Panel}">
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignToolBarBackground}"/>
+                <Setter Property="MinHeight" Value="34"/>
+                <!--<Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform CenterX="0" CenterY="0" ScaleX="0.8" ScaleY="0.8"/>
+                    </Setter.Value>
+                </Setter>-->
             </Style>
 
         </ResourceDictionary>

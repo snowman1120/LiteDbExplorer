@@ -75,6 +75,12 @@
                         </Setter.Value>
                     </Setter>
                 </Style>
+                <Style TargetType="{x:Type materialDesign:PackIcon}" >
+                    <Setter Property="Width" Value="22" />
+                    <Setter Property="Height" Value="22" />
+                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
             </TabControl.Resources>
             <TabControl.ItemTemplate>
                 <DataTemplate>

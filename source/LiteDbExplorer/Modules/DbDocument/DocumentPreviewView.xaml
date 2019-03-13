@@ -1,0 +1,114 @@
+﻿<UserControl x:Class="LiteDbExplorer.Modules.DbDocument.DocumentPreviewView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
+             xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="400">
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid Visibility="{Binding Path=HasDocument, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <controls:SplitContainer x:Name="splitContainer" 
+                                 Orientation="Vertical"
+                                 SecondChildIsCollapsed="{Binding HideFileInfo}">
+            <controls:SplitContainer.FirstChild>
+                <DockPanel Background="{DynamicResource MaterialDesignToolBarBackground}">
+                    <Grid DockPanel.Dock="Top" Margin="5,0" MinHeight="40">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Document Preview"
+                                   FontWeight="Bold" VerticalAlignment="Center" Margin="5,0"/>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="5,0">
+                            <Button ToolTip="Open as document"
+                                    Command="{Binding OpenAsDocumentCommand}"
+                                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Padding="10,7"
+                                    Visibility="{Binding CanOpenAsDocument, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <materialDesign:PackIcon Kind="OpenInNew" Width="20" Height="20" />
+                            </Button>
+                        </StackPanel>
+
+                        <ListBox x:Name="DetailViewSelector"
+                                 Grid.Column="3" VerticalAlignment="Center"
+                                 SelectedIndex="0"
+                                 Style="{StaticResource MaterialDesignToolToggleFlatListBox}">
+                            <ListBoxItem>
+                                <materialDesign:PackIcon Kind="FileTree" />
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <materialDesign:PackIcon Kind="Json" />
+                            </ListBoxItem>
+                        </ListBox>
+                    </Grid>
+
+                    <TabControl DockPanel.Dock="Top"
+                                SelectedIndex="{Binding SelectedIndex, ElementName=DetailViewSelector}">
+                        <TabControl.ItemContainerStyle>
+                            <Style TargetType="{x:Type TabItem}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Style>
+                        </TabControl.ItemContainerStyle>
+                        <TabItem>
+                            <controls:DocumentTreeView x:Name="DocumentTreeView"
+                                                       DocumentSource="{Binding Path=Document}" />
+                        </TabItem>
+                        <TabItem>
+                            <controls:DocumentJsonView x:Name="DocumentJsonView"
+                                                       DocumentSource="{Binding Path=Document}" />
+                        </TabItem>
+                    </TabControl>
+                </DockPanel>
+            </controls:SplitContainer.FirstChild>
+            <controls:SplitContainer.SecondChild>
+                <DockPanel>
+                    <Border DockPanel.Dock="Top" MinHeight="40"
+                            Background="{DynamicResource MaterialDesignToolBarBackground}" Padding="10,0">
+                        <TextBlock Text="File Preview" FontWeight="Bold" VerticalAlignment="Center" />
+                    </Border>
+                    <controls:FileView x:Name="FilePreview" FileSource="{Binding FileInfo}" />
+                </DockPanel>
+            </controls:SplitContainer.SecondChild>
+        </controls:SplitContainer>
+
+        <DockPanel Grid.Row="1" Style="{StaticResource BottomToolBarPanel}">
+            <Grid DockPanel.Dock="Top" Margin="5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ListBox x:Name="splitOrientationSelector"
+                         Grid.Column="1" VerticalAlignment="Center"
+                         SelectedIndex="0"
+                         Style="{StaticResource MaterialDesignToolToggleFlatListBox}"
+                         Visibility="{Binding Path=HasFileInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ListBoxItem>
+                        <materialDesign:PackIcon Kind="MinusBoxOutline" />
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <materialDesign:PackIcon Kind="MinusBoxOutline" RenderTransformOrigin="0.5,0.5">
+                            <materialDesign:PackIcon.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="90" />
+                                </TransformGroup>
+                            </materialDesign:PackIcon.RenderTransform>
+                        </materialDesign:PackIcon>
+                    </ListBoxItem>
+                </ListBox>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</UserControl>

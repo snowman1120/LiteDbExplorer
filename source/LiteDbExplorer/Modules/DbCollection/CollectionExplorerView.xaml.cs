@@ -13,6 +13,13 @@ namespace LiteDbExplorer.Modules.DbCollection
         public CollectionExplorerView()
         {
             InitializeComponent();
+
+            splitOrientationSelector.SelectionChanged += (sender, args) =>
+            {
+                splitContainer.Orientation = splitOrientationSelector.SelectedIndex == 0
+                    ? Orientation.Vertical
+                    : Orientation.Horizontal;
+            };
         }
 
         public void ScrollIntoItem(object item)
