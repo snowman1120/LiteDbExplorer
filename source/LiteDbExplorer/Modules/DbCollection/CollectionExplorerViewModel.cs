@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Drawing;
 using System.Linq;
 using System.Security;
 using System.Windows;
-using System.Windows.Input;
 using Caliburn.Micro;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
@@ -17,19 +15,16 @@ namespace LiteDbExplorer.Modules.DbCollection
 {
     [Export(typeof(CollectionExplorerViewModel))]
     [PartCreationPolicy (CreationPolicy.NonShared)]
-    public class CollectionExplorerViewModel : Document<CollectionReference>, 
-        IHandle<InteractionEvents.DocumentUpdated>, 
-        IHandle<InteractionEvents.CollectionRemoved>,
-        IHandle<InteractionEvents.CollectionDocumentsCreated>,
-        IHandle<InteractionEvents.DatabaseClosed>
+    public class CollectionExplorerViewModel : Document<CollectionReference>
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly IViewInteractionResolver _viewInteractionResolver;
         private readonly IDatabaseInteractions _databaseInteractions;
         private DocumentReference _selectedDocument;
         private IList<DocumentReference> _selectedDocuments;
-        private ICollectionListView _view;
+        private ICollectionReferenceListView _view;
         private bool _showDocumentPreview = true;
+        private CollectionReference _collectionReference;
 
         public override string InstanceId => CollectionReference?.InstanceId;
 
@@ -42,6 +37,7 @@ namespace LiteDbExplorer.Modules.DbCollection
             _eventAggregator = eventAggregator;
             _viewInteractionResolver = viewInteractionResolver;
             _databaseInteractions = databaseInteractions;
+
             eventAggregator.Subscribe(this);
         }
 
@@ -62,10 +58,27 @@ namespace LiteDbExplorer.Modules.DbCollection
 
             DocumentPreview = IoC.Get<IDocumentPreview>();
         }
-        
-        [UsedImplicitly]
-        public CollectionReference CollectionReference { get; private set; }
 
+        [UsedImplicitly]
+        public CollectionReference CollectionReference
+        {
+            get => _collectionReference;
+            private set
+            {
+                if (_collectionReference != null)
+                {
+                    _collectionReference.ReferenceChanged -= OnCollectionReferenceChanged;
+                    _collectionReference.DocumentsCollectionChanged -= OnDocumentsCollectionChanged;
+                }
+                _collectionReference = value;
+                if (_collectionReference != null)
+                {
+                    _collectionReference.ReferenceChanged += OnCollectionReferenceChanged;
+                    _collectionReference.DocumentsCollectionChanged += OnDocumentsCollectionChanged;
+                }
+            }
+        }
+        
         [UsedImplicitly]
         public DocumentReference SelectedDocument
         {
@@ -112,18 +125,51 @@ namespace LiteDbExplorer.Modules.DbCollection
         [UsedImplicitly]
         public bool HideDocumentPreview => SelectedDocument == null || !ShowDocumentPreview;
 
+        public string DocumentsCountInfo
+        {
+            get
+            {
+                if (CollectionReference?.Items == null)
+                {
+                    return "Collection is Null";
+                }
+
+                return CollectionReference.Items.Count == 1 ? "1 item" : $"{CollectionReference.Items.Count} items";
+            }
+        }
+
+        public string SelectedDocumentsCountInfo 
+        {
+            get
+            {
+                if (SelectedDocuments == null)
+                {
+                    return string.Empty;
+                }
+
+                return SelectedDocuments.Count == 1 ? "1 selected item" : $"{SelectedDocuments.Count} selected items";
+            }
+        }
+
         protected override void OnViewLoaded(object view)
         {
-            _view = view as ICollectionListView;
+            _view = view as ICollectionReferenceListView;
         }
         
         protected override void OnDeactivate(bool close)
         {
-            base.OnDeactivate(close);
             Store.Current.SelectDocument(null);
             Store.Current.SelectedDocuments = null;
+            
+            if (close && _collectionReference != null)
+            {
+                _collectionReference.ReferenceChanged -= OnCollectionReferenceChanged;
+                _collectionReference.DocumentsCollectionChanged -= OnDocumentsCollectionChanged;
+            }
         }
         
+        
+
         public void ScrollIntoSelectedDocument()
         {
             _view?.ScrollIntoItem(SelectedDocument);
@@ -131,40 +177,34 @@ namespace LiteDbExplorer.Modules.DbCollection
 
         #region Handles
 
-        public void Handle(InteractionEvents.DocumentUpdated message)
+        private void OnCollectionReferenceChanged(object sender, ReferenceChangedEventArgs<CollectionReference> e)
         {
-            if (message.DocumentReference.BelongsToCollectionInstance(CollectionReference))
+            switch (e.Action)
             {
-                _view?.UpdateView(message.DocumentReference);
-                _view?.ScrollIntoItem(message.DocumentReference);
+                case ReferenceNodeChangeAction.Remove:
+                    TryClose();
+                    break;
+                case ReferenceNodeChangeAction.Update:
+                case ReferenceNodeChangeAction.Add:
+                    _view?.UpdateView(e.Reference);
+                    break;
             }
         }
 
-        public void Handle(InteractionEvents.CollectionRemoved message)
+        private void OnDocumentsCollectionChanged(object sender, CollectionReferenceChangedEventArgs<DocumentReference> e)
         {
-            if (message.CollectionReference.InstanceEquals(CollectionReference))
+            if (e.Action == ReferenceNodeChangeAction.Add)
             {
-                TryClose();
+                SelectedDocument = e.Items.FirstOrDefault() ?? SelectedDocument;
+                _view?.UpdateView(SelectedDocument);
+            }
+
+            if (e.Action == ReferenceNodeChangeAction.Update)
+            {
+                _view?.UpdateView(SelectedDocument);
             }
         }
-
-        public void Handle(InteractionEvents.DatabaseClosed message)
-        {
-            if (message.DatabaseReference.ContainsCollectionInstance(CollectionReference))
-            {
-                TryClose();
-            }
-        }
-
-        public void Handle(InteractionEvents.CollectionDocumentsCreated message)
-        {
-            if (message.CollectionReference.InstanceEquals(CollectionReference))
-            {
-                _view?.UpdateView(CollectionReference);
-                SelectedDocument = message.NewDocuments.FirstOrDefault();
-            }
-        }
-
+        
         #endregion
         
         #region Routed Commands
@@ -175,7 +215,7 @@ namespace LiteDbExplorer.Modules.DbCollection
             _databaseInteractions.CreateItem(CollectionReference)
                 .OnSuccess(reference =>
                 {
-                    _viewInteractionResolver.ActivateCollection(reference.CollectionReference, reference.NewDocuments);
+                    _viewInteractionResolver.ActivateCollection(reference.CollectionReference, reference.Items);
                     _eventAggregator.PublishOnUIThread(reference);
                 });
         }
@@ -189,11 +229,7 @@ namespace LiteDbExplorer.Modules.DbCollection
         [UsedImplicitly]
         public void EditDocument()
         {
-            var maybe = _databaseInteractions.OpenEditDocument(SelectedDocument);
-            if (maybe.HasValue)
-            {
-                maybe.Execute(value => _eventAggregator.PublishOnUIThread(new InteractionEvents.DocumentUpdated(value)));
-            }
+            _databaseInteractions.OpenEditDocument(SelectedDocument);
         }
 
         [UsedImplicitly]
@@ -280,6 +316,5 @@ namespace LiteDbExplorer.Modules.DbCollection
         }
 
         #endregion
-
     }
 }

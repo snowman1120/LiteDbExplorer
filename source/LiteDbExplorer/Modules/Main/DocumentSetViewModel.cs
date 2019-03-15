@@ -136,8 +136,11 @@ namespace LiteDbExplorer.Modules.Main
 
             base.DeactivateItem(item, close);
 
-            item?.Deactivate(close);
-
+            if (close == false)
+            {
+                item?.Deactivate(false);
+            }
+            
             InvalidateDisplayGroup();
 
             RaiseActiveDocumentChanged();

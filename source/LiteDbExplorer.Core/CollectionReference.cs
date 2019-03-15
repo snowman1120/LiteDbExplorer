@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Collections.Specialized;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
+using LiteDbExplorer.Core;
 using LiteDB;
 
 namespace LiteDbExplorer
 {
-    public class CollectionReference : INotifyPropertyChanging, INotifyPropertyChanged, IReferenceNode
+    public class CollectionReference : ReferenceNode<CollectionReference>
     {
         private ObservableCollection<DocumentReference> _items;
         private string _name;
@@ -17,12 +16,9 @@ namespace LiteDbExplorer
 
         public CollectionReference(string name, DatabaseReference database)
         {
-            InstanceId = Guid.NewGuid().ToString();
             Name = name;
             Database = database;
         }
-
-        public string InstanceId { get; }
 
         public string Name
         {
@@ -59,10 +55,11 @@ namespace LiteDbExplorer
                 if (_items == null)
                 {
                     _items = new ObservableCollection<DocumentReference>();
-                    foreach (var item in LiteCollection.FindAll().Select(a => new DocumentReference(a, this)))
+                    foreach (var item in GetAllItem(LiteCollection))
                     {
                         _items.Add(item);
                     }
+                    _items.CollectionChanged += OnDocumentsCollectionChanged;
                 }
 
                 return _items;
@@ -70,23 +67,64 @@ namespace LiteDbExplorer
             set
             {
                 OnPropertyChanging(nameof(Items));
+                if (_items != null)
+                {
+                    _items.CollectionChanged -= OnDocumentsCollectionChanged;
+                }
+
                 _items = value;
+                if (_items != null)
+                {
+                    _items.CollectionChanged += OnDocumentsCollectionChanged;
+                }
+
                 OnPropertyChanged(nameof(Items));
             }
+        }
+
+        public event EventHandler<CollectionReferenceChangedEventArgs<DocumentReference>> DocumentsCollectionChanged;
+
+        private void OnDocumentsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    if (e.NewItems != null)
+                    {
+                        BroadcastChanges(ReferenceNodeChangeAction.Add, e.NewItems.Cast<DocumentReference>());
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Reset:
+                    if (e.OldItems != null)
+                    {
+                        BroadcastChanges(ReferenceNodeChangeAction.Remove, e.OldItems.Cast<DocumentReference>());
+                    }
+                    break;
+            }
+        }
+
+        private void BroadcastChanges(ReferenceNodeChangeAction action, IEnumerable<DocumentReference> items)
+        {
+            foreach (var documentReference in items)
+            {
+                documentReference.OnReferenceChanged(action, documentReference);
+            }
+
+            OnDocumentsCollectionChanged(action, items);
         }
 
         public LiteCollection<BsonDocument> LiteCollection => Database.LiteDatabase.GetCollection(Name);
 
         public bool IsFilesOrChunks => IsFilesOrChunksCollection(this);
 
-        public bool InstanceEquals(CollectionReference collectionReference)
-        {
-            return InstanceId.Equals(collectionReference?.InstanceId);
-        }
-        
         public virtual void UpdateItem(DocumentReference document)
         {
             LiteCollection.Update(document.LiteDocument);
+
+            document.OnReferenceChanged(ReferenceNodeChangeAction.Update, document);
+
+            OnDocumentsCollectionChanged(ReferenceNodeChangeAction.Update, new []{ document });
         }
 
         public virtual void RemoveItem(DocumentReference document)
@@ -124,22 +162,12 @@ namespace LiteDbExplorer
                 _items.Clear();
             }
 
-            foreach (var item in LiteCollection.FindAll().Select(a => new DocumentReference(a, this)))
+            foreach (var item in GetAllItem(LiteCollection))
             {
                 _items.Add(item);
             }
 
             OnPropertyChanged(nameof(Items));
-        }
-
-        public void InvalidateProperties()
-        {
-            if (Items != null)
-            {
-                foreach (var documentReference in Items) documentReference.InvalidateProperties();
-            }
-
-            OnPropertyChanged(string.Empty);
         }
 
         public static bool IsFilesOrChunksCollection(CollectionReference reference)
@@ -152,19 +180,14 @@ namespace LiteDbExplorer
             return reference.Name == @"_files" || reference.Name == @"_chunks";
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual IEnumerable<DocumentReference> GetAllItem(LiteCollection<BsonDocument> liteCollection)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return LiteCollection.FindAll().Select(bsonDocument => new DocumentReference(bsonDocument, this));
         }
 
-        public event PropertyChangingEventHandler PropertyChanging;
-
-        protected virtual void OnPropertyChanging([CallerMemberName] string name = null)
+        protected virtual void OnDocumentsCollectionChanged(ReferenceNodeChangeAction action, IEnumerable<DocumentReference> items)
         {
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(name));
+            DocumentsCollectionChanged?.Invoke(this, new CollectionReferenceChangedEventArgs<DocumentReference>(action, items));
         }
     }
 }

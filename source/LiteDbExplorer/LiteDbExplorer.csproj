@@ -220,11 +220,12 @@
       <DependentUpon>CollectionQueryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\DbCollection\CollectionQueryViewModel.cs" />
-    <Compile Include="Modules\DbCollection\ICollectionListView.cs" />
+    <Compile Include="Modules\DbCollection\ICollectionReferenceListView.cs" />
     <Compile Include="Modules\DbDocument\DocumentPreviewView.xaml.cs">
       <DependentUpon>DocumentPreviewView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\DbDocument\DocumentPreviewViewModel.cs" />
+    <Compile Include="Modules\DbDocument\IDocumentDetailView.cs" />
     <Compile Include="Modules\DbDocument\IDocumentPreview.cs" />
     <Compile Include="Modules\DefaultCommandsHandler.cs" />
     <Compile Include="Modules\DatabaseInteractions.cs" />
@@ -278,6 +279,7 @@
     <Compile Include="Modules\StartPage\StartPageViewModel.cs" />
     <Compile Include="Presentation\Behaviors\BsonValueForeground.cs" />
     <Compile Include="Presentation\Behaviors\FocusActiveGroup.cs" />
+    <Compile Include="Presentation\Behaviors\KeepSelected.cs" />
     <Compile Include="Presentation\Behaviors\MouseDoubleClick.cs" />
     <Compile Include="Presentation\Controls\DataContextProxy.cs" />
     <Compile Include="Presentation\Converters\BooleanToVisibilityConverter.cs" />

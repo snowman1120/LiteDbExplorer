@@ -8,7 +8,7 @@ namespace LiteDbExplorer.Modules.DbCollection
     /// <summary>
     /// Interaction logic for CollectionExplorerView.xaml
     /// </summary>
-    public partial class CollectionExplorerView : UserControl, ICollectionListView
+    public partial class CollectionExplorerView : UserControl, ICollectionReferenceListView
     {
         public CollectionExplorerView()
         {

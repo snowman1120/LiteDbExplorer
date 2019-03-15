@@ -2,7 +2,7 @@
 
 namespace LiteDbExplorer.Modules.DbCollection
 {
-    public interface ICollectionListView : IListViewInteractionProvider
+    public interface ICollectionReferenceListView : IListViewInteractionProvider
     {
         void UpdateView(CollectionReference collectionReference);
         void UpdateView(DocumentReference documentReference);

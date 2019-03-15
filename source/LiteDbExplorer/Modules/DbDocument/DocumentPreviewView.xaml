@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
              xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
+             xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="400">
     <UserControl.Resources>
@@ -21,7 +23,7 @@
                                  SecondChildIsCollapsed="{Binding HideFileInfo}">
             <controls:SplitContainer.FirstChild>
                 <DockPanel Background="{DynamicResource MaterialDesignToolBarBackground}">
-                    <Grid DockPanel.Dock="Top" Margin="5,0" MinHeight="40">
+                    <Grid DockPanel.Dock="Top" Margin="5,0,2,0" MinHeight="40">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
@@ -41,10 +43,13 @@
                             </Button>
                         </StackPanel>
 
-                        <ListBox x:Name="DetailViewSelector"
+                        <ListBox x:Name="detailViewSelector"
                                  Grid.Column="3" VerticalAlignment="Center"
                                  SelectedIndex="0"
                                  Style="{StaticResource MaterialDesignToolToggleFlatListBox}">
+                            <i:Interaction.Behaviors>
+                                <behaviors:KeepSelected/>
+                            </i:Interaction.Behaviors>
                             <ListBoxItem>
                                 <materialDesign:PackIcon Kind="FileTree" />
                             </ListBoxItem>
@@ -55,19 +60,19 @@
                     </Grid>
 
                     <TabControl DockPanel.Dock="Top"
-                                SelectedIndex="{Binding SelectedIndex, ElementName=DetailViewSelector}">
+                                SelectedIndex="{Binding SelectedIndex, ElementName=detailViewSelector}">
                         <TabControl.ItemContainerStyle>
                             <Style TargetType="{x:Type TabItem}">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </Style>
                         </TabControl.ItemContainerStyle>
                         <TabItem>
-                            <controls:DocumentTreeView x:Name="DocumentTreeView"
-                                                       DocumentSource="{Binding Path=Document}" />
+                            <controls:DocumentTreeView x:Name="documentTreeView"
+                                                       DocumentSource="{Binding Path=Document, Mode=OneWay}" />
                         </TabItem>
                         <TabItem>
-                            <controls:DocumentJsonView x:Name="DocumentJsonView"
-                                                       DocumentSource="{Binding Path=Document}" />
+                            <controls:DocumentJsonView x:Name="documentJsonView"
+                                                       DocumentSource="{Binding Path=Document, Mode=OneWay}" />
                         </TabItem>
                     </TabControl>
                 </DockPanel>
@@ -95,6 +100,9 @@
                          SelectedIndex="0"
                          Style="{StaticResource MaterialDesignToolToggleFlatListBox}"
                          Visibility="{Binding Path=HasFileInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <i:Interaction.Behaviors>
+                        <behaviors:KeepSelected/>
+                    </i:Interaction.Behaviors>
                     <ListBoxItem>
                         <materialDesign:PackIcon Kind="MinusBoxOutline" />
                     </ListBoxItem>

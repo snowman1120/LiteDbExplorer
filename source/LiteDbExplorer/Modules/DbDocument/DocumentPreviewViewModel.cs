@@ -14,17 +14,39 @@ namespace LiteDbExplorer.Modules.DbDocument
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class DocumentPreviewViewModel : Document<DocumentReference>, IDocumentPreview
     {
-        public DocumentPreviewViewModel()
+        private DocumentReference _document;
+        private IDocumentDetailView _view;
+
+        [ImportingConstructor]
+        public DocumentPreviewViewModel(IEventAggregator eventAggregator)
         {
             OpenAsDocumentCommand = new RelayCommand(OpenAsDocument, _ => CanOpenAsDocument);
+
+            eventAggregator.Subscribe(this);
         }
         
         public override string InstanceId => Document?.InstanceId;
 
         public override object IconContent => new PackIcon { Kind = PackIconKind.Json };
 
-        public DocumentReference Document { get; private set; }
+        public DocumentReference Document
+        {
+            get => _document;
+            private set
+            {
+                if (_document != null)
+                {
+                    _document.ReferenceChanged -= OnDocumentReferenceChanged;
+                }
+                _document = value;
+                if (_document != null)
+                {
+                    _document.ReferenceChanged += OnDocumentReferenceChanged;
+                }
 
+            }
+        }
+        
         public LiteFileInfo FileInfo { get; private set; }
 
         public bool IsDocumentView { get; private set; }
@@ -43,6 +65,19 @@ namespace LiteDbExplorer.Modules.DbDocument
         {
             IsDocumentView = true;
             ActivateDocument(item);
+        }
+
+        protected override void OnViewLoaded(object view)
+        {
+            _view = view as IDocumentDetailView;
+        }
+
+        protected override void OnDeactivate(bool close)
+        {
+            if (close && _document != null)
+            {
+                _document.ReferenceChanged -= OnDocumentReferenceChanged;
+            }
         }
 
         public void ActivateDocument(DocumentReference document)
@@ -73,6 +108,23 @@ namespace LiteDbExplorer.Modules.DbDocument
             var documentSet = IoC.Get<IDocumentSet>();
             documentSet.OpenDocument<DocumentPreviewViewModel, DocumentReference>(Document);
         }
+
+        #region Handles
         
+        private void OnDocumentReferenceChanged(object sender, ReferenceChangedEventArgs<DocumentReference> e)
+        {
+            switch (e.Action)
+            {
+                case ReferenceNodeChangeAction.Remove:
+                    TryClose();
+                    break;
+                case ReferenceNodeChangeAction.Update:
+                    ActivateDocument(e.Reference);
+                    _view?.UpdateView(e.Reference);
+                    break;
+            }
+        }
+
+        #endregion
     }
 }

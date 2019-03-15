@@ -112,6 +112,8 @@ namespace LiteDbExplorer
                 SelectedDatabase = null;
             }
 
+            databaseReference?.BeforeDispose();
+
             Databases.Remove(databaseReference);
 
             databaseReference?.Dispose();

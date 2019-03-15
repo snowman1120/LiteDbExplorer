@@ -9,6 +9,8 @@
              xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
              xmlns:commands="clr-namespace:LiteDbExplorer.Framework.Commands"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -114,17 +116,27 @@
                     </ToolBarTray>
 
                     <DockPanel DockPanel.Dock="Bottom" Style="{StaticResource BottomToolBarPanel}">
-                        <Grid DockPanel.Dock="Top" Margin="5,0">
+                        <Grid DockPanel.Dock="Top" Margin="5,0,2,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Opacity="0.5" 
+                                        VerticalAlignment="Center" Margin="8,0">
+                                <TextBlock Text="{Binding DocumentsCountInfo}" VerticalAlignment="Center"/>
+                                <TextBlock Text="|" Margin="8,0" FontSize="17" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding SelectedDocumentsCountInfo}" VerticalAlignment="Center"/>
+                            </StackPanel>
+
                             <ListBox x:Name="splitOrientationSelector" Margin="5,0"
                                      Grid.Column="1" VerticalAlignment="Center"
                                      SelectedIndex="1"
                                      Style="{StaticResource MaterialDesignToolToggleFlatListBox}">
+                                <i:Interaction.Behaviors>
+                                    <behaviors:KeepSelected/>
+                                </i:Interaction.Behaviors>
                                 <ListBoxItem>
                                     <materialDesign:PackIcon Kind="MinusBoxOutline" />
                                 </ListBoxItem>

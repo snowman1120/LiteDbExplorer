@@ -1,8 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
-using LiteDB;
+﻿using LiteDB;
 
 namespace LiteDbExplorer
 {
@@ -19,26 +15,13 @@ namespace LiteDbExplorer
         File = 1
     }
 
-    public class TypedDocumentReference
-    {
-        public TypedDocumentReference(DocumentType type, DocumentReference documentReference)
-        {
-            Type = type;
-            DocumentReference = documentReference;
-        }
-
-        public DocumentType Type { get; }
-        public DocumentReference DocumentReference { get; }
-    }
-
-    public class DocumentReference : INotifyPropertyChanging, INotifyPropertyChanged, IReferenceNode
+    public class DocumentReference : ReferenceNode<DocumentReference>
     {
         private BsonDocument _liteDocument;
         private CollectionReference _collection;
 
         public DocumentReference()
         {
-            InstanceId = Guid.NewGuid().ToString();
         }
 
         public DocumentReference(BsonDocument document, CollectionReference collection) : this()
@@ -46,8 +29,6 @@ namespace LiteDbExplorer
             LiteDocument = document;
             Collection = collection;
         }
-
-        public string InstanceId { get; }
 
         public BsonDocument LiteDocument
         {
@@ -71,7 +52,7 @@ namespace LiteDbExplorer
             }
         }
 
-        public bool BelongsToCollectionInstance(CollectionReference collectionReference)
+        public bool ContainsReference(CollectionReference collectionReference)
         {
             if (Collection == null)
             {
@@ -84,27 +65,6 @@ namespace LiteDbExplorer
         public void RemoveSelf()
         {
             Collection?.RemoveItem(this);
-        }
-
-        [UsedImplicitly]
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void InvalidateProperties()
-        {
-            OnPropertyChanged(string.Empty);
-        }
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public event PropertyChangingEventHandler PropertyChanging;
-        
-        protected virtual void OnPropertyChanging([CallerMemberName] string name = null)
-        {
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(name));
         }
     }
 }

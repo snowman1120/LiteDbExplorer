@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using Caliburn.Micro;
 using CSharpFunctionalExtensions;
+using LiteDbExplorer.Core;
 using LiteDbExplorer.Windows;
 using LiteDB;
 using Microsoft.Win32;
@@ -23,9 +26,9 @@ namespace LiteDbExplorer.Modules
         void OpenDatabases(IEnumerable<string> paths);
         void ExportCollection(CollectionReference collectionReference);
         void ExportDocuments(ICollection<DocumentReference> documents);
-        Result<InteractionEvents.CollectionDocumentsCreated> AddFileToDatabase(DatabaseReference database);
-        Result<InteractionEvents.CollectionDocumentsCreated> ImportDataFromText(CollectionReference collection, string textData);
-        Result<InteractionEvents.CollectionDocumentsCreated> CreateItem(CollectionReference collection);
+        Result<InteractionEvents.CollectionDocumentChange> AddFileToDatabase(DatabaseReference database);
+        Result<InteractionEvents.CollectionDocumentChange> ImportDataFromText(CollectionReference collection, string textData);
+        Result<InteractionEvents.CollectionDocumentChange> CreateItem(CollectionReference collection);
         Result CopyDocuments(IEnumerable<DocumentReference> documents);
         Maybe<DocumentReference> OpenEditDocument(DocumentReference document);
         Result<CollectionReference> AddCollection(DatabaseReference database);
@@ -40,12 +43,16 @@ namespace LiteDbExplorer.Modules
     [PartCreationPolicy (CreationPolicy.Shared)]
     public class DatabaseInteractions : IDatabaseInteractions
     {
+        private readonly IEventAggregator _eventAggregator;
         private readonly IViewInteractionResolver _viewInteractionResolver;
         private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
         [ImportingConstructor]
-        public DatabaseInteractions(IViewInteractionResolver viewInteractionResolver)
+        public DatabaseInteractions(
+            IEventAggregator eventAggregator, 
+            IViewInteractionResolver viewInteractionResolver)
         {
+            _eventAggregator = eventAggregator;
             _viewInteractionResolver = viewInteractionResolver;
             PathDefinitions = new Paths();
         }
@@ -155,16 +162,16 @@ namespace LiteDbExplorer.Modules
                 }
                     
                 OpenDatabase(path, password);
-                return;
             }
         }
         
         public void CloseDatabase(DatabaseReference database)
         {
+            _eventAggregator.PublishOnUIThread(new InteractionEvents.DatabaseChange(ReferenceNodeChangeAction.Remove, database));
             Store.Current.CloseDatabase(database);
         }
         
-        public Result<InteractionEvents.CollectionDocumentsCreated> AddFileToDatabase(DatabaseReference database)
+        public Result<InteractionEvents.CollectionDocumentChange> AddFileToDatabase(DatabaseReference database)
         {
             var dialog = new OpenFileDialog
             {
@@ -174,7 +181,7 @@ namespace LiteDbExplorer.Modules
 
             if (dialog.ShowDialog() != true)
             {
-                return Result.Fail<InteractionEvents.CollectionDocumentsCreated>("FILE_OPEN_CANCELED");
+                return Result.Fail<InteractionEvents.CollectionDocumentChange>("FILE_OPEN_CANCELED");
             }
 
             try
@@ -184,7 +191,9 @@ namespace LiteDbExplorer.Modules
                 {
                     var file = database.AddFile(id, dialog.FileName);
 
-                    var documentsCreated = new InteractionEvents.CollectionDocumentsCreated(file.Collection, new [] {file});
+                    var documentsCreated = new InteractionEvents.CollectionDocumentChange(ReferenceNodeChangeAction.Add, new [] {file}, file.Collection);
+
+                    _eventAggregator.PublishOnUIThread(documentsCreated);
 
                     return Result.Ok(documentsCreated);
                 }
@@ -195,7 +204,7 @@ namespace LiteDbExplorer.Modules
             }
 
 
-            return Result.Fail<InteractionEvents.CollectionDocumentsCreated>("FILE_OPEN_FAIL");
+            return Result.Fail<InteractionEvents.CollectionDocumentChange>("FILE_OPEN_FAIL");
         }
 
         public Result RemoveDocuments(IEnumerable<DocumentReference> documents)
@@ -263,6 +272,8 @@ namespace LiteDbExplorer.Modules
                 if (ConfirmInteraction($"Are you sure you want to drop collection \"{collectionName}\"?"))
                 {
                     collection.Database.DropCollection(collectionName);
+
+                    _eventAggregator.PublishOnUIThread(new InteractionEvents.CollectionChange(ReferenceNodeChangeAction.Remove, collection));
                     
                     return Result.Ok(collection);
                 }
@@ -430,18 +441,19 @@ namespace LiteDbExplorer.Modules
             var result = _viewInteractionResolver.OpenEditDocument(document);
             if (result)
             {
+                _eventAggregator.PublishOnUIThread(new InteractionEvents.DocumentChange(ReferenceNodeChangeAction.Update, document));
                 return document;
             }
             return null;
         }
         
-        public Result<InteractionEvents.CollectionDocumentsCreated> ImportDataFromText(CollectionReference collection, string textData)
+        public Result<InteractionEvents.CollectionDocumentChange> ImportDataFromText(CollectionReference collection, string textData)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(textData))
                 {
-                    return Result.Ok(new InteractionEvents.CollectionDocumentsCreated(collection, null));
+                    return Result.Ok(InteractionEvents.CollectionDocumentChange.Nome);
                 }
 
                 var newValue = JsonSerializer.Deserialize(textData);
@@ -462,7 +474,7 @@ namespace LiteDbExplorer.Modules
                     newDocs.Add(documentReference);
                 }
 
-                var documentsUpdate = new InteractionEvents.CollectionDocumentsCreated(collection, newDocs);
+                var documentsUpdate = new InteractionEvents.CollectionDocumentChange(ReferenceNodeChangeAction.Add, newDocs, collection);
 
                 return Result.Ok(documentsUpdate);
             }
@@ -471,11 +483,11 @@ namespace LiteDbExplorer.Modules
                 var message = "Failed to import document from text content: " + e.Message;
                 Logger.Warn(e, "Cannot process clipboard data.");
                 ErrorInteraction(message, "Import Error");
-                return Result.Fail<InteractionEvents.CollectionDocumentsCreated>(message);
+                return Result.Fail<InteractionEvents.CollectionDocumentChange>(message);
             }
         }
         
-        public Result<InteractionEvents.CollectionDocumentsCreated> CreateItem(CollectionReference collection)
+        public Result<InteractionEvents.CollectionDocumentChange> CreateItem(CollectionReference collection)
         {
             if (collection is FileCollectionReference)
             {
@@ -489,7 +501,7 @@ namespace LiteDbExplorer.Modules
 
             var documentReference = collection.AddItem(newDoc);
             
-            var documentsCreated = new InteractionEvents.CollectionDocumentsCreated(collection, new [] {documentReference});
+            var documentsCreated = new InteractionEvents.CollectionDocumentChange(ReferenceNodeChangeAction.Add, documentReference, collection);
 
             return Result.Ok(documentsCreated);
         }

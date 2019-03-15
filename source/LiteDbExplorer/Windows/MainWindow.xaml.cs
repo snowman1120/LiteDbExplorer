@@ -43,8 +43,8 @@ namespace LiteDbExplorer
             _eventAggregator = new EventAggregator();
 
              _viewInteractionResolver = new MainWindowViewInteractionResolver{ Owner = this };
-
-            _databaseInteractions = new DatabaseInteractions(_viewInteractionResolver);
+            
+            _databaseInteractions = new DatabaseInteractions(_eventAggregator, _viewInteractionResolver);
 
             _positionManager = new WindowPositionHandler(this, "Main");
             
@@ -192,7 +192,7 @@ namespace LiteDbExplorer
                 var reference = result.Value;
                 
                 Store.Current.SelectCollection(reference.CollectionReference);
-                Store.Current.SelectDocument(reference.NewDocuments?.FirstOrDefault());
+                Store.Current.SelectDocument(reference.Items?.FirstOrDefault());
                 if (!reference.CollectionReference.IsFilesOrChunks)
                 {
                     UpdateGridColumns(Store.Current.SelectedDocument.LiteDocument);
@@ -544,7 +544,7 @@ namespace LiteDbExplorer
             {
                 var documentsCreated = result.Value;
                 Store.Current.SelectCollection(documentsCreated.CollectionReference);
-                Store.Current.SelectDocument(documentsCreated.NewDocuments?.FirstOrDefault());
+                Store.Current.SelectDocument(documentsCreated.Items?.FirstOrDefault());
 
                 CollectionListView.ScrollIntoSelectedItem();
             }

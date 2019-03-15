@@ -16,18 +16,15 @@ namespace LiteDbExplorer.Modules.Database
     [PartCreationPolicy (CreationPolicy.Shared)]
     public class DatabasesExplorerViewModel : Screen, IDocumentExplorer
     {
-        private readonly IEventAggregator _eventAggregator;
         private readonly IDatabaseInteractions _databaseInteractions;
         private readonly IViewInteractionResolver _viewInteractionResolver;
         private IFileDropSource _view;
 
         [ImportingConstructor]
         public DatabasesExplorerViewModel(
-            IEventAggregator eventAggregator,
             IDatabaseInteractions databaseInteractions, 
             IViewInteractionResolver viewInteractionResolver)
         {
-            _eventAggregator = eventAggregator;
             _databaseInteractions = databaseInteractions;
             _viewInteractionResolver = viewInteractionResolver;
 
@@ -113,7 +110,6 @@ namespace LiteDbExplorer.Modules.Database
         public void CloseDatabase()
         {
             _databaseInteractions.CloseDatabase(SelectedDatabase);
-            _eventAggregator.PublishOnUIThread(new InteractionEvents.DatabaseClosed(SelectedDatabase));
         }
 
         [UsedImplicitly]
@@ -128,8 +124,7 @@ namespace LiteDbExplorer.Modules.Database
             _databaseInteractions.AddFileToDatabase(SelectedDatabase)
                 .OnSuccess(reference =>
                 {
-                    _viewInteractionResolver.ActivateCollection(reference.CollectionReference, reference.NewDocuments);
-                    _eventAggregator.PublishOnUIThread(reference);
+                    _viewInteractionResolver.ActivateCollection(reference.CollectionReference, reference.Items);
                 });
         }
 
@@ -194,11 +189,7 @@ namespace LiteDbExplorer.Modules.Database
         [UsedImplicitly]
         public void DropCollection()
         {
-            _databaseInteractions.DropCollection(SelectedCollection)
-                .OnSuccess(reference =>
-                {
-                    _eventAggregator.PublishOnUIThread(new InteractionEvents.CollectionRemoved(reference));
-                });
+            _databaseInteractions.DropCollection(SelectedCollection);
         }
 
         [UsedImplicitly]

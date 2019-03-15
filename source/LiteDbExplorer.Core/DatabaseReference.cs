@@ -1,23 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
+using LiteDbExplorer.Core;
 using LiteDB;
 
 namespace LiteDbExplorer
 {
-    public class DatabaseReference : INotifyPropertyChanging, INotifyPropertyChanged, IDisposable, IReferenceNode
+    public class DatabaseReference : ReferenceNode<DatabaseReference>, IDisposable
     {
         private string _name;
         private string _location;
         private ObservableCollection<CollectionReference> _collections;
+        private bool _isDisposing;
+        private bool _beforeDisposeHandled;
 
         public DatabaseReference(string path, string password)
         {
-            InstanceId = Guid.NewGuid().ToString();
             Location = path;
             Name = Path.GetFileName(path);
 
@@ -26,10 +27,10 @@ namespace LiteDbExplorer
                 : new LiteDatabase($"Filename={path};Password={password}");
 
             UpdateCollections();
+
+            OnReferenceChanged(ReferenceNodeChangeAction.Add, this);
         }
-
-        public string InstanceId { get; }
-
+        
         public LiteDatabase LiteDatabase { get; }
 
         public string Name
@@ -55,42 +56,108 @@ namespace LiteDbExplorer
                 OnPropertyChanged();
             }
         }
-
+        
         public ObservableCollection<CollectionReference> Collections
         {
             get => _collections;
             set
             {
-                if (Equals(value, _collections)) return;
                 OnPropertyChanging();
+
+                if (_collections != null)
+                {
+                    _collections.CollectionChanged -= OnCollectionChanged;
+                }
+                
                 _collections = value;
+
+                if (_collections != null)
+                {
+                    _collections.CollectionChanged += OnCollectionChanged;
+                }
                 OnPropertyChanged();
             }
         }
 
-        public bool ContainsCollectionInstance(CollectionReference collectionReference)
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (Collections == null)
+            switch (e.Action)
             {
-                return false;
+                case NotifyCollectionChangedAction.Add:
+                    if (e.NewItems != null)
+                    {
+                        BroadcastChanges(ReferenceNodeChangeAction.Add, e.NewItems.Cast<CollectionReference>());
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Reset:
+                    if (e.OldItems != null)
+                    {
+                        BroadcastChanges(ReferenceNodeChangeAction.Remove, e.OldItems.Cast<CollectionReference>());
+                    }
+                    break;
+            }
+        }
+
+        private void BroadcastChanges(ReferenceNodeChangeAction action, DatabaseReference reference)
+        {
+            BroadcastChanges(action, Collections);
+
+            OnReferenceChanged(action, reference);
+        }
+
+        private void BroadcastChanges(ReferenceNodeChangeAction action, IEnumerable<CollectionReference> items)
+        {
+            foreach (var referenceCollection in items)
+            {
+                foreach (var documentReference in referenceCollection.Items)
+                {
+                    documentReference.OnReferenceChanged(action, documentReference);
+                }
+                
+                referenceCollection.OnReferenceChanged(action, referenceCollection);
+            }
+        }
+
+        public void BeforeDispose()
+        {
+            if (_isDisposing)
+            {
+                return;
             }
 
-            return Collections.Any(p => p.InstanceId == collectionReference?.InstanceId);
+            _beforeDisposeHandled = true;
+
+            BroadcastChanges(ReferenceNodeChangeAction.Remove, this);
         }
 
         public void Dispose()
         {
+            if (_isDisposing)
+            {
+                return;
+            }
+
+            _isDisposing = true;
+
+            if (!_beforeDisposeHandled)
+            {
+                BroadcastChanges(ReferenceNodeChangeAction.Remove, this);
+            }
+            
             LiteDatabase.Dispose();
         }
         
         private void UpdateCollections()
         {
-            Collections = new ObservableCollection<CollectionReference>(
+            var collectionReferences = new ObservableCollection<CollectionReference>(
                 LiteDatabase.GetCollectionNames()
-                .Where(a => a != @"_chunks")
-                .OrderBy(a => a)
-                .Select(a => a == @"_files" ? new FileCollectionReference(a, this) : new CollectionReference(a, this))
-               );
+                    .Where(a => a != @"_chunks")
+                    .OrderBy(a => a)
+                    .Select(a => a == @"_files" ? new FileCollectionReference(a, this) : new CollectionReference(a, this))
+            );
+
+            Collections = collectionReferences;
         }
         
 
@@ -158,21 +225,6 @@ namespace LiteDbExplorer
         public void Refresh()
         {
             UpdateCollections();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public event PropertyChangingEventHandler PropertyChanging;
-
-        protected virtual void OnPropertyChanging([CallerMemberName] string name = null)
-        {
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(name));
         }
     }
 }
