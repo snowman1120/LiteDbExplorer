@@ -47,7 +47,8 @@
         <ListView Name="ListCollectionData"
                   GridViewColumnHeader.Click="ListCollectionData_OnHeaderClick"
                   VirtualizingStackPanel.IsVirtualizing="True"
-                  VirtualizingStackPanel.VirtualizationMode="Standard"
+                  VirtualizingStackPanel.VirtualizationMode="Recycling"
+                  ScrollViewer.CanContentScroll="True"
                   ScrollViewer.IsDeferredScrollingEnabled="True">
             <ListView.View>
                 <GridView x:Name="GridCollectionData" />

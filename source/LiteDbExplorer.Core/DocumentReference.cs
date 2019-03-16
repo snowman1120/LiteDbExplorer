@@ -1,4 +1,5 @@
-﻿using LiteDB;
+﻿using System.Collections.Generic;
+using LiteDB;
 
 namespace LiteDbExplorer
 {
@@ -51,7 +52,7 @@ namespace LiteDbExplorer
                 OnPropertyChanged();
             }
         }
-
+        
         public bool ContainsReference(CollectionReference collectionReference)
         {
             if (Collection == null)

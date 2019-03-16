@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -23,7 +22,7 @@ namespace LiteDbExplorer.Controls
             nameof(CollectionReference),
             typeof(CollectionReference),
             typeof(CollectionListView),
-            new PropertyMetadata(null, OnCollectionReferenceChanged));
+            new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsArrange, OnCollectionReferenceChanged));
 
         public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
             nameof(SelectedItem),
@@ -186,19 +185,8 @@ namespace LiteDbExplorer.Controls
             {
                 return;
             }
-
-            ListCollectionData.ItemsSource = collectionReference.Items;
             
-            var keys = new List<string>();
-            foreach (var item in collectionReference.Items)
-            {
-                keys = item.LiteDocument.Keys.Union(keys).ToList();
-            }
-
-            if (App.Settings.FieldSortOrder == FieldSortOrder.Alphabetical)
-            {
-                keys = keys.OrderBy(a => a).ToList();
-            }
+            var keys = collectionReference.GetDistinctKeys(App.Settings.FieldSortOrder);
 
             foreach (var key in keys)
             {
@@ -209,6 +197,8 @@ namespace LiteDbExplorer.Controls
             {
                 newCollection.CollectionChanged += OnListViewItemsChanged;
             }
+
+            ListCollectionData.ItemsSource = collectionReference.Items;
         }
 
         private void ListCollectionDataOnMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -275,7 +265,8 @@ namespace LiteDbExplorer.Controls
                     Tag = key,
                     Name = key,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
-                    HorizontalContentAlignment = HorizontalAlignment.Stretch
+                    HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                    MinWidth = 100
                 },
                 DisplayMemberBinding = new Binding
                 {
@@ -286,7 +277,7 @@ namespace LiteDbExplorer.Controls
                 HeaderTemplate = Resources["HeaderTemplate"] as DataTemplate
             });
         }
-
+        
         private void RemoveGridColumn(string key)
         {
             GridViewColumn columnToRemove = null;

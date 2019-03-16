@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using LiteDbExplorer.Controls;
+using LiteDbExplorer.Framework.Windows;
 using LiteDbExplorer.Modules;
 using LiteDbExplorer.Windows;
 
@@ -59,5 +61,40 @@ namespace LiteDbExplorer
             Store.Current.SelectDocument(selectedDocuments?.FirstOrDefault());
             Store.Current.SelectedDocuments = selectedDocuments.ToList();
         }
+
+        public bool ShowConfirm(string message, string title = "Are you sure?")
+        {
+            return MessageBox.Show(
+                       message,
+                       title,
+                       MessageBoxButton.YesNo,
+                       MessageBoxImage.Question
+                   ) == MessageBoxResult.Yes;
+        }
+
+        public void ShowError(string message, string title = "")
+        {
+            MessageBox.Show(
+                message,
+                string.IsNullOrEmpty(title) ? "Error" : title,
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+            );
+        }
+
+        public void ShowError(Exception exception, string message, string title = "")
+        {
+            var exceptionViewer = new ExceptionViewer(message, exception);
+            var baseDialogWindow = new BaseDialogWindow
+            {
+                Title = string.IsNullOrEmpty(title) ? "Error" : title,
+                Content = exceptionViewer,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                ResizeMode = ResizeMode.NoResize,
+                IsMinButtonEnabled = false
+            };
+            baseDialogWindow.ShowDialog();
+        }
+
     }
 }

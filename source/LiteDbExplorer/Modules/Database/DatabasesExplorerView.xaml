@@ -63,7 +63,7 @@
     <UserControl.Style>
         <Style TargetType="UserControl">
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="{StaticResource MaterialDesignPaper}"/>
+            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
             <Style.Triggers>
                 <Trigger Property="behaviors:FocusGroupState.IsFocusActive" Value="True">
                     <Setter Property="BorderBrush" Value="#2CFFFFFF"/>
@@ -74,30 +74,25 @@
     <DockPanel AllowDrop="True"
                Background="Transparent" Drop="DockPanel_OnDrop">
         <ToolBarTray DockPanel.Dock="Top">
-            <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}">
+            <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}" MinHeight="44">
                 <ToolBar.Resources>
                     <ResourceDictionary>
                         <Style TargetType="Image">
-                            <Setter Property="Height" Value="18" />
-                            <Setter Property="Width" Value="18" />
+                            <Setter Property="Height" Value="14" />
+                            <Setter Property="Width" Value="14" />
                         </Style>
                         <Style TargetType="TextBlock">
-                            <Setter Property="FontFamily" Value="{StaticResource MaterialDesignFont}" />
                             <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
                             <Setter Property="FontSize" Value="15" />
                             <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="Margin" Value="5,0,5,0" />
-                        </Style>
-                        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button"
-                               BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                            <Setter Property="Padding" Value="10" />
+                            <Setter Property="Margin" Value="8,0" />
                         </Style>
                     </ResourceDictionary>
                 </ToolBar.Resources>
                 <Button x:Name="OpenDatabase" ContextMenuService.IsEnabled="False" Padding="0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Images/opendb.png" Margin="10" />
+                            <materialDesign:PackIcon Kind="FolderOpen" Margin="10"/>
                             <Border Background="{DynamicResource MaterialDesignToolBarBackground}" Width="1" />
                             <Border Background="Transparent" Padding="3,0" BorderThickness="1"
                                     PreviewMouseLeftButtonDown="RecentItemMoreBorder_MouseLeftButtonDown">
@@ -218,8 +213,8 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <materialDesign:PackIcon Kind="Database" Height="20" Width="20" Margin="-1,0,0,0"
-                                                 VerticalAlignment="Center" Foreground="#089910" />
+                        <materialDesign:PackIcon Kind="Database" Height="18" Width="20" 
+                                                 VerticalAlignment="Center" HorizontalAlignment="Center" />
                         <TextBlock Grid.Column="1" Text="{Binding Name}" Padding="8,4"
                                    FontSize="14" FontWeight="Regular"
                                    FontFamily="{StaticResource MaterialDesignFont}"
@@ -236,15 +231,15 @@
                         <ContentPresenter Grid.Column="1" Content="{Binding}">
                             <ContentPresenter.Resources>
                                 <DataTemplate DataType="{x:Type liteDbExplorerCore:FileCollectionReference}">
-                                    <Image Source="/Images/file-table.png" />
+                                    <materialDesign:PackIcon Kind="FileMultiple" Height="14" Width="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 </DataTemplate>
                                 <DataTemplate DataType="{x:Type liteDbExplorerCore:CollectionReference}">
-                                    <Image Source="/Images/table.png" Height="16" />
+                                    <materialDesign:PackIcon Kind="TableLarge" Height="14" Width="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 </DataTemplate>
                             </ContentPresenter.Resources>
                         </ContentPresenter>
                         <TextBlock Grid.Column="2" Text="{Binding Name}" Padding="8,4"
-                                   FontSize="14" FontWeight="Regular"
+                                   FontSize="14" FontWeight="Normal"
                                    FontFamily="{StaticResource MaterialDesignFont}"
                                    TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                     </Grid>

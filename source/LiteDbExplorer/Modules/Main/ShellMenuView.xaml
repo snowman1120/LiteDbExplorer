@@ -3,12 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:LiteDbExplorer.Modules.Main"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:liteDbExplorer="clr-namespace:LiteDbExplorer"
              xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:modules="clr-namespace:LiteDbExplorer.Modules"
+             xmlns:liteDbExplorerCore="clr-namespace:LiteDbExplorer;assembly=LiteDbExplorer.Core"
              mc:Ignorable="d"
              d:DesignHeight="35" d:DesignWidth="500">
     <UserControl.Resources>
@@ -24,12 +24,14 @@
             <MenuItem Header="_File" Height="35">
                 <MenuItem Command="New">
                     <MenuItem.Icon>
-                        <Image Source="/Images/newdatabase.png" />
+                        <!--<Image Source="/Images/newdatabase.png" />-->
+                        <materialDesign:PackIcon Kind="DatabasePlus" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="Open">
                     <MenuItem.Icon>
-                        <Image Source="/Images/opendb.png" />
+                        <!--<Image Source="/Images/opendb.png" />-->
+                        <materialDesign:PackIcon Kind="FolderOpen" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="Recent files" Name="MenuRecentItems"
@@ -48,7 +50,8 @@
                 </MenuItem>
                 <MenuItem Command="Close">
                     <MenuItem.Icon>
-                        <Image Source="/Images/close.png" />
+                        <!--<Image Source="/Images/close.png" />-->
+                        <materialDesign:PackIcon Kind="DatabaseMinus" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
@@ -57,33 +60,39 @@
             <MenuItem Header="_Edit" Height="35">
                 <MenuItem Command="liteDbExplorer:Commands.Add">
                     <MenuItem.Icon>
-                        <Image Source="/Images/createitem.png" />
+                        <!--<Image Source="/Images/createitem.png" />-->
+                        <materialDesign:PackIcon Kind="TableRowPlusAfter" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="liteDbExplorer:Commands.Edit">
                     <MenuItem.Icon>
-                        <Image Source="/Images/updateitem.png" />
+                        <!--<Image Source="/Images/updateitem.png" />-->
+                        <materialDesign:PackIcon Kind="TableEdit" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="liteDbExplorer:Commands.Remove">
                     <MenuItem.Icon>
-                        <Image Source="/Images/deleteitem.png" />
+                        <!--<Image Source="/Images/deleteitem.png" />-->
+                        <materialDesign:PackIcon Kind="TableRowRemove" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="liteDbExplorer:Commands.Export">
                     <MenuItem.Icon>
-                        <Image Source="/Images/export.png" />
+                        <!--<Image Source="/Images/export.png" />-->
+                        <materialDesign:PackIcon Kind="FileExport" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
                 <MenuItem Command="Copy">
                     <MenuItem.Icon>
-                        <Image Source="/Images/copy.png" />
+                        <!--<Image Source="/Images/copy.png" />-->
+                        <materialDesign:PackIcon Kind="ContentCopy" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="Paste">
                     <MenuItem.Icon>
-                        <Image Source="/Images/paste.png" />
+                        <!--<Image Source="/Images/paste.png" />-->
+                        <materialDesign:PackIcon Kind="ContentPaste" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
@@ -101,9 +110,9 @@
                         <materialDesign:PackIcon Kind="Sort" />
                     </MenuItem.Icon>
                     <MenuItem Header="Alphabetical" IsCheckable="True"
-                              IsChecked="{Binding Path=Settings.FieldSortOrder, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static liteDbExplorer:FieldSortOrder.Alphabetical}, Source={x:Static Application.Current}}" />
+                              IsChecked="{Binding Path=Settings.FieldSortOrder, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static liteDbExplorerCore:FieldSortOrder.Alphabetical}, Source={x:Static Application.Current}}" />
                     <MenuItem Header="Original" IsCheckable="True"
-                              IsChecked="{Binding Path=Settings.FieldSortOrder, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static liteDbExplorer:FieldSortOrder.Original}, Source={x:Static Application.Current}}" />
+                              IsChecked="{Binding Path=Settings.FieldSortOrder, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static liteDbExplorerCore:FieldSortOrder.Original}, Source={x:Static Application.Current}}" />
                 </MenuItem>
                 <MenuItem Header="Theme">
                     <MenuItem.Icon>

@@ -55,7 +55,7 @@
             <controls:SplitContainer.FirstChild>
                 <DockPanel>
                     <ToolBarTray DockPanel.Dock="Top">
-                        <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}">
+                        <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}" MinHeight="44">
                             <ToolBar.Resources>
                                 <ResourceDictionary>
                                     <Style TargetType="Image">
@@ -63,11 +63,11 @@
                                         <Setter Property="Width" Value="16" />
                                     </Style>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="FontFamily" Value="{StaticResource MaterialDesignFont}" />
+                                        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
                                         <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-                                        <Setter Property="FontSize" Value="15" />
+                                        <Setter Property="FontSize" Value="16" />
                                         <Setter Property="VerticalAlignment" Value="Center" />
-                                        <Setter Property="Margin" Value="5,0,5,0" />
+                                        <Setter Property="Margin" Value="8,0" />
                                         <Setter Property="FontWeight" Value="Regular" />
                                     </Style>
                                     <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button"
@@ -79,28 +79,32 @@
                             <Button Command="liteDbExplorer:Commands.Add"
                                     CommandParameter="{Binding CollectionReference}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="/Images/createitem.png" />
+                                    <!--<Image Source="/Images/createitem.png" />-->
+                                    <materialDesign:PackIcon Kind="TableRowPlusAfter" />
                                     <TextBlock Text="Add" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
                             <Button Command="liteDbExplorer:Commands.Edit"
                                     CommandParameter="{Binding SelectedDocument}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="/Images/updateitem.png" />
+                                    <!--<Image Source="/Images/updateitem.png" />-->
+                                    <materialDesign:PackIcon Kind="TableEdit" />
                                     <TextBlock Text="Edit" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
                             <Button Command="liteDbExplorer:Commands.Remove"
                                     CommandParameter="{Binding SelectedDocuments}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="/Images/deleteitem.png" />
+                                    <!--<Image Source="/Images/deleteitem.png" />-->
+                                    <materialDesign:PackIcon Kind="TableRowRemove" />
                                     <TextBlock Text="Delete" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
                             <Button Command="liteDbExplorer:Commands.Export"
                                     CommandParameter="{Binding SelectedDocuments}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="/Images/export.png" />
+                                    <!--<Image Source="/Images/export.png" />-->
+                                    <materialDesign:PackIcon Kind="FileExport" />
                                     <TextBlock Text="Export" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
@@ -108,7 +112,8 @@
                             <Button Command="liteDbExplorer:Commands.RefreshCollection"
                                     CommandParameter="{Binding CollectionReference}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="/Images/refresh.png" />
+                                    <!--<Image Source="/Images/refresh.png" />-->
+                                    <materialDesign:PackIcon Kind="Refresh" />
                                     <TextBlock Text="Refresh" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
@@ -135,7 +140,7 @@
                                      SelectedIndex="1"
                                      Style="{StaticResource MaterialDesignToolToggleFlatListBox}">
                                 <i:Interaction.Behaviors>
-                                    <behaviors:KeepSelected/>
+                                    <behaviors:KeepSelectedItem/>
                                 </i:Interaction.Behaviors>
                                 <ListBoxItem>
                                     <materialDesign:PackIcon Kind="MinusBoxOutline" />
@@ -155,7 +160,7 @@
                                           Style="{StaticResource MaterialDesignToolToggleButton}"
                                           IsChecked="{Binding ShowDocumentPreview}"
                                           ToolTip="Show Document Preview">
-                                <materialDesign:PackIcon Kind="BookOpen" />
+                                <materialDesign:PackIcon Kind="Collage" />
                             </ToggleButton>
                         </Grid>
                     </DockPanel>
@@ -208,38 +213,44 @@
                                 <MenuItem Command="liteDbExplorer:Commands.Add"
                                           CommandParameter="{Binding CollectionReference}">
                                     <MenuItem.Icon>
-                                        <Image Source="/Images/createitem.png" />
+                                        <!--<Image Source="/Images/createitem.png" />-->
+                                        <materialDesign:PackIcon Kind="TableRowPlusAfter" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Command="liteDbExplorer:Commands.Edit"
                                           CommandParameter="{Binding SelectedDocument}">
                                     <MenuItem.Icon>
-                                        <Image Source="/Images/updateitem.png" />
+                                        <!--<Image Source="/Images/updateitem.png" />-->
+                                        <materialDesign:PackIcon Kind="TableEdit" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Command="liteDbExplorer:Commands.Remove"
                                           CommandParameter="{Binding SelectedDocuments}">
                                     <MenuItem.Icon>
-                                        <Image Source="/Images/deleteitem.png" />
+                                        <!--<Image Source="/Images/deleteitem.png" />-->
+                                        <materialDesign:PackIcon Kind="TableRowRemove" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Command="liteDbExplorer:Commands.Export"
                                           CommandParameter="{Binding SelectedDocuments}">
                                     <MenuItem.Icon>
-                                        <Image Source="/Images/export.png" />
+                                        <!--<Image Source="/Images/export.png" />-->
+                                        <materialDesign:PackIcon Kind="FileExport" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <Separator />
                                 <MenuItem Command="Copy"
                                           CommandParameter="{Binding SelectedDocuments}">
                                     <MenuItem.Icon>
-                                        <Image Source="/Images/copy.png" />
+                                        <!--<Image Source="/Images/copy.png" />-->
+                                        <materialDesign:PackIcon Kind="ContentCopy" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Command="Paste"
                                           CommandParameter="{Binding CollectionReference}">
                                     <MenuItem.Icon>
-                                        <Image Source="/Images/paste.png" />
+                                        <!--<Image Source="/Images/paste.png" />-->
+                                        <materialDesign:PackIcon Kind="ContentPaste" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                             </ContextMenu>

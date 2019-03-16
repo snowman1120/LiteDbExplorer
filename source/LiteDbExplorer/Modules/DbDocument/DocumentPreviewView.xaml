@@ -23,7 +23,7 @@
                                  SecondChildIsCollapsed="{Binding HideFileInfo}">
             <controls:SplitContainer.FirstChild>
                 <DockPanel Background="{DynamicResource MaterialDesignToolBarBackground}">
-                    <Grid DockPanel.Dock="Top" Margin="5,0,2,0" MinHeight="40">
+                    <Grid DockPanel.Dock="Top" Margin="5,0,2,0" MinHeight="44">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
@@ -48,7 +48,7 @@
                                  SelectedIndex="0"
                                  Style="{StaticResource MaterialDesignToolToggleFlatListBox}">
                             <i:Interaction.Behaviors>
-                                <behaviors:KeepSelected/>
+                                <behaviors:KeepSelectedItem/>
                             </i:Interaction.Behaviors>
                             <ListBoxItem>
                                 <materialDesign:PackIcon Kind="FileTree" />
@@ -101,7 +101,7 @@
                          Style="{StaticResource MaterialDesignToolToggleFlatListBox}"
                          Visibility="{Binding Path=HasFileInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <i:Interaction.Behaviors>
-                        <behaviors:KeepSelected/>
+                        <behaviors:KeepSelectedItem/>
                     </i:Interaction.Behaviors>
                     <ListBoxItem>
                         <materialDesign:PackIcon Kind="MinusBoxOutline" />

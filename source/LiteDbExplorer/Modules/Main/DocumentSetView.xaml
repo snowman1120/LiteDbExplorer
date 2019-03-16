@@ -60,7 +60,7 @@
                                                       VerticalAlignment="Center"
                                                       HorizontalAlignment="Center"
                                                       ContentSource="Header"
-                                                      MinHeight="40" />
+                                                      MinHeight="44" />
                                 </Grid>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
@@ -76,10 +76,11 @@
                     </Setter>
                 </Style>
                 <Style TargetType="{x:Type materialDesign:PackIcon}" >
-                    <Setter Property="Width" Value="22" />
-                    <Setter Property="Height" Value="22" />
+                    <Setter Property="Width" Value="20" />
+                    <Setter Property="Height" Value="14" />
                     <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
                     <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
                 </Style>
             </TabControl.Resources>
             <TabControl.ItemTemplate>

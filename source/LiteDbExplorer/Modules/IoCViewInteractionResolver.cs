@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Dynamic;
 using System.Linq;
 using System.Windows;
 using Caliburn.Micro;
 using LiteDbExplorer.Controls;
+using LiteDbExplorer.Framework.Windows;
 using LiteDbExplorer.Modules.Database;
 using LiteDbExplorer.Modules.DbCollection;
 using LiteDbExplorer.Modules.Main;
 using LiteDbExplorer.Windows;
-using LiteDB;
 
 namespace LiteDbExplorer.Modules
 {
@@ -29,13 +29,14 @@ namespace LiteDbExplorer.Modules
         {
             var vm = IoC.Get<IDatabasePropertiesView>();
             vm.Init(database);
-
-            dynamic settings = new ExpandoObject();
-            settings.Width = 480;
-            settings.SizeToContent = SizeToContent.Height;
-            settings.ResizeMode = ResizeMode.NoResize;
-
-            return _windowManager.ShowDialog(vm, null, settings) == true;
+            
+            var dialogSettings = new DialogSettings
+            {
+                Width = 480,
+                SizeToContent = SizeToContent.Height,
+                ResizeMode = ResizeMode.NoResize
+            };
+            return _windowManager.ShowDialog(vm, null, dialogSettings.Settings) == true;
         }
 
         public bool OpenEditDocument(DocumentReference document)
@@ -109,5 +110,40 @@ namespace LiteDbExplorer.Modules
                 vm.ScrollIntoSelectedDocument();
             }
         }
+
+        public bool ShowConfirm(string message, string title = "Are you sure?")
+        {
+            return MessageBox.Show(
+                       message,
+                       title,
+                       MessageBoxButton.YesNo,
+                       MessageBoxImage.Question
+                   ) == MessageBoxResult.Yes;
+        }
+
+        public void ShowError(string message, string title = "")
+        {
+            MessageBox.Show(
+                message,
+                string.IsNullOrEmpty(title) ? "Error" : title,
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+            );
+        }
+
+        public void ShowError(Exception exception, string message, string title = "")
+        {
+            var exceptionViewer = new ExceptionViewer(message, exception);
+            var baseDialogWindow = new BaseDialogWindow
+            {
+                Title = string.IsNullOrEmpty(title) ? "Error" : title,
+                Content = exceptionViewer,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                ResizeMode = ResizeMode.NoResize,
+                IsMinButtonEnabled = false
+            };
+            baseDialogWindow.ShowDialog();
+        }
+
     }
 }

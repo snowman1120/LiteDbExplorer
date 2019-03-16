@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Data;
 using LiteDbExplorer.Core;
-using LiteDbExplorer.Modules;
 using LiteDB;
 
 namespace LiteDbExplorer.Presentation.Converters

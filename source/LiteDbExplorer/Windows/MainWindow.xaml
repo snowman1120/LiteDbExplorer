@@ -8,7 +8,7 @@
                  xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
-                 xmlns:liteDbExplorer="clr-namespace:LiteDbExplorer;assembly=LiteDbExplorer.Core"
+                 xmlns:liteDbExplorerCore="clr-namespace:LiteDbExplorer;assembly=LiteDbExplorer.Core"
                  xmlns:modules="clr-namespace:LiteDbExplorer.Modules"
                  mc:Ignorable="d"
                  Width="1024" Height="740"
@@ -163,9 +163,9 @@
                                 <materialDesign:PackIcon Kind="Sort" />
                             </MenuItem.Icon>
                             <MenuItem Header="Alphabetical" IsCheckable="True"
-                                      IsChecked="{Binding Path=Settings.FieldSortOrder, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static local:FieldSortOrder.Alphabetical}, Source={x:Static Application.Current}}" />
+                                      IsChecked="{Binding Path=Settings.FieldSortOrder, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static liteDbExplorerCore:FieldSortOrder.Alphabetical}, Source={x:Static Application.Current}}" />
                             <MenuItem Header="Original" IsCheckable="True"
-                                      IsChecked="{Binding Path=Settings.FieldSortOrder, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static local:FieldSortOrder.Original}, Source={x:Static Application.Current}}" />
+                                      IsChecked="{Binding Path=Settings.FieldSortOrder, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static liteDbExplorerCore:FieldSortOrder.Original}, Source={x:Static Application.Current}}" />
                         </MenuItem>
                         <MenuItem Header="Theme">
                             <MenuItem.Icon>
@@ -380,7 +380,7 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
-                        <HierarchicalDataTemplate DataType="{x:Type liteDbExplorer:DatabaseReference}"
+                        <HierarchicalDataTemplate DataType="{x:Type liteDbExplorerCore:DatabaseReference}"
                                                   ItemsSource="{Binding Collections}">
                             <HierarchicalDataTemplate.ItemContainerStyle>
                                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItemFullRow}">
@@ -411,7 +411,7 @@
                                            TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
                             </Grid>
                         </HierarchicalDataTemplate>
-                        <DataTemplate DataType="{x:Type liteDbExplorer:CollectionReference}">
+                        <DataTemplate DataType="{x:Type liteDbExplorerCore:CollectionReference}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -419,10 +419,10 @@
                                 </Grid.ColumnDefinitions>
                                 <ContentPresenter Content="{Binding}">
                                     <ContentPresenter.Resources>
-                                        <DataTemplate DataType="{x:Type liteDbExplorer:FileCollectionReference}">
+                                        <DataTemplate DataType="{x:Type liteDbExplorerCore:FileCollectionReference}">
                                             <Image Source="/Images/file-table.png" />
                                         </DataTemplate>
-                                        <DataTemplate DataType="{x:Type liteDbExplorer:CollectionReference}">
+                                        <DataTemplate DataType="{x:Type liteDbExplorerCore:CollectionReference}">
                                             <Image Source="/Images/table.png" Height="16" />
                                         </DataTemplate>
                                     </ContentPresenter.Resources>

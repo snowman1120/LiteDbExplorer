@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LiteDB;
 
 namespace LiteDbExplorer.Modules
@@ -10,5 +11,8 @@ namespace LiteDbExplorer.Modules
         bool RevealInExplorer(string filePath);
         void ActivateDocument(DocumentReference document);
         void ActivateCollection(CollectionReference collection, IEnumerable<DocumentReference> selectedDocuments = null);
+        void ShowError(Exception exception, string message, string title = "");
+        bool ShowConfirm(string message, string title = "Are you sure?");
+        void ShowError(string message, string title = "");
     }
 }

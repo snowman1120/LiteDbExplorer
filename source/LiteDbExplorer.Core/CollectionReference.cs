@@ -170,6 +170,20 @@ namespace LiteDbExplorer
             OnPropertyChanged(nameof(Items));
         }
 
+        public IReadOnlyList<string> GetDistinctKeys(FieldSortOrder sortOrder = FieldSortOrder.Original)
+        {
+            var keys = Items
+                .SelectMany(p => p.LiteDocument.Keys)
+                .Distinct();
+
+            if (sortOrder == FieldSortOrder.Alphabetical)
+            {
+                keys = keys.OrderBy(_ => _);
+            }
+
+            return keys.ToList();
+        }
+
         public static bool IsFilesOrChunksCollection(CollectionReference reference)
         {
             if (reference == null)

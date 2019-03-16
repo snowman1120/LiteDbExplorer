@@ -10,6 +10,7 @@ using LiteDbExplorer.Core;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Modules.DbDocument;
 using LiteDbExplorer.Presentation;
+using MaterialDesignThemes.Wpf;
 
 namespace LiteDbExplorer.Modules.DbCollection
 {
@@ -26,7 +27,7 @@ namespace LiteDbExplorer.Modules.DbCollection
         private bool _showDocumentPreview = true;
         private CollectionReference _collectionReference;
 
-        public override string InstanceId => CollectionReference?.InstanceId;
+        // public override string InstanceId => CollectionReference?.InstanceId;
 
         [ImportingConstructor]
         public CollectionExplorerViewModel(
@@ -38,9 +39,11 @@ namespace LiteDbExplorer.Modules.DbCollection
             _viewInteractionResolver = viewInteractionResolver;
             _databaseInteractions = databaseInteractions;
 
-            eventAggregator.Subscribe(this);
-        }
+            DocumentPreview = IoC.Get<IDocumentPreview>();
 
+            // eventAggregator.Subscribe(this);
+        }
+        
         public override void Init(CollectionReference value)
         {
             if (value == null)
@@ -49,14 +52,15 @@ namespace LiteDbExplorer.Modules.DbCollection
                 return;
             }
 
+            InstanceId = value.InstanceId;
+
             DisplayName = value.Name;
             GroupDisplayName = value.Database.Name;
+            
+            IconContent = value is FileCollectionReference ? new PackIcon { Kind = PackIconKind.FileMultiple } : new PackIcon { Kind = PackIconKind.TableLarge };
+            
 
             CollectionReference = value;
-
-            IconContent = IconProvider.GetImageIcon(value is FileCollectionReference ? "/Images/file-table.png" : "/Images/table.png", new ImageIconOptions{ Height = 15 });
-
-            DocumentPreview = IoC.Get<IDocumentPreview>();
         }
 
         [UsedImplicitly]
@@ -107,6 +111,7 @@ namespace LiteDbExplorer.Modules.DbCollection
 
         public IDocumentPreview DocumentPreview { get; private set; }
         
+        [UsedImplicitly]
         public bool IsSearchOpen { get; private set; }
 
         public bool ShowDocumentPreview
@@ -125,6 +130,7 @@ namespace LiteDbExplorer.Modules.DbCollection
         [UsedImplicitly]
         public bool HideDocumentPreview => SelectedDocument == null || !ShowDocumentPreview;
 
+        [UsedImplicitly]
         public string DocumentsCountInfo
         {
             get
@@ -138,6 +144,7 @@ namespace LiteDbExplorer.Modules.DbCollection
             }
         }
 
+        [UsedImplicitly]
         public string SelectedDocumentsCountInfo 
         {
             get
@@ -161,10 +168,12 @@ namespace LiteDbExplorer.Modules.DbCollection
             Store.Current.SelectDocument(null);
             Store.Current.SelectedDocuments = null;
             
-            if (close && _collectionReference != null)
+            if (close)
             {
-                _collectionReference.ReferenceChanged -= OnCollectionReferenceChanged;
-                _collectionReference.DocumentsCollectionChanged -= OnDocumentsCollectionChanged;
+                ShowDocumentPreview = false;
+                SelectedDocuments = null;
+                SelectedDocument = null;
+                CollectionReference = null;
             }
         }
         

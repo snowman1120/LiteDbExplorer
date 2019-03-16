@@ -25,8 +25,6 @@ namespace LiteDbExplorer.Modules.DbDocument
             eventAggregator.Subscribe(this);
         }
         
-        public override string InstanceId => Document?.InstanceId;
-
         public override object IconContent => new PackIcon { Kind = PackIconKind.Json };
 
         public DocumentReference Document
@@ -60,7 +58,7 @@ namespace LiteDbExplorer.Modules.DbDocument
         public bool CanOpenAsDocument => Document != null && !IsDocumentView;
 
         public RelayCommand OpenAsDocumentCommand { get; set; }
-
+        
         public override void Init(DocumentReference item)
         {
             IsDocumentView = true;
@@ -82,6 +80,8 @@ namespace LiteDbExplorer.Modules.DbDocument
 
         public void ActivateDocument(DocumentReference document)
         {
+            InstanceId = Document?.InstanceId;
+
             DisplayName = "Document Preview";
 
             Document = document;

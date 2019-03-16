@@ -1,9 +1,10 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Interactivity;
 
 namespace LiteDbExplorer.Presentation.Behaviors
 {
-    public class KeepSelected : Behavior<ListBox>
+    public class KeepSelectedItem : Behavior<Selector>
     {
         protected override void OnAttached()
         {
@@ -17,12 +18,12 @@ namespace LiteDbExplorer.Presentation.Behaviors
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender is ListBox listbox && (listbox.SelectedItem == null && e.RemovedItems.Count > 0))
+            if (sender is Selector selector && (selector.SelectedItem == null && e.RemovedItems.Count > 0))
             {
                 var itemToReselect = e.RemovedItems[0];
-                if (listbox.Items.Contains(itemToReselect))
+                if (selector.Items.Contains(itemToReselect))
                 {
-                    listbox.SelectedItem = itemToReselect;
+                    selector.SelectedItem = itemToReselect;
                 }
             }
         }

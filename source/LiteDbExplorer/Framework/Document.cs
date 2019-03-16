@@ -20,7 +20,7 @@ namespace LiteDbExplorer.Framework
 
     public abstract class Document<T> : Document, IDocument<T> where T : IReferenceNode
     {
-        public abstract string InstanceId { get; }
+        public virtual string InstanceId { get; protected set; }
 
         public abstract void Init(T item);
     }

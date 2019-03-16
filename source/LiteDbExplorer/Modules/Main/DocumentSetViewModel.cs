@@ -82,13 +82,16 @@ namespace LiteDbExplorer.Modules.Main
         public TDoc OpenDocument<TDoc, TNode>(TDoc model, TNode init)
             where TDoc : IDocument<TNode> where TNode : IReferenceNode
         {
-            var instance = Items.OfType<TDoc>().FirstOrDefault(p => p.InstanceId.Equals(init.InstanceId));
-            if (instance != null)
+            if (!string.IsNullOrEmpty(init.InstanceId))
             {
-                ActiveItem = instance;
-                return instance;
+                var instance = Items.OfType<TDoc>().FirstOrDefault(p => !string.IsNullOrEmpty(p.InstanceId) && p.InstanceId.Equals(init.InstanceId));
+                if (instance != null)
+                {
+                    ActiveItem = instance;
+                    return instance;
+                }
             }
-
+            
             model.Init(init);
             OpenDocument(model);
 

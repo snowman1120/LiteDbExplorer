@@ -164,10 +164,14 @@
     <Compile Include="Controls\DocumentJsonView.xaml.cs">
       <DependentUpon>DocumentJsonView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ExceptionViewer.xaml.cs">
+      <DependentUpon>ExceptionViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\InputDialogView.xaml.cs">
       <DependentUpon>InputDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\JsonViewer\BraceFoldingStrategy.cs" />
+    <Compile Include="Controls\SearchableTextControl.cs" />
     <Compile Include="Controls\SplitContainer.cs" />
     <Compile Include="Controls\StoreContext.cs" />
     <Compile Include="Controls\WindowController.cs" />
@@ -211,6 +215,7 @@
     <Compile Include="Framework\Windows\BaseWindow.xaml.cs">
       <DependentUpon>BaseWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Framework\Windows\DialogSettings.cs" />
     <Compile Include="Modules\AppUpdateManager.cs" />
     <Compile Include="Modules\DbCollection\CollectionExplorerView.xaml.cs">
       <DependentUpon>CollectionExplorerView.xaml</DependentUpon>
@@ -279,7 +284,7 @@
     <Compile Include="Modules\StartPage\StartPageViewModel.cs" />
     <Compile Include="Presentation\Behaviors\BsonValueForeground.cs" />
     <Compile Include="Presentation\Behaviors\FocusActiveGroup.cs" />
-    <Compile Include="Presentation\Behaviors\KeepSelected.cs" />
+    <Compile Include="Presentation\Behaviors\KeepSelectedItem.cs" />
     <Compile Include="Presentation\Behaviors\MouseDoubleClick.cs" />
     <Compile Include="Presentation\Controls\DataContextProxy.cs" />
     <Compile Include="Presentation\Converters\BooleanToVisibilityConverter.cs" />
@@ -332,6 +337,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\DocumentEntryControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ExceptionViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -402,6 +411,10 @@
     <Page Include="Modules\StartPage\StartPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Controls.SearchableTextControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Controls.SplitContainer.xaml">
       <Generator>MSBuild:Compile</Generator>

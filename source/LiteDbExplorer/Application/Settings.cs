@@ -10,12 +10,6 @@ using Newtonsoft.Json.Serialization;
 
 namespace LiteDbExplorer
 {
-    public enum FieldSortOrder
-    {
-        Alphabetical,
-        Original
-    }
-
     public enum ColorTheme
     {
         Light,
