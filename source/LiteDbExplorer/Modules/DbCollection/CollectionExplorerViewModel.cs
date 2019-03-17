@@ -57,7 +57,7 @@ namespace LiteDbExplorer.Modules.DbCollection
             DisplayName = value.Name;
             GroupDisplayName = value.Database.Name;
             
-            IconContent = value is FileCollectionReference ? new PackIcon { Kind = PackIconKind.FileMultiple } : new PackIcon { Kind = PackIconKind.TableLarge };
+            IconContent = value is FileCollectionReference ? new PackIcon { Kind = PackIconKind.FileMultiple } : new PackIcon { Kind = PackIconKind.TableLarge, Height = 16 };
             
 
             CollectionReference = value;

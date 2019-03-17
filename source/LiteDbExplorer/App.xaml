@@ -1,19 +1,18 @@
 ﻿<Application x:Class="LiteDbExplorer.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:LiteDbExplorer"
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:app="clr-namespace:LiteDbExplorer"
+             xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
              xmlns:localControls="clr-namespace:LiteDbExplorer.Controls"
-             xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
              ShutdownMode="OnExplicitShutdown"
              Startup="Application_Startup" Exit="Application_Exit">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <local:AppBootstrapper x:Key="bootstrapper" />
+                    <app:AppBootstrapper x:Key="bootstrapper"/>    
                 </ResourceDictionary>
                 <!-- MahApps -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
@@ -38,6 +37,8 @@
                 <!-- Dragablz Material Design -->
                 <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml" />
                 <!-- Local Styles -->
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.Window.xaml" />
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.AppToolBar.xaml" />
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.TreeViewFullRow.xaml" />
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.ListView.xaml" />
@@ -79,149 +80,8 @@
             <Style TargetType="{x:Type dragablz:TabablzControl}"
                    BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
 
-            <system:Double x:Key="WindowTitleFontSize">14</system:Double>
-
-            <Style TargetType="{x:Type Window}">
-                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
-                <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
-                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
-                <Setter Property="TextElement.FontWeight" Value="Regular" />
-                <Setter Property="TextElement.FontSize" Value="13" />
-                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
-                <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
-            </Style>
-
-            <Style x:Key="MainWindowStyle" TargetType="{x:Type controls:MetroWindow}"
-                   BasedOn="{StaticResource {x:Type controls:MetroWindow}}">
-                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
-                <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
-                <Setter Property="TitleForeground" Value="{DynamicResource MaterialDesignBody}" />
-                <Setter Property="WindowTitleBrush" Value="{DynamicResource MaterialDesignPaper}" />
-                <Setter Property="OverrideDefaultWindowCommandsBrush" Value="{DynamicResource MaterialDesignBody}" />
-                <Setter Property="GlowBrush" Value="Black" />
-                <Setter Property="TitleCharacterCasing" Value="Normal" />
-                <Setter Property="TitleAlignment" Value="Center" />
-                <Setter Property="TitlebarHeight" Value="35" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
-                <Setter Property="TextElement.FontWeight" Value="Regular" />
-                <Setter Property="TextElement.FontSize" Value="13" />
-                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
-                <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
-            </Style>
-
-            <Style x:Key="DialogWindowStyle" TargetType="{x:Type controls:MetroWindow}"
-                   BasedOn="{StaticResource {x:Type controls:MetroWindow}}">
-                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
-                <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
-                <Setter Property="TitleForeground" Value="{DynamicResource MaterialDesignBody}" />
-                <Setter Property="WindowTitleBrush" Value="{DynamicResource MaterialDesignPaper}" />
-                <Setter Property="OverrideDefaultWindowCommandsBrush" Value="{DynamicResource MaterialDesignBody}" />
-                <Setter Property="TitleCharacterCasing" Value="Normal" />
-                <Setter Property="TitleAlignment" Value="Center" />
-                <Setter Property="TitlebarHeight" Value="35" />
-                <Setter Property="TextElement.Foreground" Value="{DynamicResource MaterialDesignBody}" />
-                <Setter Property="TextElement.FontWeight" Value="Regular" />
-                <Setter Property="TextElement.FontSize" Value="13" />
-                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
-                <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
-            </Style>
-
-            <Style x:Key="LocalLightWindowButtonStyle" TargetType="{x:Type Button}"
-                   BasedOn="{StaticResource LightMetroWindowButtonStyle}">
-                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-            </Style>
-
-            <Style x:Key="LocalDarkWindowButtonStyle" TargetType="{x:Type Button}"
-                   BasedOn="{StaticResource DarkMetroWindowButtonStyle}">
-                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-            </Style>
-
-            <Style x:Key="LocalLightCloseButtonStyle" TargetType="{x:Type Button}"
-                   BasedOn="{StaticResource MahApps.Metro.Styles.WindowButton.Close.Light.Win10}">
-                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-            </Style>
-
-            <Style x:Key="LocalDarkCloseButtonStyle" TargetType="{x:Type Button}"
-                   BasedOn="{StaticResource MahApps.Metro.Styles.WindowButton.Close.Dark.Win10}">
-                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-            </Style>
-
-            <Style TargetType="{x:Type controls:WindowButtonCommands}"
-                   BasedOn="{StaticResource MahApps.Metro.Styles.WindowButtonCommands.Win10}">
-                <Setter Property="LightMinButtonStyle" Value="{StaticResource LocalLightWindowButtonStyle}" />
-                <Setter Property="LightMaxButtonStyle" Value="{StaticResource LocalLightWindowButtonStyle}" />
-                <Setter Property="LightCloseButtonStyle" Value="{StaticResource LocalLightCloseButtonStyle}" />
-                <Setter Property="DarkMinButtonStyle" Value="{StaticResource LocalDarkWindowButtonStyle}" />
-                <Setter Property="DarkMaxButtonStyle" Value="{StaticResource LocalDarkWindowButtonStyle}" />
-                <Setter Property="DarkCloseButtonStyle" Value="{StaticResource LocalDarkCloseButtonStyle}" />
-            </Style>
-
-            <Style x:Key="TopMenuItemStyle" TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
-                <Setter Property="Height" Value="35" />
-            </Style>
-
-            <Style x:Key="TopMenuStyle" TargetType="Menu" BasedOn="{StaticResource {x:Type Menu}}">
-                <Setter Property="Background"
-                        Value="{Binding Path=WindowTitleBrush, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}}" />
-                <Style.Triggers>
-                    <DataTrigger
-                        Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsActive}"
-                        Value="False">
-                        <Setter Property="Background"
-                                Value="{Binding Path=NonActiveWindowTitleBrush, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}}" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="BottomToolBarPanel" TargetType="{x:Type Panel}">
-                <Setter Property="Background" Value="{DynamicResource MaterialDesignToolBarBackground}" />
-                <Setter Property="MinHeight" Value="34" />
-            </Style>
-
             <Style TargetType="localControls:ExceptionViewer">
                 <Setter Property="ControlsBorderBrush" Value="{DynamicResource MaterialDesignDivider}" />
-            </Style>
-
-            <Style x:Key="MaterialDesignToolToggleButton" TargetType="{x:Type ToggleButton}"
-                   BasedOn="{StaticResource ToolBarButtonBaseStyle}">
-                <Setter Property="TextBlock.FontWeight" Value="DemiBold" />
-                <Setter Property="TextBlock.FontSize" Value="18" />
-                <Setter Property="HorizontalContentAlignment" Value="Center" />
-
-                <Setter Property="Padding" Value="14 6 14 6" />
-                <Setter Property="SnapsToDevicePixels" Value="True" />
-
-                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ToggleButton">
-                            <Border BorderBrush="{TemplateBinding BorderBrush}"
-                                    Background="{TemplateBinding Background}"
-                                    Padding="{TemplateBinding Padding}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="2">
-                                <ContentPresenter HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center" />
-                            </Border>
-                            <ControlTemplate.Resources>
-                                <Style TargetType="{x:Type material:PackIcon}">
-                                    <Setter Property="Width" Value="22" />
-                                    <Setter Property="Height" Value="22" />
-                                    <Setter Property="Foreground"
-                                            Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}" />
-                                </Style>
-                            </ControlTemplate.Resources>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsChecked" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource MaterialDesignDivider}" />
-                    </Trigger>
-                </Style.Triggers>
             </Style>
 
         </ResourceDictionary>

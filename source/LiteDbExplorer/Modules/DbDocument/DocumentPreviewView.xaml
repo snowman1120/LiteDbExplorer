@@ -22,43 +22,32 @@
                                  Orientation="Vertical"
                                  SecondChildIsCollapsed="{Binding HideFileInfo}">
             <controls:SplitContainer.FirstChild>
-                <DockPanel Background="{DynamicResource MaterialDesignToolBarBackground}">
-                    <Grid DockPanel.Dock="Top" Margin="5,0,2,0" MinHeight="44">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Grid.Column="0" Text="Document Preview"
-                                   FontWeight="Bold" VerticalAlignment="Center" Margin="5,0"/>
-
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="5,0">
-                            <Button ToolTip="Open as document"
-                                    Command="{Binding OpenAsDocumentCommand}"
-                                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Padding="10,7"
-                                    Visibility="{Binding CanOpenAsDocument, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <materialDesign:PackIcon Kind="OpenInNew" Width="20" Height="20" />
-                            </Button>
-                        </StackPanel>
-
-                        <ListBox x:Name="detailViewSelector"
-                                 Grid.Column="3" VerticalAlignment="Center"
-                                 SelectedIndex="0"
-                                 Style="{StaticResource MaterialDesignToolToggleFlatListBox}">
+                <DockPanel>
+                    <controls:ToolDockPanel DockPanel.Dock="Top">
+                        
+                        <ListBox DockPanel.Dock="Right" x:Name="detailViewSelector"
+                                 SelectedIndex="0">
                             <i:Interaction.Behaviors>
                                 <behaviors:KeepSelectedItem/>
                             </i:Interaction.Behaviors>
                             <ListBoxItem>
-                                <materialDesign:PackIcon Kind="FileTree" />
+                                <materialDesign:PackIcon Kind="FileTree" Style="{StaticResource ToolPackIcon}"/>
                             </ListBoxItem>
                             <ListBoxItem>
-                                <materialDesign:PackIcon Kind="Json" />
+                                <materialDesign:PackIcon Kind="Json" Style="{StaticResource ToolPackIcon}"/>
                             </ListBoxItem>
                         </ListBox>
-                    </Grid>
 
+                        <Button DockPanel.Dock="Right" ToolTip="Open as document"
+                                Command="{Binding OpenAsDocumentCommand}"
+                                Visibility="{Binding CanOpenAsDocument, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <materialDesign:PackIcon Kind="OpenInNew" />
+                        </Button>
+
+
+                        <TextBlock Text="Document Preview" Style="{StaticResource ToolPanelTitle}"/>
+                    </controls:ToolDockPanel>
+                    
                     <TabControl DockPanel.Dock="Top"
                                 SelectedIndex="{Binding SelectedIndex, ElementName=detailViewSelector}">
                         <TabControl.ItemContainerStyle>
@@ -79,44 +68,40 @@
             </controls:SplitContainer.FirstChild>
             <controls:SplitContainer.SecondChild>
                 <DockPanel>
-                    <Border DockPanel.Dock="Top" MinHeight="40"
-                            Background="{DynamicResource MaterialDesignToolBarBackground}" Padding="10,0">
-                        <TextBlock Text="File Preview" FontWeight="Bold" VerticalAlignment="Center" />
-                    </Border>
+                    <controls:ToolDockPanel DockPanel.Dock="Top">
+                        <TextBlock Text="File Preview" Style="{StaticResource ToolPanelTitle}"/>
+                    </controls:ToolDockPanel>
                     <controls:FileView x:Name="FilePreview" FileSource="{Binding FileInfo}" />
                 </DockPanel>
             </controls:SplitContainer.SecondChild>
         </controls:SplitContainer>
 
-        <DockPanel Grid.Row="1" Style="{StaticResource BottomToolBarPanel}">
-            <Grid DockPanel.Dock="Top" Margin="5,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+        <controls:ToolDockPanel Grid.Row="1" Style="{StaticResource ToolDockPanelCompact}">
 
-                <ListBox x:Name="splitOrientationSelector"
-                         Grid.Column="1" VerticalAlignment="Center"
-                         SelectedIndex="0"
-                         Style="{StaticResource MaterialDesignToolToggleFlatListBox}"
-                         Visibility="{Binding Path=HasFileInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <i:Interaction.Behaviors>
-                        <behaviors:KeepSelectedItem/>
-                    </i:Interaction.Behaviors>
-                    <ListBoxItem>
-                        <materialDesign:PackIcon Kind="MinusBoxOutline" />
-                    </ListBoxItem>
-                    <ListBoxItem>
-                        <materialDesign:PackIcon Kind="MinusBoxOutline" RenderTransformOrigin="0.5,0.5">
-                            <materialDesign:PackIcon.RenderTransform>
-                                <TransformGroup>
-                                    <RotateTransform Angle="90" />
-                                </TransformGroup>
-                            </materialDesign:PackIcon.RenderTransform>
-                        </materialDesign:PackIcon>
-                    </ListBoxItem>
-                </ListBox>
-            </Grid>
-        </DockPanel>
+            <ListBox DockPanel.Dock="Right" 
+                     x:Name="splitOrientationSelector"
+                     SelectedIndex="0"
+                     Visibility="{Binding Path=HasFileInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <i:Interaction.Behaviors>
+                    <behaviors:KeepSelectedItem/>
+                </i:Interaction.Behaviors>
+                <ListBoxItem>
+                    <materialDesign:PackIcon Kind="MinusBoxOutline" Style="{StaticResource ToolPackIcon}"/>
+                </ListBoxItem>
+                <ListBoxItem>
+                    <materialDesign:PackIcon Kind="MinusBoxOutline" RenderTransformOrigin="0.5,0.5" Style="{StaticResource ToolPackIcon}">
+                        <materialDesign:PackIcon.RenderTransform>
+                            <TransformGroup>
+                                <RotateTransform Angle="90" />
+                            </TransformGroup>
+                        </materialDesign:PackIcon.RenderTransform>
+                    </materialDesign:PackIcon>
+                </ListBoxItem>
+            </ListBox>
+
+            <ContentPresenter />
+
+        </controls:ToolDockPanel>
+
     </Grid>
 </UserControl>

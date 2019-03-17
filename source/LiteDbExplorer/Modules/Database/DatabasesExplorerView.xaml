@@ -74,27 +74,13 @@
     <DockPanel AllowDrop="True"
                Background="Transparent" Drop="DockPanel_OnDrop">
         <ToolBarTray DockPanel.Dock="Top">
-            <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}" MinHeight="44">
-                <ToolBar.Resources>
-                    <ResourceDictionary>
-                        <Style TargetType="Image">
-                            <Setter Property="Height" Value="14" />
-                            <Setter Property="Width" Value="14" />
-                        </Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-                            <Setter Property="FontSize" Value="15" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="Margin" Value="8,0" />
-                        </Style>
-                    </ResourceDictionary>
-                </ToolBar.Resources>
+            <ToolBar Style="{DynamicResource AppMaterialDesignToolBar}">
                 <Button x:Name="OpenDatabase" ContextMenuService.IsEnabled="False" Padding="0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="FolderOpen" Margin="10"/>
+                            <materialDesign:PackIcon Kind="FolderOpen" Margin="10" Height="18"/>
                             <Border Background="{DynamicResource MaterialDesignToolBarBackground}" Width="1" />
-                            <Border Background="Transparent" Padding="3,0" BorderThickness="1"
+                            <Border x:Name="SplitBorder" Background="Transparent" Padding="3,0" Margin="0,-2" BorderThickness="1" CornerRadius="2"
                                     PreviewMouseLeftButtonDown="RecentItemMoreBorder_MouseLeftButtonDown">
                                 <Border.Style>
                                     <Style TargetType="Border">
@@ -102,8 +88,7 @@
                                             <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter Property="BorderBrush"
                                                         Value="{DynamicResource MaterialDesignDivider}" />
-                                                <Setter Property="Background"
-                                                        Value="{DynamicResource MaterialDesignDivider}" />
+                                                <Setter Property="Background" Value="{DynamicResource MaterialDesignDivider}"/>
                                             </Trigger>
                                             <Trigger Property="IsMouseOver" Value="False">
                                                 <Setter Property="BorderBrush" Value="Transparent" />
@@ -148,7 +133,6 @@
                 <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItemFullRow}">
                     <Setter Property="IsExpanded" Value="True" />
                     <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
-                    <Setter Property="ToolTip" Value="{Binding Location}" />
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu>
@@ -213,10 +197,11 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <materialDesign:PackIcon Kind="Database" Height="18" Width="20" 
+                        <materialDesign:PackIcon Kind="Database" Height="19" Width="20" 
                                                  VerticalAlignment="Center" HorizontalAlignment="Center" />
-                        <TextBlock Grid.Column="1" Text="{Binding Name}" Padding="8,4"
-                                   FontSize="14" FontWeight="Regular"
+                        <TextBlock Grid.Column="1" 
+                                   Text="{Binding Name}" ToolTip="{Binding Location}"
+                                   Padding="8,4" FontSize="14" FontWeight="Regular"
                                    FontFamily="{StaticResource MaterialDesignFont}"
                                    TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                     </Grid>
@@ -231,15 +216,16 @@
                         <ContentPresenter Grid.Column="1" Content="{Binding}">
                             <ContentPresenter.Resources>
                                 <DataTemplate DataType="{x:Type liteDbExplorerCore:FileCollectionReference}">
-                                    <materialDesign:PackIcon Kind="FileMultiple" Height="14" Width="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <materialDesign:PackIcon Kind="FileMultiple" Height="15" Width="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 </DataTemplate>
                                 <DataTemplate DataType="{x:Type liteDbExplorerCore:CollectionReference}">
-                                    <materialDesign:PackIcon Kind="TableLarge" Height="14" Width="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <materialDesign:PackIcon Kind="TableLarge" Height="16" Width="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 </DataTemplate>
                             </ContentPresenter.Resources>
                         </ContentPresenter>
-                        <TextBlock Grid.Column="2" Text="{Binding Name}" Padding="8,4"
-                                   FontSize="14" FontWeight="Normal"
+                        <TextBlock Grid.Column="2" 
+                                   Text="{Binding Name}" ToolTip="{Binding Name}"
+                                   Padding="8,4" FontSize="14" FontWeight="Normal"
                                    FontFamily="{StaticResource MaterialDesignFont}"
                                    TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                     </Grid>

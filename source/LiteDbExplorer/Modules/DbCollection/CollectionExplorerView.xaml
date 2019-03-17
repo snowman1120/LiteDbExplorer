@@ -51,35 +51,15 @@
                                             CanExecute="CanEditDbProperties" />
     </UserControl.CommandBindings>
     <Grid>
-        <controls:SplitContainer x:Name="splitContainer" SecondChildIsCollapsed="{Binding HideDocumentPreview}">
+        <controls:SplitContainer x:Name="splitContainer" 
+                                 SecondChildIsCollapsed="{Binding HideDocumentPreview, FallbackValue=True}">
             <controls:SplitContainer.FirstChild>
                 <DockPanel>
                     <ToolBarTray DockPanel.Dock="Top">
-                        <ToolBar ToolBarTray.IsLocked="True" Style="{DynamicResource MaterialDesignToolBar}" MinHeight="44">
-                            <ToolBar.Resources>
-                                <ResourceDictionary>
-                                    <Style TargetType="Image">
-                                        <Setter Property="Height" Value="16" />
-                                        <Setter Property="Width" Value="16" />
-                                    </Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
-                                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
-                                        <Setter Property="FontSize" Value="16" />
-                                        <Setter Property="VerticalAlignment" Value="Center" />
-                                        <Setter Property="Margin" Value="8,0" />
-                                        <Setter Property="FontWeight" Value="Regular" />
-                                    </Style>
-                                    <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button"
-                                           BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                                        <Setter Property="Padding" Value="10" />
-                                    </Style>
-                                </ResourceDictionary>
-                            </ToolBar.Resources>
+                        <ToolBar Style="{DynamicResource AppMaterialDesignToolBar}">
                             <Button Command="liteDbExplorer:Commands.Add"
                                     CommandParameter="{Binding CollectionReference}">
                                 <StackPanel Orientation="Horizontal">
-                                    <!--<Image Source="/Images/createitem.png" />-->
                                     <materialDesign:PackIcon Kind="TableRowPlusAfter" />
                                     <TextBlock Text="Add" VerticalAlignment="Center" />
                                 </StackPanel>
@@ -87,7 +67,6 @@
                             <Button Command="liteDbExplorer:Commands.Edit"
                                     CommandParameter="{Binding SelectedDocument}">
                                 <StackPanel Orientation="Horizontal">
-                                    <!--<Image Source="/Images/updateitem.png" />-->
                                     <materialDesign:PackIcon Kind="TableEdit" />
                                     <TextBlock Text="Edit" VerticalAlignment="Center" />
                                 </StackPanel>
@@ -95,7 +74,6 @@
                             <Button Command="liteDbExplorer:Commands.Remove"
                                     CommandParameter="{Binding SelectedDocuments}">
                                 <StackPanel Orientation="Horizontal">
-                                    <!--<Image Source="/Images/deleteitem.png" />-->
                                     <materialDesign:PackIcon Kind="TableRowRemove" />
                                     <TextBlock Text="Delete" VerticalAlignment="Center" />
                                 </StackPanel>
@@ -103,7 +81,6 @@
                             <Button Command="liteDbExplorer:Commands.Export"
                                     CommandParameter="{Binding SelectedDocuments}">
                                 <StackPanel Orientation="Horizontal">
-                                    <!--<Image Source="/Images/export.png" />-->
                                     <materialDesign:PackIcon Kind="FileExport" />
                                     <TextBlock Text="Export" VerticalAlignment="Center" />
                                 </StackPanel>
@@ -112,7 +89,6 @@
                             <Button Command="liteDbExplorer:Commands.RefreshCollection"
                                     CommandParameter="{Binding CollectionReference}">
                                 <StackPanel Orientation="Horizontal">
-                                    <!--<Image Source="/Images/refresh.png" />-->
                                     <materialDesign:PackIcon Kind="Refresh" />
                                     <TextBlock Text="Refresh" VerticalAlignment="Center" />
                                 </StackPanel>
@@ -120,50 +96,42 @@
                         </ToolBar>
                     </ToolBarTray>
 
-                    <DockPanel DockPanel.Dock="Bottom" Style="{StaticResource BottomToolBarPanel}">
-                        <Grid DockPanel.Dock="Top" Margin="5,0,2,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                    <controls:ToolDockPanel DockPanel.Dock="Bottom" Style="{StaticResource ToolDockPanelCompact}">
 
-                            <StackPanel Grid.Column="0" Orientation="Horizontal" Opacity="0.5" 
-                                        VerticalAlignment="Center" Margin="8,0">
-                                <TextBlock Text="{Binding DocumentsCountInfo}" VerticalAlignment="Center"/>
-                                <TextBlock Text="|" Margin="8,0" FontSize="17" VerticalAlignment="Center"/>
-                                <TextBlock Text="{Binding SelectedDocumentsCountInfo}" VerticalAlignment="Center"/>
-                            </StackPanel>
+                        <ToggleButton DockPanel.Dock="Right"
+                                      Style="{StaticResource MaterialDesignToolToggleButton}"
+                                      IsChecked="{Binding ShowDocumentPreview}"
+                                      ToolTip="Show Document Preview">
+                            <materialDesign:PackIcon Kind="Collage" />
+                        </ToggleButton>
 
-                            <ListBox x:Name="splitOrientationSelector" Margin="5,0"
-                                     Grid.Column="1" VerticalAlignment="Center"
-                                     SelectedIndex="1"
-                                     Style="{StaticResource MaterialDesignToolToggleFlatListBox}">
-                                <i:Interaction.Behaviors>
-                                    <behaviors:KeepSelectedItem/>
-                                </i:Interaction.Behaviors>
-                                <ListBoxItem>
-                                    <materialDesign:PackIcon Kind="MinusBoxOutline" />
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <materialDesign:PackIcon Kind="MinusBoxOutline" RenderTransformOrigin="0.5,0.5">
-                                        <materialDesign:PackIcon.RenderTransform>
-                                            <TransformGroup>
-                                                <RotateTransform Angle="90" />
-                                            </TransformGroup>
-                                        </materialDesign:PackIcon.RenderTransform>
-                                    </materialDesign:PackIcon>
-                                </ListBoxItem>
-                            </ListBox>
+                        <ListBox DockPanel.Dock="Right"
+                                 x:Name="splitOrientationSelector"
+                                 SelectedIndex="1">
+                            <i:Interaction.Behaviors>
+                                <behaviors:KeepSelectedItem/>
+                            </i:Interaction.Behaviors>
+                            <ListBoxItem>
+                                <materialDesign:PackIcon Kind="MinusBoxOutline" Style="{StaticResource ToolPackIcon}"/>
+                            </ListBoxItem>
+                            <ListBoxItem>
+                                <materialDesign:PackIcon Kind="MinusBoxOutline" RenderTransformOrigin="0.5,0.5" Style="{StaticResource ToolPackIcon}">
+                                    <materialDesign:PackIcon.RenderTransform>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="90" />
+                                        </TransformGroup>
+                                    </materialDesign:PackIcon.RenderTransform>
+                                </materialDesign:PackIcon>
+                            </ListBoxItem>
+                        </ListBox>
 
-                            <ToggleButton Grid.Column="2" 
-                                          Style="{StaticResource MaterialDesignToolToggleButton}"
-                                          IsChecked="{Binding ShowDocumentPreview}"
-                                          ToolTip="Show Document Preview">
-                                <materialDesign:PackIcon Kind="Collage" />
-                            </ToggleButton>
-                        </Grid>
-                    </DockPanel>
+                        <StackPanel Orientation="Horizontal" Opacity="0.5" Margin="10,0">
+                            <TextBlock Text="{Binding DocumentsCountInfo}" VerticalAlignment="Center"/>
+                            <Separator Style="{StaticResource ToolDockPanelSeparator}"/>
+                            <TextBlock Text="{Binding SelectedDocumentsCountInfo}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                    </controls:ToolDockPanel>
 
                     <Border Name="DockSearch" DockPanel.Dock="Top"
                             Visibility="{Binding IsSearchOpen, Converter={StaticResource BooleanToVisibilityConverter}}">

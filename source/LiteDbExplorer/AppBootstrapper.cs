@@ -4,7 +4,6 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -13,7 +12,6 @@ using Caliburn.Micro;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Framework.Services;
 using LiteDbExplorer.Framework.Shell;
-using LiteDbExplorer.Modules;
 
 namespace LiteDbExplorer
 {

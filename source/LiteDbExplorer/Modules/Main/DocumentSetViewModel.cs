@@ -209,4 +209,8 @@ namespace LiteDbExplorer.Modules.Main
         public event EventHandler ActiveDocumentChanging;
         public event EventHandler ActiveDocumentChanged;
     }
+
+
+    
+
 }

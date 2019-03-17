@@ -25,7 +25,7 @@ namespace LiteDbExplorer.Modules.DbDocument
             eventAggregator.Subscribe(this);
         }
         
-        public override object IconContent => new PackIcon { Kind = PackIconKind.Json };
+        public override object IconContent => new PackIcon { Kind = PackIconKind.Json, Height = 16 };
 
         public DocumentReference Document
         {
@@ -65,22 +65,9 @@ namespace LiteDbExplorer.Modules.DbDocument
             ActivateDocument(item);
         }
 
-        protected override void OnViewLoaded(object view)
-        {
-            _view = view as IDocumentDetailView;
-        }
-
-        protected override void OnDeactivate(bool close)
-        {
-            if (close && _document != null)
-            {
-                _document.ReferenceChanged -= OnDocumentReferenceChanged;
-            }
-        }
-
         public void ActivateDocument(DocumentReference document)
         {
-            InstanceId = Document?.InstanceId;
+            InstanceId = document?.InstanceId;
 
             DisplayName = "Document Preview";
 
@@ -105,8 +92,20 @@ namespace LiteDbExplorer.Modules.DbDocument
         [UsedImplicitly]
         public void OpenAsDocument(object _)
         {
-            var documentSet = IoC.Get<IDocumentSet>();
-            documentSet.OpenDocument<DocumentPreviewViewModel, DocumentReference>(Document);
+            IoC.Get<IDocumentSet>().OpenDocument<DocumentPreviewViewModel, DocumentReference>(Document);
+        }
+
+        protected override void OnViewLoaded(object view)
+        {
+            _view = view as IDocumentDetailView;
+        }
+
+        protected override void OnDeactivate(bool close)
+        {
+            if (close && _document != null)
+            {
+                _document.ReferenceChanged -= OnDocumentReferenceChanged;
+            }
         }
 
         #region Handles
