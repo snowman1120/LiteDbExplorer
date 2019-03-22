@@ -1,15 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace LiteDbExplorer
 {
     public class Paths : INotifyPropertyChanged
     {
+
+        private static readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
+        {
+            ContractResolver = new IgnoreParentPropertiesResolver(true),
+            Formatting = Formatting.Indented
+        };
+
         public static string AppDataPath
         {
             get
@@ -28,7 +38,9 @@ namespace LiteDbExplorer
 
         public static string UninstallerPath => Path.Combine(ProgramFolder, "uninstall.exe");
 
-        public static string RecentFilesPath => Path.Combine(AppDataPath, "recentfiles.txt");
+        public static string LegacyRecentFilesPath => Path.Combine(AppDataPath, "recentfiles.txt");
+
+        public static string RecentFilesPath => Path.Combine(AppDataPath, "recentfiles.json");
 
         public static string SettingsFilePath => Path.Combine(AppDataPath, "settings.json");
 
@@ -47,14 +59,38 @@ namespace LiteDbExplorer
         }
 
         
-        public ObservableCollection<string> RecentFiles => _lazyRecentFiles.Value;
+        public ObservableCollection<RecentFileInfo> RecentFiles => _lazyRecentFiles.Value;
 
-        private readonly Lazy<ObservableCollection<string>> _lazyRecentFiles = new Lazy<ObservableCollection<string>>(() =>
+        private readonly Lazy<ObservableCollection<RecentFileInfo>> _lazyRecentFiles = new Lazy<ObservableCollection<RecentFileInfo>>(() =>
         {
+            var collection = new ObservableCollection<RecentFileInfo>();
+            if (File.Exists(RecentFilesPath))
+            {
+                var value = File.ReadAllText(RecentFilesPath);
+                if (!string.IsNullOrEmpty(value))
+                {
+                    var recentFileInfos = JsonConvert.DeserializeObject<RecentFileInfo[]>(value, _jsonSerializerSettings);
+                    foreach (var recentFileInfo in recentFileInfos)
+                    {
+                        recentFileInfo.InvalidateInfo();
+                        collection.Add(recentFileInfo);
+                    }
+                }
+            }
 
-            var collection = File.Exists(RecentFilesPath)
-                ? new ObservableCollection<string>(File.ReadLines(RecentFilesPath))
-                : new ObservableCollection<string>();
+            if (File.Exists(LegacyRecentFilesPath))
+            {
+                var filesPaths = File.ReadLines(LegacyRecentFilesPath);
+                foreach (var filesPath in filesPaths)
+                {
+                    if (collection.Any(p => p.FullPath.Equals(filesPath, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        continue;
+                    }
+
+                    collection.Add(new RecentFileInfo(filesPath));
+                }
+            }
             
             collection.CollectionChanged += RecentFiles_CollectionChanged;
 
@@ -64,19 +100,27 @@ namespace LiteDbExplorer
 
         public void InsertRecentFile(string path)
         {
-            if (RecentFiles.Contains(path))
+            var recentFileInfo = RecentFiles.FirstOrDefault(p => p.FullPath.Equals(path, StringComparison.OrdinalIgnoreCase));
+            if (recentFileInfo != null)
             {
-                RecentFiles.Remove(path);
+                RecentFiles.Remove(recentFileInfo);
+            }
+            else
+            {
+                recentFileInfo = new RecentFileInfo(path);
             }
 
-            RecentFiles.Insert(0, path);
+            recentFileInfo.LastOpenedAt = DateTime.Now;
+
+            RecentFiles.Insert(0, recentFileInfo);
         }
 
         private static void RecentFiles_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (sender is ObservableCollection<string> collection)
+            if (sender is ObservableCollection<RecentFileInfo> collection)
             {
-                File.WriteAllText(RecentFilesPath, string.Join(Environment.NewLine, collection));
+                var json = JsonConvert.SerializeObject(collection, _jsonSerializerSettings);
+                File.WriteAllText(RecentFilesPath, json);
             }
         }
 
@@ -89,4 +133,38 @@ namespace LiteDbExplorer
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
+    public class RecentFileInfo
+    {
+        public RecentFileInfo()
+        {
+        }
+
+        public RecentFileInfo(string fullPath)
+        {
+            FullPath = fullPath;
+            InvalidateInfo();
+        }
+
+        public void InvalidateInfo()
+        {
+            FileName = Path.GetFileName(FullPath);
+            DirectoryPath = Path.GetDirectoryName(FullPath);
+            FileNotFound = !File.Exists(FullPath);
+        }
+        
+        public string FullPath { get; set; }
+        public DateTime? LastOpenedAt { get; set; }
+        public bool Fixed { get; set; }
+
+        [JsonIgnore]
+        public string FileName { get; set; }
+
+        [JsonIgnore]
+        public string DirectoryPath { get; set; }
+
+        [JsonIgnore]
+        public bool FileNotFound { get; set; }
+    }
+
 }

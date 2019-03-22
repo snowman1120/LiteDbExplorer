@@ -33,9 +33,14 @@ namespace LiteDbExplorer.Modules.StartPage
             _databaseInteractions.OpenDatabase();
         }
 
-        public void OpenRecentItem(string path)
+        public void OpenRecentItem(RecentFileInfo recentFileInfo)
         {
-            _databaseInteractions.OpenDatabase(path);
+            if (recentFileInfo == null)
+            {
+                return;
+            }
+
+            _databaseInteractions.OpenDatabase(recentFileInfo.FullPath);
         }
     }
 }

@@ -6,11 +6,12 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
              xmlns:liteDbExplorer="clr-namespace:LiteDbExplorer"
-             xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
-             xmlns:commands="clr-namespace:LiteDbExplorer.Framework.Commands"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors"
+             xmlns:commands="clr-namespace:LiteDbExplorer.Framework.Commands;assembly=LiteDbExplorer.Wpf"
+             xmlns:converters="clr-namespace:LiteDbExplorer.Wpf.Converters;assembly=LiteDbExplorer.Wpf"
+             xmlns:behaviors="clr-namespace:LiteDbExplorer.Wpf.Behaviors;assembly=LiteDbExplorer.Wpf"
+             xmlns:controls1="clr-namespace:LiteDbExplorer.Wpf.Controls;assembly=LiteDbExplorer.Wpf"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -51,9 +52,9 @@
                                             CanExecute="CanEditDbProperties" />
     </UserControl.CommandBindings>
     <Grid>
-        <controls:SplitContainer x:Name="splitContainer" 
+        <controls1:SplitContainer x:Name="splitContainer" 
                                  SecondChildIsCollapsed="{Binding HideDocumentPreview, FallbackValue=True}">
-            <controls:SplitContainer.FirstChild>
+            <controls1:SplitContainer.FirstChild>
                 <DockPanel>
                     <ToolBarTray DockPanel.Dock="Top">
                         <ToolBar Style="{DynamicResource AppMaterialDesignToolBar}">
@@ -96,7 +97,7 @@
                         </ToolBar>
                     </ToolBarTray>
 
-                    <controls:ToolDockPanel DockPanel.Dock="Bottom" Style="{StaticResource ToolDockPanelCompact}">
+                    <controls1:ToolDockPanel DockPanel.Dock="Bottom" Style="{StaticResource ToolDockPanelCompact}">
 
                         <ToggleButton DockPanel.Dock="Right"
                                       Style="{StaticResource MaterialDesignToolToggleButton}"
@@ -131,7 +132,7 @@
                             <TextBlock Text="{Binding SelectedDocumentsCountInfo}" VerticalAlignment="Center"/>
                         </StackPanel>
 
-                    </controls:ToolDockPanel>
+                    </controls1:ToolDockPanel>
 
                     <Border Name="DockSearch" DockPanel.Dock="Top"
                             Visibility="{Binding IsSearchOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -226,12 +227,12 @@
                     </controls:CollectionListView>
 
                 </DockPanel>
-            </controls:SplitContainer.FirstChild>
-            <controls:SplitContainer.SecondChild>
+            </controls1:SplitContainer.FirstChild>
+            <controls1:SplitContainer.SecondChild>
                 <ContentControl x:Name="DocumentPreview" 
                                 cal:View.Model="{Binding DocumentPreview}" />
-            </controls:SplitContainer.SecondChild>
-        </controls:SplitContainer>
+            </controls1:SplitContainer.SecondChild>
+        </controls1:SplitContainer>
 
     </Grid>
 </UserControl>

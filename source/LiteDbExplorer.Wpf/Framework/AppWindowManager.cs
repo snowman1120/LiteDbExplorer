@@ -2,11 +2,14 @@
 using System.Windows.Data;
 using Caliburn.Micro;
 using LiteDbExplorer.Framework.Windows;
+using LiteDbExplorer.Wpf.Framework.Windows;
 
 namespace LiteDbExplorer.Framework
 {
     public class AppWindowManager : WindowManager
     {
+        private IWindowStateStore _store;
+
         /// <summary>
         /// Selects a base window depending on the view, model and dialog options
         /// </summary>
@@ -49,7 +52,10 @@ namespace LiteDbExplorer.Framework
                     
                     var windowName = view.GetType().FullName;
 
-                    window.AttachPositionHandler(windowName);
+                    if (_store != null)
+                    {
+                        window.AttachPositionHandler(_store, windowName);
+                    }
                 }
                 
                 window.SetValue(View.IsGeneratedProperty, true);
@@ -62,6 +68,11 @@ namespace LiteDbExplorer.Framework
             }
 
             return window;
+        }
+
+        public void RegisterStateStore(IWindowStateStore store)
+        {
+            _store = store;
         }
     }
 }

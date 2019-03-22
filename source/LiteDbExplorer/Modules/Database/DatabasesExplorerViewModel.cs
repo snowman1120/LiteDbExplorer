@@ -30,7 +30,7 @@ namespace LiteDbExplorer.Modules.Database
 
             PathDefinitions = databaseInteractions.PathDefinitions;
 
-            OpenRecentItemCommand = new RelayCommand<string>(OpenRecentItem);
+            OpenRecentItemCommand = new RelayCommand<RecentFileInfo>(OpenRecentItem);
 
             ItemDoubleClickCommand = new RelayCommand<CollectionReference>(NodeDoubleClick);
         }
@@ -48,9 +48,14 @@ namespace LiteDbExplorer.Modules.Database
         }
 
         [UsedImplicitly]
-        public void OpenRecentItem(string path)
+        public void OpenRecentItem(RecentFileInfo info)
         {
-            _databaseInteractions.OpenDatabase(path);
+            if (info == null)
+            {
+                return;
+            }
+
+            _databaseInteractions.OpenDatabase(info.FullPath);
         }
 
         [UsedImplicitly]

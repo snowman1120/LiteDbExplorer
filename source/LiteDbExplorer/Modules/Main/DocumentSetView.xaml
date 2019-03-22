@@ -5,14 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:LiteDbExplorer.Modules.Main"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             xmlns:framework="clr-namespace:LiteDbExplorer.Framework"
              xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
              xmlns:cal="http://www.caliburnproject.org"
-             xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors"
+             xmlns:framework="clr-namespace:LiteDbExplorer.Framework;assembly=LiteDbExplorer.Wpf"
+             xmlns:converters="clr-namespace:LiteDbExplorer.Wpf.Converters;assembly=LiteDbExplorer.Wpf"
+             xmlns:behaviors="clr-namespace:LiteDbExplorer.Wpf.Behaviors;assembly=LiteDbExplorer.Wpf"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>

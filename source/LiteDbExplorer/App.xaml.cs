@@ -52,7 +52,7 @@ namespace LiteDbExplorer
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            ThemeManager.SetColorTheme(Settings.ColorTheme);
+            ThemeManager.InitColorTheme(Settings.ColorTheme);
 
 
             Settings.PropertyChanged -= Settings_PropertyChanged;

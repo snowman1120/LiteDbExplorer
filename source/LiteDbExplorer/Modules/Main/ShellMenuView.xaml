@@ -15,7 +15,7 @@
         <converters:EnumConverter x:Key="EnumConverter" />
         <modules:AppUpdateManager x:Key="AppUpdateManager" />
         <Style x:Key="RecentItemsMenuStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
-            <Setter Property="Header" Value="{Binding}" />
+            <Setter Property="Header" Value="{Binding FullPath}" />
             <Setter Property="CommandParameter" Value="{Binding}" />
         </Style>
     </UserControl.Resources>

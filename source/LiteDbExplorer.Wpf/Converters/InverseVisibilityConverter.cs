@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows;
 
-namespace LiteDbExplorer.Presentation.Converters
+namespace LiteDbExplorer.Wpf.Converters
 {
     public class InverseVisibilityConverter : ConverterBase<Visibility, Visibility>
     {

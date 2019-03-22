@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Media;
 using LiteDbExplorer.Presentation.Behaviors;
+using LiteDbExplorer.Wpf.Converters;
 using LiteDB;
 
 namespace LiteDbExplorer.Presentation.Converters

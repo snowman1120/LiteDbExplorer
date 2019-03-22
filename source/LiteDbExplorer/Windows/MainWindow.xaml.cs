@@ -1,11 +1,8 @@
 ﻿using LiteDB;
-using LiteDbExplorer.Controls;
-using LiteDbExplorer.Windows;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
@@ -26,7 +23,7 @@ namespace LiteDbExplorer
         private PipeService _pipeService;
         private PipeServer _pipeServer;
 
-        private readonly WindowPositionHandler _positionManager;
+        private readonly WindowStateHandler _positionManager;
         private readonly DatabaseInteractions _databaseInteractions;
         private EventAggregator _eventAggregator;
         private MainWindowViewInteractionResolver _viewInteractionResolver;
@@ -46,7 +43,7 @@ namespace LiteDbExplorer
             
             _databaseInteractions = new DatabaseInteractions(_eventAggregator, _viewInteractionResolver);
 
-            _positionManager = new WindowPositionHandler(this, "Main");
+            _positionManager = new WindowStateHandler(Settings.Current,this, "Main");
             
 #if (!DEBUG)
 

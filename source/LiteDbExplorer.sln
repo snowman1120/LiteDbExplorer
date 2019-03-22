@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiteDbExplorer", "LiteDbExplorer\LiteDbExplorer.csproj", "{4FBFA31A-9222-4698-9C65-23470ED9B166}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiteDbExplorer.Core", "LiteDbExplorer.Core\LiteDbExplorer.Core.csproj", "{F2DD619D-21DA-4805-AB20-B2BBF4598A69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiteDbExplorer.Core", "LiteDbExplorer.Core\LiteDbExplorer.Core.csproj", "{F2DD619D-21DA-4805-AB20-B2BBF4598A69}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiteDbExplorer.Wpf", "LiteDbExplorer.Wpf\LiteDbExplorer.Wpf.csproj", "{E61B6D10-9F85-485D-99FA-7BCE12315C57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{F2DD619D-21DA-4805-AB20-B2BBF4598A69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2DD619D-21DA-4805-AB20-B2BBF4598A69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2DD619D-21DA-4805-AB20-B2BBF4598A69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E61B6D10-9F85-485D-99FA-7BCE12315C57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E61B6D10-9F85-485D-99FA-7BCE12315C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E61B6D10-9F85-485D-99FA-7BCE12315C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E61B6D10-9F85-485D-99FA-7BCE12315C57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

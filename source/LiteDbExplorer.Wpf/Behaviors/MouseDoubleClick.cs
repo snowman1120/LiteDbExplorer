@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace LiteDbExplorer.Presentation.Behaviors
+namespace LiteDbExplorer.Wpf.Behaviors
 {
     public class MouseDoubleClick
     {

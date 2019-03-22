@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media;
 using Caliburn.Micro;
+using LiteDbExplorer.Wpf.Framework;
 
 namespace LiteDbExplorer.Framework
 {

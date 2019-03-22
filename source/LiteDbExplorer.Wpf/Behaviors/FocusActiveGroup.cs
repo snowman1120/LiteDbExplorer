@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interactivity;
 
-namespace LiteDbExplorer.Presentation.Behaviors
+namespace LiteDbExplorer.Wpf.Behaviors
 {
     public class FocusGroupState
     {

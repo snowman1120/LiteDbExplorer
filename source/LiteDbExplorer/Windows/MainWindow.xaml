@@ -10,6 +10,7 @@
                  xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
                  xmlns:liteDbExplorerCore="clr-namespace:LiteDbExplorer;assembly=LiteDbExplorer.Core"
                  xmlns:modules="clr-namespace:LiteDbExplorer.Modules"
+                 xmlns:converters1="clr-namespace:LiteDbExplorer.Wpf.Converters;assembly=LiteDbExplorer.Wpf"
                  mc:Ignorable="d"
                  Width="1024" Height="740"
                  WindowStartupLocation="CenterScreen"
@@ -24,8 +25,8 @@
         <modules:AppUpdateManager x:Key="AppUpdateManager"/>
         <converters:EnumConverter x:Key="EnumConverter" />
         <converters:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
-        <converters:InverseVisibilityConverter x:Key="InverseVisibilityConverter" />
-        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters1:InverseVisibilityConverter x:Key="InverseVisibilityConverter" />
+        <converters1:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </mah:MetroWindow.Resources>
 
     <mah:MetroWindow.CommandBindings>
@@ -96,8 +97,8 @@
                             </MenuItem.Icon>
                             <ItemsControl.ItemContainerStyle>
                                 <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
-                                    <Setter Property="Tag" Value="{Binding}" />
-                                    <Setter Property="Header" Value="{Binding}" />
+                                    <Setter Property="Tag" Value="{Binding FullPath}" />
+                                    <Setter Property="Header" Value="{Binding FullPath}" />
                                     <EventSetter Event="Click" Handler="RecentMenuItem_Click" />
                                 </Style>
                             </ItemsControl.ItemContainerStyle>
@@ -333,7 +334,7 @@
                                     ItemsSource="{Binding Path=ItemsSource, Source={x:Reference Name=MenuRecentItems}}">
                                     <ContextMenu.ItemContainerStyle>
                                         <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
-                                            <Setter Property="Tag" Value="{Binding}" />
+                                            <Setter Property="Tag" Value="{Binding FullPath}" />
                                             <EventSetter Event="Click" Handler="RecentMenuItem_Click" />
                                         </Style>
                                     </ContextMenu.ItemContainerStyle>

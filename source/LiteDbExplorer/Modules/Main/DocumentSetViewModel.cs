@@ -7,6 +7,7 @@ using System.Windows.Media;
 using Caliburn.Micro;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Modules.StartPage;
+using LiteDbExplorer.Wpf.Framework;
 
 namespace LiteDbExplorer.Modules.Main
 {

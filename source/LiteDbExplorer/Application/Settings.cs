@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using LiteDbExplorer.Wpf.Framework.Windows;
 using Newtonsoft.Json.Serialization;
 
 namespace LiteDbExplorer
@@ -16,7 +17,7 @@ namespace LiteDbExplorer
         Dark
     }
 
-    public class Settings : Freezable, INotifyPropertyChanged
+    public partial class Settings : Freezable, INotifyPropertyChanged, IWindowStateStore
     {
         private static readonly Lazy<Settings> _current =
             new Lazy<Settings>(Settings.LoadSettings);
@@ -115,20 +116,6 @@ namespace LiteDbExplorer
         protected override Freezable CreateInstanceCore()
         {
             return Current;
-        }
-
-        public class WindowPosition
-        {
-            public class Point
-            {
-                public double X { get; set; }
-
-                public double Y { get; set; }
-            }
-
-            public Point Position { get; set; }
-
-            public Point Size { get; set; }
         }
     }
 

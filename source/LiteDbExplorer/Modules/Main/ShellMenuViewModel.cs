@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using System.Diagnostics;
 using Caliburn.Micro;
+using JetBrains.Annotations;
 using LiteDbExplorer.Framework.Shell;
 
 namespace LiteDbExplorer.Modules.Main
@@ -22,9 +23,15 @@ namespace LiteDbExplorer.Modules.Main
 
         public Paths PathDefinitions { get; }
         
-        public void OpenRecentItem(string path)
+        [UsedImplicitly]
+        public void OpenRecentItem(RecentFileInfo info)
         {
-            _databaseInteractions.OpenDatabase(path);
+            if (info == null)
+            {
+                return;
+            }
+
+            _databaseInteractions.OpenDatabase(info.FullPath);
         }
 
         public void OpenIssuePage()

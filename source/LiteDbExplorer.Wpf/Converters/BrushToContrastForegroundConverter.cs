@@ -1,8 +1,7 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Media;
 
-namespace LiteDbExplorer.Presentation.Converters
+namespace LiteDbExplorer.Wpf.Converters
 {
     public class BrushToContrastForegroundConverter : ConverterBase<SolidColorBrush, SolidColorBrush>
     {

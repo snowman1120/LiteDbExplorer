@@ -9,10 +9,10 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
              xmlns:cal="http://www.caliburnproject.org"
-             xmlns:framework="clr-namespace:LiteDbExplorer.Framework"
-             xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:commands="clr-namespace:LiteDbExplorer.Framework.Commands"
+             xmlns:framework="clr-namespace:LiteDbExplorer.Framework;assembly=LiteDbExplorer.Wpf"
+             xmlns:commands="clr-namespace:LiteDbExplorer.Framework.Commands;assembly=LiteDbExplorer.Wpf"
+             xmlns:behaviors="clr-namespace:LiteDbExplorer.Wpf.Behaviors;assembly=LiteDbExplorer.Wpf"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              Focusable="True">
@@ -109,7 +109,8 @@
                             ItemsSource="{Binding Path=PathDefinitions.RecentFiles}">
                             <ContextMenu.ItemContainerStyle>
                                 <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
-                                    <Setter Property="Tag" Value="{Binding}" />
+                                    <Setter Property="Tag" Value="{Binding FullPath}" />
+                                    <Setter Property="Header" Value="{Binding FullPath}" />
                                     <Setter Property="Command" Value="{Binding Path=Data.OpenRecentItemCommand, Source={StaticResource DataContextProxy}}"/>
                                     <Setter Property="CommandParameter" Value="{Binding}"/>
                                 </Style>

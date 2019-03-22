@@ -1,8 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Xceed.Wpf.Toolkit.Core.Converters;
 
-namespace LiteDbExplorer.Controls
+namespace LiteDbExplorer.Wpf.Controls
 {
     public class SplitContainer : Control
     {

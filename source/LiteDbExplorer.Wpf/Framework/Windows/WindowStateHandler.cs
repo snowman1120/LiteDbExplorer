@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Windows;
+using LiteDbExplorer.Wpf.Framework.Windows;
 
 namespace LiteDbExplorer
 {
     public static class WindowPositionHandlerExtensions
     {
-        public static void AttachPositionHandler(this Window window, string windowName)
+        public static void AttachPositionHandler(this Window window, IWindowStateStore store, string windowName)
         {
-            var handler = new WindowPositionHandler(window, windowName, true);
+            var handler = new WindowStateHandler(store, window, windowName, true);
         }
     }
 
-    public class WindowPositionHandler
+    public class WindowStateHandler
     {
+        private readonly IWindowStateStore _store;
         private readonly Window _window;
         private readonly string _windowName;
         private bool _ignoreChanges;
         private bool _initialized;
 
-        public WindowPositionHandler(Window window, string windowName, bool autoAttach = false)
+        public WindowStateHandler(IWindowStateStore store, Window window, string windowName, bool autoAttach = false)
         {
+            _store = store;
             _window = window;
             _windowName = windowName;
 
@@ -34,7 +37,7 @@ namespace LiteDbExplorer
         
         private void WindowOnLoaded(object sender, RoutedEventArgs e)
         {
-            RestoreSizeAndLocation(App.Settings);
+            RestoreSizeAndLocation(_store);
 
             _initialized = true;
         }
@@ -46,7 +49,7 @@ namespace LiteDbExplorer
                 return;
             }
 
-            SaveSize(App.Settings);   
+            SaveSize(_store);
         }
 
         private void WindowOnLocationChanged(object sender, EventArgs e)
@@ -56,7 +59,7 @@ namespace LiteDbExplorer
                 return;
             }
 
-            SavePosition(App.Settings);
+            SavePosition(_store);
         }
 
         private void WindowOnUnloaded(object sender, RoutedEventArgs e)
@@ -70,7 +73,7 @@ namespace LiteDbExplorer
             }
         }
 
-        public void SaveSize(Settings config)
+        public void SaveSize(IWindowStateStore config)
         {
             if (config == null || _ignoreChanges)
             {
@@ -79,17 +82,17 @@ namespace LiteDbExplorer
 
             if (!config.WindowPositions.ContainsKey(_windowName))
             {
-                config.WindowPositions[_windowName] = new Settings.WindowPosition();
+                config.WindowPositions[_windowName] = new WindowPosition();
             }
 
-            config.WindowPositions[_windowName].Size = new Settings.WindowPosition.Point
+            config.WindowPositions[_windowName].Size = new WindowPosition.Point
             {
                 X = _window.Width,
                 Y = _window.Height
             };
         }
 
-        public void SavePosition(Settings config)
+        public void SavePosition(IWindowStateStore config)
         {
             if (config == null || _ignoreChanges)
             {
@@ -103,17 +106,17 @@ namespace LiteDbExplorer
 
             if (!config.WindowPositions.ContainsKey(_windowName))
             {
-                config.WindowPositions[_windowName] = new Settings.WindowPosition();
+                config.WindowPositions[_windowName] = new WindowPosition();
             }
 
-            config.WindowPositions[_windowName].Position = new Settings.WindowPosition.Point
+            config.WindowPositions[_windowName].Position = new WindowPosition.Point
             {
                 X = _window.Left,
                 Y = _window.Top
             };
         }
 
-        public void RestoreSizeAndLocation(Settings config)
+        public void RestoreSizeAndLocation(IWindowStateStore config)
         {
             if (!config.WindowPositions.ContainsKey(_windowName))
             {

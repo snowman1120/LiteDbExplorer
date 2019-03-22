@@ -36,7 +36,11 @@ namespace LiteDbExplorer
 
             var batch = new CompositionBatch();
 
-            batch.AddExportedValue<IWindowManager>(new AppWindowManager());
+            var windowManager = new AppWindowManager();
+            windowManager.RegisterStateStore(Settings.Current);
+            
+
+            batch.AddExportedValue<IWindowManager>(windowManager);
             batch.AddExportedValue<IEventAggregator>(new EventAggregator());
             // batch.AddExportedValue<IInteractionResolver>()
             batch.AddExportedValue(_container);

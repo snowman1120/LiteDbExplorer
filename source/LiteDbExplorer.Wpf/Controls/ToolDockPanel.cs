@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace LiteDbExplorer.Controls
+namespace LiteDbExplorer.Wpf.Controls
 {
     // [ContentProperty(nameof(Content))]
     public class ToolDockPanel : ItemsControl// Control

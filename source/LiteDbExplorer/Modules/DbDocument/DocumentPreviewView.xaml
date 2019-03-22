@@ -6,8 +6,9 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
-             xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
-             xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors"
+             xmlns:converters="clr-namespace:LiteDbExplorer.Wpf.Converters;assembly=LiteDbExplorer.Wpf"
+             xmlns:behaviors="clr-namespace:LiteDbExplorer.Wpf.Behaviors;assembly=LiteDbExplorer.Wpf"
+             xmlns:controls1="clr-namespace:LiteDbExplorer.Wpf.Controls;assembly=LiteDbExplorer.Wpf"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="400">
     <UserControl.Resources>
@@ -18,12 +19,12 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <controls:SplitContainer x:Name="splitContainer" 
+        <controls1:SplitContainer x:Name="splitContainer" 
                                  Orientation="Vertical"
                                  SecondChildIsCollapsed="{Binding HideFileInfo}">
-            <controls:SplitContainer.FirstChild>
+            <controls1:SplitContainer.FirstChild>
                 <DockPanel>
-                    <controls:ToolDockPanel DockPanel.Dock="Top">
+                    <controls1:ToolDockPanel DockPanel.Dock="Top">
                         
                         <ListBox DockPanel.Dock="Right" x:Name="detailViewSelector"
                                  SelectedIndex="0">
@@ -46,7 +47,7 @@
 
 
                         <TextBlock Text="Document Preview" Style="{StaticResource ToolPanelTitle}"/>
-                    </controls:ToolDockPanel>
+                    </controls1:ToolDockPanel>
                     
                     <TabControl DockPanel.Dock="Top"
                                 SelectedIndex="{Binding SelectedIndex, ElementName=detailViewSelector}">
@@ -65,18 +66,18 @@
                         </TabItem>
                     </TabControl>
                 </DockPanel>
-            </controls:SplitContainer.FirstChild>
-            <controls:SplitContainer.SecondChild>
+            </controls1:SplitContainer.FirstChild>
+            <controls1:SplitContainer.SecondChild>
                 <DockPanel>
-                    <controls:ToolDockPanel DockPanel.Dock="Top">
+                    <controls1:ToolDockPanel DockPanel.Dock="Top">
                         <TextBlock Text="File Preview" Style="{StaticResource ToolPanelTitle}"/>
-                    </controls:ToolDockPanel>
+                    </controls1:ToolDockPanel>
                     <controls:FileView x:Name="FilePreview" FileSource="{Binding FileInfo}" />
                 </DockPanel>
-            </controls:SplitContainer.SecondChild>
-        </controls:SplitContainer>
+            </controls1:SplitContainer.SecondChild>
+        </controls1:SplitContainer>
 
-        <controls:ToolDockPanel Grid.Row="1" Style="{StaticResource ToolDockPanelCompact}">
+        <controls1:ToolDockPanel Grid.Row="1" Style="{StaticResource ToolDockPanelCompact}">
 
             <ListBox DockPanel.Dock="Right" 
                      x:Name="splitOrientationSelector"
@@ -101,7 +102,7 @@
 
             <ContentPresenter />
 
-        </controls:ToolDockPanel>
+        </controls1:ToolDockPanel>
 
     </Grid>
 </UserControl>

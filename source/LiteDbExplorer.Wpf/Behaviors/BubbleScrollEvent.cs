@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.Windows.Interactivity;
 
-namespace LiteDbExplorer.Presentation.Behaviors
+namespace LiteDbExplorer.Wpf.Behaviors
 {
     // Used on sub-controls of an expander to bubble the mouse wheel scroll event up 
     // See: http://stackoverflow.com/questions/14348517/child-elements-of-scrollviewer-preventing-scrolling-with-mouse-wheel

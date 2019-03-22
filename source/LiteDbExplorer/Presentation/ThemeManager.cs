@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
 using LiteDbExplorer.Controls;
-using MaterialDesignThemes.Wpf;
+using LiteDbExplorer.Wpf;
 
 namespace LiteDbExplorer.Presentation
 {
@@ -9,9 +9,16 @@ namespace LiteDbExplorer.Presentation
     {
         public static event EventHandler CurrentThemeChanged;
 
+        public static void InitColorTheme(ColorTheme colorTheme)
+        {
+            new LocalPaletteHelper().InitTheme(colorTheme == ColorTheme.Dark);
+
+            OnThemeChange();
+        }
+
         public static void SetColorTheme(ColorTheme colorTheme)
         {
-            new PaletteHelper().SetLightDark(colorTheme == ColorTheme.Dark);
+            new LocalPaletteHelper().SetLightDark(colorTheme == ColorTheme.Dark);
 
             OnThemeChange();
         }

@@ -2,7 +2,7 @@
 using System.Windows.Controls.Primitives;
 using System.Windows.Interactivity;
 
-namespace LiteDbExplorer.Presentation.Behaviors
+namespace LiteDbExplorer.Wpf.Behaviors
 {
     public class KeepSelectedItem : Behavior<Selector>
     {

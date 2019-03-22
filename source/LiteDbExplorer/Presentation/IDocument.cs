@@ -1,8 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Windows.Input;
+﻿using System.IO;
 using System.Windows.Media;
-using Caliburn.Micro;
+using LiteDbExplorer.Wpf.Framework;
 
 namespace LiteDbExplorer.Framework
 {
@@ -18,17 +16,5 @@ namespace LiteDbExplorer.Framework
     public interface IDocument<in T> : IReferenceNode, IDocument where T : IReferenceNode
     {
         void Init(T item);
-    }
-    
-    public interface ILayoutItem : IScreen
-    {
-        Guid Id { get; }
-        string ContentId { get; }
-        ICommand CloseCommand { get; }
-        // Uri IconSource { get; }
-        bool IsSelected { get; set; }
-        bool ShouldReopenOnStart { get; }
-        // void LoadState(BinaryReader reader);
-        // void SaveState(BinaryWriter writer);
     }
 }

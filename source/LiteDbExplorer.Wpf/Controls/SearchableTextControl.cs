@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace LiteDbExplorer.Controls
+namespace LiteDbExplorer.Wpf.Controls
 {
     public class SearchableTextControl : Control
     {
