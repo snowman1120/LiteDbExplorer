@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -8,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using LiteDbExplorer.Presentation.Converters;
 using LiteDB;
 
@@ -18,6 +20,8 @@ namespace LiteDbExplorer.Controls
     /// </summary>
     public partial class CollectionListView : UserControl
     {
+        private static readonly BsonValueToStringConverter _bsonValueToStringConverter = new BsonValueToStringConverter { MaxLength = 200 };
+
         public static readonly DependencyProperty CollectionReferenceProperty = DependencyProperty.Register(
             nameof(CollectionReference),
             typeof(CollectionReference),
@@ -61,6 +65,18 @@ namespace LiteDbExplorer.Controls
                 Path = new PropertyPath(nameof(SelectedItem)),
                 Mode = BindingMode.TwoWay
             });
+
+            ListCollectionData.Loaded += (sender, args) =>
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action) (() =>
+                {
+                    var maxWidth = Math.Max(600, ListCollectionData.ActualWidth) / Math.Min(3, GridCollectionData.Columns.Count + 1);
+                    foreach (var col in GridCollectionData.Columns)
+                    {
+                        col.Width = col.ActualWidth > maxWidth ? maxWidth : Math.Max(100, col.ActualWidth);
+                    }
+                }));
+            };
         }
 
         public CollectionReference CollectionReference
@@ -265,14 +281,13 @@ namespace LiteDbExplorer.Controls
                     Tag = key,
                     Name = key,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
-                    HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                    MinWidth = 100
+                    HorizontalContentAlignment = HorizontalAlignment.Stretch
                 },
                 DisplayMemberBinding = new Binding
                 {
                     Path = new PropertyPath($"LiteDocument[{key}]"),
                     Mode = BindingMode.OneWay,
-                    Converter = new BsonValueToStringConverter()
+                    Converter = _bsonValueToStringConverter
                 },
                 HeaderTemplate = Resources["HeaderTemplate"] as DataTemplate
             });

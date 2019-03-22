@@ -28,6 +28,7 @@
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.ButtonSpinner.xaml" />
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.NumericUpDown.xaml" />
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.DateTimePicker.xaml" />
+                <ResourceDictionary Source="Themes/Controls.SearchReplacePanel.xaml" />
                 
             </ResourceDictionary.MergedDictionaries>
 

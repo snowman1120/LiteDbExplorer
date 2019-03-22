@@ -7,11 +7,15 @@ namespace LiteDbExplorer.Presentation.Converters
 {
     class BsonValueToStringConverter : IValueConverter
     {
+        public static BsonValueToStringConverter Instance = new BsonValueToStringConverter();
+
+        public int? MaxLength { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value != null && value is BsonValue bsonValue)
             {
-                return bsonValue.ToDisplayValue();
+                return bsonValue.ToDisplayValue(MaxLength);
             }
 
             return string.Empty;

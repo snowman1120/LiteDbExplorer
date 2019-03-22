@@ -48,7 +48,7 @@
         </dragablz:TabablzControl>
     </dockablz:Layout>-->
     <DockPanel>
-        <TabControl x:Name="Items" HorizontalContentAlignment="Center">
+        <TabControl x:Name="Items" HorizontalContentAlignment="Center" Padding="0">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
@@ -59,7 +59,7 @@
                                                       VerticalAlignment="Center"
                                                       HorizontalAlignment="Center"
                                                       ContentSource="Header"
-                                                      MinHeight="44" />
+                                                      MinHeight="45" />
                                 </Grid>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">

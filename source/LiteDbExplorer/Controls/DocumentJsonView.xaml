@@ -36,6 +36,12 @@
                             <materialDesign:PackIcon Kind="ContentPaste"/>
                         </MenuItem.Icon>
                     </MenuItem>-->
+                    <Separator />
+                    <MenuItem Command="Find">
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon Kind="FindReplace"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </avalonEdit:TextEditor.ContextMenu>
         </avalonEdit:TextEditor>

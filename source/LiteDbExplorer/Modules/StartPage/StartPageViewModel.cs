@@ -1,16 +1,13 @@
-﻿using System;
-using System.ComponentModel.Composition;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+﻿using System.ComponentModel.Composition;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Presentation;
 
 namespace LiteDbExplorer.Modules.StartPage
 {
     [Export(typeof(StartPageViewModel))]
+    [Export(typeof(IStartupDocument))]
     [PartCreationPolicy (CreationPolicy.Shared)]
-    public class StartPageViewModel : Document
+    public class StartPageViewModel : Document, IStartupDocument
     {
         private readonly IDatabaseInteractions _databaseInteractions;
         

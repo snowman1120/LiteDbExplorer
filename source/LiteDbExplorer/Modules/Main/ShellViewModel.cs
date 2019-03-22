@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using System.Linq;
 using Caliburn.Micro;
 using LiteDbExplorer.Framework.Shell;
 using LogManager = NLog.LogManager;
@@ -24,9 +25,20 @@ namespace LiteDbExplorer.Modules.Main
             LeftContent = IoC.Get<IDocumentExplorer>();
 
             MainContent = IoC.Get<IDocumentSet>();
+
+            var initialDocument = MainContent.NewDocumentFactory();
+            if (initialDocument != null)
+            {
+                MainContent.OpenDocument(initialDocument);
+            }
             
-            MainContent.OpenDocument(MainContent.NewDocumentFactory());
-            
+            MainContent.ActiveDocumentChanged += (sender, args) =>
+            {
+                if (!MainContent.Documents.Any() && initialDocument != null)
+                {
+                    MainContent.OpenDocument(initialDocument);
+                }
+            };
         }
         
         public object WindowMenu { get; }

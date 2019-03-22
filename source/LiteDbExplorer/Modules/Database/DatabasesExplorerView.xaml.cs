@@ -16,6 +16,24 @@ namespace LiteDbExplorer.Modules.Database
         public DatabasesExplorerView()
         {
             InitializeComponent();
+
+            TreeDatabase.PreviewMouseRightButtonDown += (sender, e) =>
+            {
+                if ((e.OriginalSource as DependencyObject).VisualUpwardSearch() != null)
+                {
+                    return;
+                }
+
+                if (sender is TreeView treeView && treeView.SelectedItem != null)
+                {
+                    if (treeView.ItemContainerGenerator.ContainerFromItemRecursive(treeView.SelectedItem) is TreeViewItem treeViewItem)
+                    {
+                        treeViewItem.Focus();
+                        treeViewItem.IsSelected = true;
+                        e.Handled = true;
+                    }
+                }
+            };
         }
         
         public Action<IEnumerable<string>> FilesDropped { get; set; }
@@ -51,6 +69,7 @@ namespace LiteDbExplorer.Modules.Database
             var treeViewItem = (e.OriginalSource as DependencyObject).VisualUpwardSearch();
             if (treeViewItem != null)
             {
+                treeViewItem.Focus();
                 treeViewItem.IsSelected = true;
                 e.Handled = true;
             }

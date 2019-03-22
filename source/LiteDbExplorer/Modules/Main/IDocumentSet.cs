@@ -19,5 +19,8 @@ namespace LiteDbExplorer.Modules.Main
         TDoc OpenDocument<TDoc, TNode>(TDoc model, TNode init)
             where TDoc : IDocument<TNode> where TNode : IReferenceNode;
         TDoc OpenDocument<TDoc, TNode>(TNode init) where TDoc : IDocument<TNode> where TNode : IReferenceNode;
+        
+        event EventHandler ActiveDocumentChanging;
+        event EventHandler ActiveDocumentChanged;
     }
 }

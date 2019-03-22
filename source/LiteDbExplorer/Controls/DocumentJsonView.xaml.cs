@@ -7,6 +7,7 @@ using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Indentation;
+using LiteDbExplorer.Controls.Editor;
 using LiteDbExplorer.Controls.JsonViewer;
 using LiteDbExplorer.Extensions;
 using LiteDbExplorer.Presentation;
@@ -20,6 +21,7 @@ namespace LiteDbExplorer.Controls
     {
         readonly FoldingManager _foldingManager;
         readonly BraceFoldingStrategy _foldingStrategy;
+        private readonly SearchReplacePanel _searchReplacePanel;
 
         public DocumentJsonView()
         {
@@ -27,15 +29,17 @@ namespace LiteDbExplorer.Controls
 
             jsonEditor.ShowLineNumbers = true;
             jsonEditor.Encoding = Encoding.UTF8;
-
-            SetSyntaxHighlightingTheme();
-
+            
             _foldingManager = FoldingManager.Install(jsonEditor.TextArea);
             _foldingStrategy = new BraceFoldingStrategy();
+            _searchReplacePanel = SearchReplacePanel.Install(jsonEditor);
+            _searchReplacePanel.IsFindOnly = true;
 
             jsonEditor.TextArea.IndentationStrategy = new DefaultIndentationStrategy();
 
-            ThemeManager.CurrentThemeChanged += (sender, args) => { SetSyntaxHighlightingTheme(); };
+            SetTheme();
+            
+            ThemeManager.CurrentThemeChanged += (sender, args) => { SetTheme(); };
         }
 
         public static readonly DependencyProperty DocumentSourceProperty = DependencyProperty.Register(
@@ -62,17 +66,23 @@ namespace LiteDbExplorer.Controls
             }
         }
 
-        private void SetSyntaxHighlightingTheme()
+        private void SetTheme()
         {
             // jsonEditor.SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("JavaScript");
             var resourceName = @"LiteDbExplorer.Controls.SyntaxDefinitions.Json.xshd";
             if (App.Settings.ColorTheme == ColorTheme.Dark)
             {
                 jsonEditor.TextArea.Foreground = new SolidColorBrush(Colors.White);
+                
+                // _searchReplacePanel.MarkerBrush = new SolidColorBrush(Color.FromArgb(129, 206, 145, 120));
+                _searchReplacePanel.MarkerBrush = new SolidColorBrush(Color.FromArgb(63, 144, 238, 144));
+                jsonEditor.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Color.FromRgb(206, 145, 120));
                 resourceName = resourceName.Replace(@".xshd", @".dark.xshd");
             }
             else
             {
+                _searchReplacePanel.MarkerBrush = new SolidColorBrush(Color.FromArgb(153, 144, 238, 144));
+                jsonEditor.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Color.FromRgb(26, 13, 171));
                 jsonEditor.TextArea.Foreground = new SolidColorBrush(Colors.Black);
             }
 

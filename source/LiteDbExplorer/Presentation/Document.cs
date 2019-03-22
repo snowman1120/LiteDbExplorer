@@ -5,6 +5,8 @@ namespace LiteDbExplorer.Framework
 {
     public abstract class Document : LayoutItemBase, IDocument
     {
+        public string GroupId { get; set; }
+
         public string GroupDisplayName { get; set; }
 
         public bool GroupDisplayNameIsVisible { get; set; }

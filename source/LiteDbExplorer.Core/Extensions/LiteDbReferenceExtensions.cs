@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Humanizer;
 using LiteDB;
 
 namespace LiteDbExplorer.Core
@@ -40,7 +41,7 @@ namespace LiteDbExplorer.Core
             return string.Join(" - ", documentReference.Collection?.Name, documentReference.LiteDocument["_id"].AsString);
         }
 
-        public static string ToDisplayValue(this BsonValue bsonValue)
+        public static string ToDisplayValue(this BsonValue bsonValue, int? maxLength = 0)
         {
             if (bsonValue == null)
             {
@@ -63,7 +64,7 @@ namespace LiteDbExplorer.Core
                 }
                 if (bsonValue.IsString)
                 {
-                    return bsonValue.AsString;
+                    return maxLength.HasValue ? bsonValue.AsString.Truncate(maxLength.Value) : bsonValue.AsString;
                 }
                 if (bsonValue.IsObjectId)
                 {
@@ -94,6 +95,11 @@ namespace LiteDbExplorer.Core
                     return bsonValue.AsGuid.ToString("D");
                 }
                 
+                if (maxLength.HasValue)
+                {
+                    return bsonValue.ToString().Truncate(maxLength.Value);
+                }
+
                 return bsonValue.ToString();
             }
             catch (Exception)

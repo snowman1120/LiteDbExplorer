@@ -68,6 +68,9 @@
     <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
     </Reference>
+    <Reference Include="Humanizer, Version=2.6.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Humanizer.Core.2.6.2\lib\netstandard2.0\Humanizer.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
@@ -164,10 +167,12 @@
     <Compile Include="Controls\DocumentJsonView.xaml.cs">
       <DependentUpon>DocumentJsonView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Editor\SearchReplacePanel.cs" />
     <Compile Include="Controls\InputDialogView.xaml.cs">
       <DependentUpon>InputDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\JsonViewer\BraceFoldingStrategy.cs" />
+    <Compile Include="Controls\Editor\IBracketSearcher.cs" />
     <Compile Include="Controls\StoreContext.cs" />
     <Compile Include="Controls\WindowController.cs" />
     <Compile Include="Application\Commands.cs" />
@@ -252,7 +257,9 @@
     </Compile>
     <Compile Include="Modules\StartPage\StartPageViewModel.cs" />
     <Compile Include="Presentation\Behaviors\BsonValueForeground.cs" />
+    <Compile Include="Presentation\Converters\GroupDisplayColorToForegloud.cs" />
     <Compile Include="Presentation\Document.cs" />
+    <Compile Include="Presentation\GroupDisplayColor.cs" />
     <Compile Include="Presentation\IconProvider.cs" />
     <Compile Include="Presentation\IDocument.cs" />
     <Compile Include="Presentation\StyleKit.cs" />
@@ -355,6 +362,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Modules\StartPage\StartPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Controls.SearchReplacePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

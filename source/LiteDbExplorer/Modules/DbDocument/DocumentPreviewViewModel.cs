@@ -76,7 +76,13 @@ namespace LiteDbExplorer.Modules.DbDocument
             if (Document != null)
             {
                 DisplayName = Document.ToDisplayName();
-                GroupDisplayName = Document.Collection?.Database.Name;
+
+                var database = Document.Collection?.Database;
+                if (database != null)
+                {
+                    GroupId = database.InstanceId;
+                    GroupDisplayName = database.Name;
+                }
             }
 
             if (document != null && document.Collection is FileCollectionReference reference)
