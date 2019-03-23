@@ -110,6 +110,11 @@ namespace LiteDbExplorer.Modules
                 vm.ScrollIntoSelectedDocument();
             }
         }
+        
+        public void PutClipboardText(string text)
+        {
+            Clipboard.SetData(DataFormats.Text, text);
+        }
 
         public bool ShowConfirm(string message, string title = "Are you sure?")
         {

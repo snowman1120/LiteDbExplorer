@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Caliburn.Micro;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -59,12 +60,13 @@ namespace LiteDbExplorer
         }
 
         
-        public ObservableCollection<RecentFileInfo> RecentFiles => _lazyRecentFiles.Value;
+        public IObservableCollection<RecentFileInfo> RecentFiles => _lazyRecentFiles.Value;
 
-        private readonly Lazy<ObservableCollection<RecentFileInfo>> _lazyRecentFiles = new Lazy<ObservableCollection<RecentFileInfo>>(() =>
+        private readonly Lazy<BindableCollection<RecentFileInfo>> _lazyRecentFiles = new Lazy<BindableCollection<RecentFileInfo>>(() =>
         {
-            var collection = new ObservableCollection<RecentFileInfo>();
-            if (File.Exists(RecentFilesPath))
+            var list = new List<RecentFileInfo>();
+            var recentFilesExists = File.Exists(RecentFilesPath);
+            if (recentFilesExists)
             {
                 var value = File.ReadAllText(RecentFilesPath);
                 if (!string.IsNullOrEmpty(value))
@@ -73,27 +75,31 @@ namespace LiteDbExplorer
                     foreach (var recentFileInfo in recentFileInfos)
                     {
                         recentFileInfo.InvalidateInfo();
-                        collection.Add(recentFileInfo);
+                        list.Add(recentFileInfo);
                     }
                 }
             }
 
-            if (File.Exists(LegacyRecentFilesPath))
+            if (File.Exists(LegacyRecentFilesPath) && !recentFilesExists)
             {
                 var filesPaths = File.ReadLines(LegacyRecentFilesPath);
                 foreach (var filesPath in filesPaths)
                 {
-                    if (collection.Any(p => p.FullPath.Equals(filesPath, StringComparison.OrdinalIgnoreCase)))
+                    if (list.Any(p => p.FullPath.Equals(filesPath, StringComparison.OrdinalIgnoreCase)))
                     {
                         continue;
                     }
 
-                    collection.Add(new RecentFileInfo(filesPath));
+                    list.Add(new RecentFileInfo(filesPath));
                 }
             }
             
-            collection.CollectionChanged += RecentFiles_CollectionChanged;
+            var collection = new BindableCollection<RecentFileInfo>(list);
 
+            ReorderRecentFiles(collection);
+
+            collection.CollectionChanged += RecentFiles_CollectionChanged;
+            
             return collection;
 
         });
@@ -112,15 +118,67 @@ namespace LiteDbExplorer
 
             recentFileInfo.LastOpenedAt = DateTime.Now;
 
+            RecentFiles.IsNotifying = false;
             RecentFiles.Insert(0, recentFileInfo);
+            RecentFiles.IsNotifying = true;
+
+            ReorderRecentFiles(RecentFiles);
+        }
+
+        public bool RemoveRecentFile(string path)
+        {
+            var recentFileInfo = RecentFiles.FirstOrDefault(p => p.FullPath.Equals(path, StringComparison.OrdinalIgnoreCase));
+            if (recentFileInfo != null)
+            {
+                return RecentFiles.Remove(recentFileInfo);
+            }
+
+            return false;
+        }
+
+        public void SetRecentFileFixed(string path, bool add)
+        {
+            var recentFileInfo = RecentFiles.FirstOrDefault(p => p.FullPath.Equals(path, StringComparison.OrdinalIgnoreCase));
+            if (recentFileInfo != null)
+            {
+                recentFileInfo.FixedAt = add ? DateTime.Now : (DateTime?) null;
+                
+                ReorderRecentFiles(RecentFiles);
+            }
+        }
+
+        public static void ReorderRecentFiles(IObservableCollection<RecentFileInfo> target)
+        {
+            if (target == null)
+            {
+                return;
+            }
+            
+            var orderedItem = new List<RecentFileInfo>();
+            orderedItem.AddRange(target.Where(p => p.FixedAt.HasValue).OrderByDescending(p => p.FixedAt));
+            orderedItem.AddRange(target.Where(p => !p.FixedAt.HasValue).OrderByDescending(p => p.LastOpenedAt));
+
+            target.IsNotifying = false;
+
+            target.Clear();
+
+            target.IsNotifying = true;
+            
+            target.AddRange(orderedItem);
         }
 
         private static void RecentFiles_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (sender is ObservableCollection<RecentFileInfo> collection)
+            if (sender is IObservableCollection<RecentFileInfo> collection)
             {
                 var json = JsonConvert.SerializeObject(collection, _jsonSerializerSettings);
+                
                 File.WriteAllText(RecentFilesPath, json);
+
+                if (File.Exists(LegacyRecentFilesPath))
+                {
+                    File.WriteAllLines(LegacyRecentFilesPath, collection.Select(p => p.FullPath));
+                }
             }
         }
 
@@ -133,8 +191,8 @@ namespace LiteDbExplorer
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
-    public class RecentFileInfo
+    
+    public class RecentFileInfo : INotifyPropertyChanged
     {
         public RecentFileInfo()
         {
@@ -155,7 +213,7 @@ namespace LiteDbExplorer
         
         public string FullPath { get; set; }
         public DateTime? LastOpenedAt { get; set; }
-        public bool Fixed { get; set; }
+        public DateTime? FixedAt { get; set; }
 
         [JsonIgnore]
         public string FileName { get; set; }
@@ -165,6 +223,17 @@ namespace LiteDbExplorer
 
         [JsonIgnore]
         public bool FileNotFound { get; set; }
+
+        [JsonIgnore]
+        public bool IsFixed => FixedAt.HasValue;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
 }

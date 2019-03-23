@@ -3,141 +3,376 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:LiteDbExplorer.Modules.StartPage"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:framework="clr-namespace:LiteDbExplorer.Framework;assembly=LiteDbExplorer.Wpf"
+             xmlns:converters="clr-namespace:LiteDbExplorer.Wpf.Converters;assembly=LiteDbExplorer.Wpf"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+             d:DesignHeight="650" d:DesignWidth="800">
+    <UserControl.Resources>
+        <framework:DataContextProxy x:Key="DataContextProxy" Data="{Binding}" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" Inverse="True" />
+        <Style x:Key="PinButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Height" Value="22"/>
+            <Setter Property="Width" Value="22"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,-4,0,0"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid x:Name="contentGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <materialDesign:Card MinWidth="300" MinHeight="200"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Center"
-                             Padding="50" Margin="50">
-            <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="50" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" MinWidth="50" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="1"
+                    Orientation="Horizontal" Margin="0,50,0,25">
+            <Image Source="/Images/icon.png" Height="42" Stretch="Uniform"
+                   RenderOptions.BitmapScalingMode="HighQuality" Margin="4,0,4,0" />
+            <TextBlock FontWeight="Light" FontSize="34"
+                       Text="LiteDB Explorer" Margin="0,8,8,0" />
+            <Border Margin="8,7" Padding="8,3" CornerRadius="3" VerticalAlignment="Bottom"
+                    Background="{DynamicResource AccentColorBrush}">
+                <TextBlock FontWeight="Normal" 
+                           Text="Preview" Foreground="White" 
+                           Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+            </Border>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Grid.Column="1">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.3*" />
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="*" MaxWidth="400" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Recent files row -->
+            <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Border BorderThickness="0,0,0,0" Padding="0,16"
+                        BorderBrush="{StaticResource MaterialDesignDivider}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="56" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon Kind="History" Height="22" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1" Text="Open recent"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
+                    </Grid>
+                </Border>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl
+                        ItemsSource="{Binding Path=PathDefinitions.RecentFiles}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button x:Name="OpenRecentButton"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        CommandParameter="{Binding}"
+                                        cal:Message.Attach="OpenRecentItem($dataContext)"
+                                        Height="65"
+                                        VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                    <Button.ContextMenu>
+                                        <ContextMenu
+                                            cal:Action.TargetWithoutContext="{Binding Path=Data, Source={StaticResource DataContextProxy}}">
+                                            <MenuItem Header="Remove from list"
+                                                      cal:Message.Attach="RemoveFromList($dataContext)">
+                                                <MenuItem.Icon>
+                                                    <materialDesign:PackIcon Kind="PlaylistRemove" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+
+                                            <MenuItem Header="Pin this item on list"
+                                                      cal:Message.Attach="PinItem($dataContext)"
+                                                      Visibility="{Binding Path=IsFixed, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                                <MenuItem.Icon>
+                                                    <materialDesign:PackIcon Kind="Pin" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+
+                                            <MenuItem Header="Unpin this item on list"
+                                                      cal:Message.Attach="UnPinItem($dataContext)"
+                                                      Visibility="{Binding Path=IsFixed, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <MenuItem.Icon>
+                                                    <materialDesign:PackIcon Kind="PinOff" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <Separator />
+                                            <MenuItem Header="Copy path"
+                                                      cal:Message.Attach="CopyPath($dataContext)">
+                                                <MenuItem.Icon>
+                                                    <materialDesign:PackIcon Kind="ContentCopy" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem Header="Reveal in Explorer"
+                                                      cal:Message.Attach="RevealInExplorer($dataContext)">
+                                                <MenuItem.Icon>
+                                                    <materialDesign:PackIcon Kind="OpenInNew" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="8" />
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="20" />
+                                            <ColumnDefinition Width="Auto" MinWidth="100" />
+                                            <ColumnDefinition Width="40" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="1" Grid.Row="1"
+                                                   Text="{Binding FileName}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Style="{StaticResource MaterialDesignBody2TextBlock}" />
+
+                                        <TextBlock Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2"
+                                                   Text="{Binding DirectoryPath}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Opacity="0.8"
+                                                   Style="{StaticResource MaterialDesignBody2TextBlock}"
+                                                   Foreground="{DynamicResource MaterialDesignBody}" />
+
+                                        <TextBlock Grid.Column="3" Grid.Row="1"
+                                                   Text="{Binding LastOpenedAt,StringFormat=g}"
+                                                   TextAlignment="Right"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Opacity="0.8"
+                                                   Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                                   Foreground="{DynamicResource MaterialDesignBody}" />
+
+                                        <Button x:Name="PinedItemButton" Grid.Column="4" Grid.Row="1"
+                                                Style="{StaticResource PinButtonStyle}"
+                                                ToolTip="Unpin this item on list"
+                                                cal:Action.TargetWithoutContext="{Binding Path=Data, Source={StaticResource DataContextProxy}}"
+                                                cal:Message.Attach="UnPinItem($dataContext)">
+                                            <materialDesign:PackIcon x:Name="PinedIcon" 
+                                                                     Kind="Pin" Grid.Column="4" Grid.Row="1"
+                                                                     VerticalAlignment="Top"
+                                                                     HorizontalAlignment="Center" />
+                                        </Button>
+
+                                        <Button x:Name="PinItemButton"
+                                                Grid.Column="4" Grid.Row="1"
+                                                Style="{StaticResource PinButtonStyle}"
+                                                ToolTip="Pin this item on list"
+                                                cal:Action.TargetWithoutContext="{Binding Path=Data, Source={StaticResource DataContextProxy}}"
+                                                cal:Message.Attach="PinItem($dataContext)">
+                                            <materialDesign:PackIcon x:Name="PinIcon" Kind="PinOutline"
+                                                                     VerticalAlignment="Top"
+                                                                     HorizontalAlignment="Center" 
+                                                                     RenderTransformOrigin="0.5,0.5">
+                                                <materialDesign:PackIcon.RenderTransform>
+                                                    <TransformGroup>
+                                                        <RotateTransform Angle="90"/>
+                                                    </TransformGroup>
+                                                </materialDesign:PackIcon.RenderTransform>
+                                            </materialDesign:PackIcon>
+                                        </Button>
+
+                                    </Grid>
+                                </Button>
+                                <DataTemplate.Triggers>
+                                    
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ElementName=OpenRecentButton, Path=IsMouseOver}" Value="True" />
+                                            <Condition Binding="{Binding Path=IsFixed}" Value="False" />
+                                        </MultiDataTrigger.Conditions>   
+                                        <Setter TargetName="PinItemButton" Property="Visibility" Value="Visible" />
+                                    </MultiDataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ElementName=PinedItemButton, Path=IsMouseOver}" Value="True" />
+                                            <Condition Binding="{Binding Path=IsFixed}" Value="True" />
+                                        </MultiDataTrigger.Conditions>   
+                                        <Setter TargetName="PinedIcon" Property="Kind" Value="PinOff" />
+                                    </MultiDataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=IsFixed}" Value="True">
+                                        <Setter TargetName="PinedItemButton" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <TextBlock Grid.Row="1" HorizontalAlignment="Left" 
+                           VerticalAlignment="Top" Margin="56,16"
+                           Style="{StaticResource MaterialDesignBody1TextBlock}" Opacity="0.6"
+                           Visibility="{Binding Path=RecentFilesIsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    No recent items in the list
+                </TextBlock>
+            </Grid>
+
+            <!-- Start row -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
-                    <Image Source="/Images/icon.png" Height="42" Stretch="Uniform"
-                           RenderOptions.BitmapScalingMode="HighQuality" Margin="4,0,4,0" />
-                    <TextBlock FontWeight="Light" FontSize="32"
-                               Text="LiteDB Explorer" Margin="0,8,8,0" />
-                    <Border Margin="8,7" Padding="4,2" CornerRadius="3" VerticalAlignment="Bottom" 
-                            Background="{DynamicResource AccentColorBrush}">
-                        <TextBlock FontWeight="SemiBold" FontSize="10"
-                                   Text="Preview" Foreground="White"/>
-                    </Border>
+                <Border BorderThickness="0,0,0,0" Padding="0,16"
+                        BorderBrush="{StaticResource MaterialDesignDivider}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="56" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon Kind="Database" Height="22" VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1"
+                                   Text="Get started"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
+                    </Grid>
+                </Border>
+
+                <StackPanel Grid.Row="1">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                            <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                            <Setter Property="Padding" Value="7" />
+                            <Setter Property="Height" Value="Auto" />
+                            <Setter Property="MinHeight" Value="65" />
+                            <Setter Property="Margin" Value="0,0,0,10" />
+                            <Setter Property="TextBlock.TextTrimming" Value="None" />
+                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <Button x:Name="OpenDatabase">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="FolderOpen" Height="26" Width="26" Grid.RowSpan="2"
+                                                     VerticalAlignment="Top" />
+                            <TextBlock Grid.Row="0" Grid.Column="1"
+                                       Text="Open"
+                                       TextTrimming="CharacterEllipsis"
+                                       Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
+                            <TextBlock Grid.Column="1" Grid.Row="1"
+                                       Text="Open LiteDB v4 database file" Padding="0,5"
+                                       TextWrapping="Wrap"
+                                       Style="{StaticResource MaterialDesignCaptionTextBlock}" />
+                        </Grid>
+                    </Button>
+
+                    <Button x:Name="NewDatabase" Command="New">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="DatabasePlus" Height="26" Width="26" Grid.RowSpan="2"
+                                                     VerticalAlignment="Top" />
+                            <TextBlock Grid.Row="0" Grid.Column="1"
+                                       Text="New"
+                                       TextTrimming="CharacterEllipsis"
+                                       Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
+                            <TextBlock Grid.Column="1" Grid.Row="1"
+                                       Text="Create and open new LiteDB v4 database" Padding="0,5"
+                                       TextWrapping="Wrap"
+                                       Style="{StaticResource MaterialDesignCaptionTextBlock}" />
+                        </Grid>
+                    </Button>
+
+                    <Button x:Name="OpenDocs">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="Help" Height="26" Width="26" Grid.RowSpan="2"
+                                                     VerticalAlignment="Top" />
+                            <TextBlock Grid.Row="0" Grid.Column="1"
+                                       Text="Docs"
+                                       TextTrimming="CharacterEllipsis"
+                                       Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
+                            <TextBlock Grid.Column="1" Grid.Row="1"
+                                       Text="Open LiteDB documentation" Padding="0,5"
+                                       TextWrapping="Wrap"
+                                       Style="{StaticResource MaterialDesignCaptionTextBlock}" />
+                        </Grid>
+                    </Button>
                 </StackPanel>
 
-                <!-- Start row -->
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+                <StackPanel Grid.Row="2" Margin="0,25" Opacity="0.8">
+                    <TextBlock TextWrapping="Wrap" Margin="16 8"
+                               Foreground="{DynamicResource MaterialDesignBodyLight}"
+                               VerticalAlignment="Top">
+                        <TextBlock.Resources>
+                            <Style TargetType="Hyperlink">
+                                <Setter Property="Foreground" Value="{DynamicResource AccentColorBrush2}" />
+                                <EventSetter Event="RequestNavigate" Handler="Hyperlink_RequestNavigate" />
+                            </Style>
+                        </TextBlock.Resources>
+                        This project is completely open source. If you like it and want to say thanks you could hit the
+                        <Hyperlink NavigateUri="https://github.com/julianpaulozzi/LiteDbExplorer">GitHub</Hyperlink>
+                        star button.
+                        <LineBreak />
+                        Any question or contribution you can check the
+                        <Hyperlink NavigateUri="https://github.com/julianpaulozzi/LiteDbExplorer/issues">issues page</Hyperlink>
+                        or open a new one following the
+                        <Hyperlink
+                            NavigateUri="https://github.com/julianpaulozzi/LiteDbExplorer#issue-reporting-guidelines">
+                            Issue Reporting Guidelines
+                        </Hyperlink>
+                        .
+                    </TextBlock>
 
-                    <Border BorderThickness="0,0,0,1" Padding="0,10"
-                            BorderBrush="{StaticResource MaterialDesignDivider}">
-                        <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}">
-                            <materialDesign:PackIcon Kind="Database" Height="18" Width="18" Margin="10,-4" />
-                            Start
-                        </TextBlock>
-                    </Border>
-
-                    <StackPanel Grid.Row="1">
-                        <Button x:Name="OpenDatabase"
-                                Style="{StaticResource MaterialDesignFlatButton}"
-                                Foreground="{DynamicResource MaterialDesignBody}" 
-                                HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
-                                Height="60" Padding="10,4">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="FolderOpen" Height="22" Width="22" />
-                                <TextBlock Padding="10,0" Text="Open" FontSize="18" TextTrimming="CharacterEllipsis" 
-                                           Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                </Grid>
-
-                <!-- Recent files row -->
-                <Grid Grid.Row="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-
-                    <Border BorderThickness="0,0,0,1" Padding="0,10"
-                            BorderBrush="{StaticResource MaterialDesignDivider}">
-                        <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}">
-                            <materialDesign:PackIcon Kind="History" Height="18" Width="18" Margin="10,-4" />
-                            Recent files
-                        </TextBlock>
-                    </Border>
-
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl
-                            ItemsSource="{Binding Path=PathDefinitions.RecentFiles}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Style="{StaticResource MaterialDesignFlatButton}"
-                                            CommandParameter="{Binding}"
-                                            cal:Message.Attach="OpenRecentItem($dataContext)"
-                                            Height="60" Foreground="{DynamicResource MaterialDesignBody}" 
-                                            VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                                            ToolTip="{Binding FullPath}">
-                                        <Grid Margin="5">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="*"/>
-                                                <RowDefinition Height="*"/>
-                                            </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="20"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="20"/>
-                                                <ColumnDefinition Width="Auto" MinWidth="100"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <TextBlock Grid.Row="0" Grid.Column="1"
-                                                       Text="{Binding FileName}"
-                                                       TextTrimming="CharacterEllipsis" 
-                                                       Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
-
-                                            <TextBlock Grid.Row="0" Grid.Column="3"
-                                                       Text="{Binding LastOpenedAt,StringFormat=g}" 
-                                                       TextAlignment="Right" 
-                                                       TextTrimming="CharacterEllipsis" 
-                                                       FontSize="13" Opacity="0.8"/>
-
-                                            <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" 
-                                                       Text="{Binding DirectoryPath}" 
-                                                       TextTrimming="CharacterEllipsis" 
-                                                       FontSize="13" Opacity="0.8"/>
-                                        </Grid>
-                                    </Button>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </Grid>
+                    <TextBlock Margin="16 8" Foreground="{DynamicResource MaterialDesignBodyLight}" TextWrapping="Wrap">
+                        <Run FontWeight="SemiBold" Text="This is a pre-release." />
+                        <Run FontWeight="Normal"
+                             Text="We'll point out that this release is identified as non-production ready." />
+                    </TextBlock>
+                </StackPanel>
             </Grid>
-        </materialDesign:Card>
+        </Grid>
 
-        <Border Grid.Row="1" Margin="50,10" Background="#C95100" CornerRadius="3" HorizontalAlignment="Center">
-            <TextBlock Foreground="White"
-                       Margin="0,2" Padding="8">
-                <Run FontSize="14" FontWeight="SemiBold" Text="This is a pre-release"/>
-                <LineBreak/>
-                <Run FontSize="12" FontWeight="Normal" Text="We’ll point out that this release is identified as non-production ready."/>
-            </TextBlock>
-        </Border>
+        <Border Grid.Row="2" Grid.Column="1" Margin="10" CornerRadius="3" Opacity="0.8" HorizontalAlignment="Center" />
     </Grid>
 </UserControl>

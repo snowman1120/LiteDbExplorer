@@ -182,28 +182,24 @@
                                 <MenuItem Command="liteDbExplorer:Commands.Add"
                                           CommandParameter="{Binding CollectionReference}">
                                     <MenuItem.Icon>
-                                        <!--<Image Source="/Images/createitem.png" />-->
                                         <materialDesign:PackIcon Kind="TableRowPlusAfter" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Command="liteDbExplorer:Commands.Edit"
                                           CommandParameter="{Binding SelectedDocument}">
                                     <MenuItem.Icon>
-                                        <!--<Image Source="/Images/updateitem.png" />-->
                                         <materialDesign:PackIcon Kind="TableEdit" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Command="liteDbExplorer:Commands.Remove"
                                           CommandParameter="{Binding SelectedDocuments}">
                                     <MenuItem.Icon>
-                                        <!--<Image Source="/Images/deleteitem.png" />-->
                                         <materialDesign:PackIcon Kind="TableRowRemove" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Command="liteDbExplorer:Commands.Export"
                                           CommandParameter="{Binding SelectedDocuments}">
                                     <MenuItem.Icon>
-                                        <!--<Image Source="/Images/export.png" />-->
                                         <materialDesign:PackIcon Kind="FileExport" />
                                     </MenuItem.Icon>
                                 </MenuItem>
@@ -211,14 +207,12 @@
                                 <MenuItem Command="Copy"
                                           CommandParameter="{Binding SelectedDocuments}">
                                     <MenuItem.Icon>
-                                        <!--<Image Source="/Images/copy.png" />-->
                                         <materialDesign:PackIcon Kind="ContentCopy" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Command="Paste"
                                           CommandParameter="{Binding CollectionReference}">
                                     <MenuItem.Icon>
-                                        <!--<Image Source="/Images/paste.png" />-->
                                         <materialDesign:PackIcon Kind="ContentPaste" />
                                     </MenuItem.Icon>
                                 </MenuItem>

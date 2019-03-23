@@ -512,16 +512,6 @@ namespace LiteDbExplorer.Modules
 
             return Result.Ok(isOpen);
         }
-        
-        /*protected bool ConfirmInteraction(string message, string title = "Are you sure?")
-        {
-            return MessageBox.Show(
-                message,
-                title,
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question
-            ) == MessageBoxResult.Yes;
-        }*/
 
     }
 }
