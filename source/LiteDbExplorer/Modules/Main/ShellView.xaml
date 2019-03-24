@@ -10,11 +10,12 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:cal="http://www.caliburnproject.org"
     xmlns:framework="clr-namespace:LiteDbExplorer.Framework"
+    xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
     x:Class="LiteDbExplorer.Modules.Main.ShellView"
     mc:Ignorable="d"
     d:DesignHeight="200" d:DesignWidth="600">
     <UserControl.Resources>
-
+        <converters:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
     </UserControl.Resources>
 
     <DockPanel>
@@ -25,7 +26,8 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="50"/>
+                <ColumnDefinition MinWidth="50"
+                                  Width="{Binding Path=Settings.MainSplitterSize, Mode=TwoWay, Source={x:Static Application.Current}, Converter={StaticResource DoubleToGridLengthConverter}}"/>
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="3.5*" />
             </Grid.ColumnDefinitions>

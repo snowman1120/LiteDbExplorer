@@ -174,7 +174,7 @@ namespace LiteDbExplorer
         {
             var keys = Items
                 .SelectMany(p => p.LiteDocument.Keys)
-                .Distinct();
+                .Distinct(StringComparer.InvariantCulture);
 
             if (sortOrder == FieldSortOrder.Alphabetical)
             {

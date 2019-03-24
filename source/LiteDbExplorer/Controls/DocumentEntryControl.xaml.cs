@@ -312,7 +312,7 @@ namespace LiteDbExplorer.Controls
 
             if (newWidth > 0)
             {
-                grid.Columns[1].Width = newWidth;
+                grid.Columns[1].Width = Math.Max(140, newWidth);
             }
 
             if (_loaded)

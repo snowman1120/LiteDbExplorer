@@ -1,54 +1,116 @@
-﻿<UserControl x:Class="LiteDbExplorer.Modules.Main.DocumentSetView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:LiteDbExplorer.Modules.Main"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
-             xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
-             xmlns:cal="http://www.caliburnproject.org"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:framework="clr-namespace:LiteDbExplorer.Framework;assembly=LiteDbExplorer.Wpf"
-             xmlns:converters="clr-namespace:LiteDbExplorer.Wpf.Converters;assembly=LiteDbExplorer.Wpf"
-             xmlns:behaviors="clr-namespace:LiteDbExplorer.Wpf.Behaviors;assembly=LiteDbExplorer.Wpf"
-             mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:LiteDbExplorer.Modules.Main"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+    xmlns:cal="http://www.caliburnproject.org"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:framework="clr-namespace:LiteDbExplorer.Framework;assembly=LiteDbExplorer.Wpf"
+    xmlns:converters="clr-namespace:LiteDbExplorer.Wpf.Converters;assembly=LiteDbExplorer.Wpf"
+    xmlns:behaviors="clr-namespace:LiteDbExplorer.Wpf.Behaviors;assembly=LiteDbExplorer.Wpf"
+    xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:themes="clr-namespace:Dragablz.Themes;assembly=Dragablz"
+    x:Class="LiteDbExplorer.Modules.Main.DocumentSetView"
+    mc:Ignorable="d"
+    d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <local:InterTabClient x:Key="InterTabClient" />
         <system:String x:Key="Partition">MainPartition</system:String>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <framework:DataContextProxy x:Key="DataContextProxy" Data="{Binding}" />
-        <converters:BrushToContrastForegroundConverter x:Key="BrushToContrastForegroundConverter"/>
-        <Style TargetType="{x:Type dragablz:TabablzControl}"
+        <converters:BrushToContrastForegroundConverter x:Key="BrushToContrastForegroundConverter" />
+
+
+        <DataTemplate x:Key="TabHeaderDataTemplate">
+            <Grid Margin="8,0">
+                <Grid.Resources>
+                    <Style TargetType="materialDesign:PackIcon" >
+                        <!--<Setter Property="MinWidth" Value="14" />-->
+                        <!--<Setter Property="MinHeight" Value="14" />-->
+                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" MinWidth="20" />
+                </Grid.ColumnDefinitions>
+                <ContentControl Grid.Column="0"
+                                Content="{Binding IconContent}"
+                                VerticalContentAlignment="Center"
+                                HorizontalContentAlignment="Center"
+                                MaxHeight="40" MaxWidth="40"
+                                Margin="4,0" />
+                <StackPanel Margin="4,0" Grid.Column="1" Orientation="Horizontal">
+                    <TextBlock x:Name="Part_DisplayName"
+                               Text="{Binding DisplayName}"
+                               Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+                               Foreground="{DynamicResource MaterialDesignBody}"
+                               TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Center"
+                               FontSize="14" />
+                    <TextBlock x:Name="PART_GroupDisplayName"
+                               Padding="8,0,0,0" MaxWidth="125" Opacity="0.7"
+                               Visibility="{Binding GroupDisplayNameIsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                               Text="{Binding GroupDisplayName}"
+                               Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+                               Foreground="{DynamicResource MaterialDesignBody}"
+                               TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Center"
+                               FontSize="14" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+
+        <Style x:Key="DocSetTabItemStyle"
+               TargetType="{x:Type dragablz:DragablzItem}"
+               BasedOn="{StaticResource MaterialDesignDragableTabItemStyle}">
+            <Setter Property="themes:MaterialDesignAssist.IndicatorBrush"
+                    Value="{Binding Path=GroupDisplayBackground, FallbackValue={StaticResource MaterialDesignToolBarBackground}}" />
+        </Style>
+
+        <Style x:Key="DocSetTabablzControlStyle"
+               TargetType="{x:Type dragablz:TabablzControl}"
                BasedOn="{StaticResource {x:Type dragablz:TabablzControl}}">
+            <Setter Property="ItemContainerStyle" Value="{StaticResource DocSetTabItemStyle}" />
+            <Setter Property="HeaderItemTemplate" Value="{StaticResource TabHeaderDataTemplate}" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="HeaderMemberPath" Value="DisplayName" />
+            <!--<Setter Property="HeaderMemberPath" Value="DisplayName" />-->
             <Setter Property="ShowDefaultCloseButton" Value="True" />
-            <Setter Property="ShowDefaultAddButton" Value="True" />
-            <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
-            <Setter Property="NewItemFactory"
-                    Value="{Binding Path=Data.NewDocumentFactory, Source={StaticResource DataContextProxy}}" />
+            <Setter Property="ShowDefaultAddButton" Value="False" />
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="ContentTemplate">
                 <Setter.Value>
                     <DataTemplate>
-                        <ContentControl cal:View.Model="{Binding}"/>
+                        <ContentControl cal:View.Model="{Binding}" />
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
     </UserControl.Resources>
-    <!--<dockablz:Layout Partition="{StaticResource Partition}">
-        <dragablz:TabablzControl x:Name="TabablzControl" 
-                                 Padding="0" Margin="0"
-                                 ItemsSource="{Binding Documents}">
-            <dragablz:TabablzControl.InterTabController>
-                <dragablz:InterTabController InterTabClient="{Binding Path=Current, Source={StaticResource InterTabClient}}" />
-            </dragablz:TabablzControl.InterTabController>
-        </dragablz:TabablzControl>
-    </dockablz:Layout>-->
     <DockPanel>
-        <TabControl x:Name="Items" HorizontalContentAlignment="Center" Padding="0">
+        <dragablz:TabablzControl x:Name="TabablzControl"
+                                 Padding="0" Margin="0"
+                                 Style="{StaticResource DocSetTabablzControlStyle}"
+                                 ItemsSource="{Binding Items}"
+                                 SelectedItem="{Binding ActiveLayoutItem}">
+
+            <!--<dragablz:TabablzControl.InterTabController>
+                <dragablz:InterTabController
+                    InterTabClient="{Binding Current, Source={StaticResource InterTabClient}}" />
+            </dragablz:TabablzControl.InterTabController>-->
+        </dragablz:TabablzControl>
+
+        <!--<TabControl x:Name="Items" HorizontalContentAlignment="Center" Padding="0">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
@@ -158,9 +220,6 @@
                     </DataTemplate.Triggers>
                 </DataTemplate>
             </TabControl.ItemTemplate>
-            <i:Interaction.Behaviors>
-                <behaviors:FocusActiveGroup/>
-            </i:Interaction.Behaviors>
-        </TabControl>
+        </TabControl>-->
     </DockPanel>
 </UserControl>

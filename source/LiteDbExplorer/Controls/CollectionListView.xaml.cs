@@ -172,15 +172,14 @@ namespace LiteDbExplorer.Controls
         public void UpdateGridColumns(BsonDocument dbItem)
         {
             var headers = GridCollectionData.Columns.Select(a => (a.Header as GridViewColumnHeader)?.Name).ToArray();
-            var addKeys = dbItem.Keys.Except(headers);
-            var removeKeys = headers.Except(dbItem.Keys);
+            var keys = CollectionReference.GetDistinctKeys(App.Settings.FieldSortOrder);
             
-            foreach (var key in removeKeys)
+            foreach (var key in headers.Except(keys))
             {
                 RemoveGridColumn(key);
             }
 
-            foreach (var key in addKeys)
+            foreach (var key in keys.Except(headers))
             {
                 AddGridColumn(key);
             }

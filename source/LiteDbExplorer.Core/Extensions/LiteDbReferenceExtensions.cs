@@ -41,7 +41,7 @@ namespace LiteDbExplorer.Core
             return string.Join(" - ", documentReference.Collection?.Name, documentReference.LiteDocument["_id"].AsString);
         }
 
-        public static string ToDisplayValue(this BsonValue bsonValue, int? maxLength = 0)
+        public static string ToDisplayValue(this BsonValue bsonValue, int? maxLength = null)
         {
             if (bsonValue == null)
             {

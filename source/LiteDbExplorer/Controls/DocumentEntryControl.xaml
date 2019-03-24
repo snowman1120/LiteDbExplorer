@@ -8,7 +8,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="400" d:DesignWidth="600">
 
     <UserControl.Resources>
         <converters:InvertableBooleanToVisibilityConverter x:Key="InvertableBooleanToVisibilityConverter" />
@@ -74,9 +74,9 @@
 
             <Grid DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" MinWidth="80"/>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" MinWidth="80"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -94,66 +94,67 @@
                     <materialDesign:PackIcon Kind="ArrowRight" />
                 </Button>
 
-                <DockPanel Grid.Column="1" Grid.Row="0">
-                    <ListView Name="ListItems" SizeChanged="ItemsField_SizeChanged"
-                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                              BorderThickness="0" DockPanel.Dock="Top">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem"
-                                   BasedOn="{StaticResource MaterialDesignGridViewItemNoBorder}">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.View>
-                            <GridView>
-                                <GridView.ColumnHeaderContainerStyle>
-                                    <Style TargetType="GridViewColumnHeader">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </Style>
-                                </GridView.ColumnHeaderContainerStyle>
-                                <GridViewColumn>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}"
-                                                       TextAlignment="Right" Margin="3,11,6,3"
-                                                       VerticalAlignment="Top" TextTrimming="CharacterEllipsis" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ContentPresenter Content="{Binding EditControl}" MinHeight="32"
-                                                              Margin="0,3,0,3" VerticalAlignment="Top"
-                                                              ScrollViewer.VerticalScrollBarVisibility="Disabled" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Width="40">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button DockPanel.Dock="Right" Tag="{Binding Name}"
-                                                    Click="RemoveButton_Click"
-                                                    ToolTip="Remove Item"
-                                                    Style="{StaticResource MaterialDesignFlatButton}"
-                                                    Padding="4" Height="32" Width="32"
-                                                    Visibility="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource InvertableBooleanToVisibilityConverter}, ConverterParameter=Inverted}">
-                                                <Image Source="/Images/deleteitem.png" Width="16" Height="16" />
-                                            </Button>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                    <DockPanel DockPanel.Dock="Top" Name="GroupFile" Visibility="Collapsed" Margin="0,10,0,0">
-                        <Border DockPanel.Dock="Top" MinHeight="40"
-                                Background="{DynamicResource MaterialDesignToolBarBackground}" Padding="10,0">
-                            <TextBlock Text="File Preview" FontWeight="Bold" VerticalAlignment="Center" />
-                        </Border>
-                        <controls:FileView x:Name="FileView" DockPanel.Dock="Top" />
-                    </DockPanel>
+                <ListView Name="ListItems" Grid.Column="1" Grid.Row="0"
+                          SizeChanged="ItemsField_SizeChanged"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          BorderThickness="0">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem"
+                               BasedOn="{StaticResource MaterialDesignGridViewItemNoBorder}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.View>
+                        <GridView>
+                            <GridView.ColumnHeaderContainerStyle>
+                                <Style TargetType="GridViewColumnHeader">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </Style>
+                            </GridView.ColumnHeaderContainerStyle>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}"
+                                                   TextAlignment="Right" Margin="3,11,6,3"
+                                                   VerticalAlignment="Top" TextTrimming="CharacterEllipsis" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ContentPresenter Content="{Binding EditControl}" MinHeight="32"
+                                                          Margin="0,3,0,3" VerticalAlignment="Top"
+                                                          ScrollViewer.VerticalScrollBarVisibility="Disabled" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="40">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button DockPanel.Dock="Right" Tag="{Binding Name}"
+                                                Click="RemoveButton_Click"
+                                                ToolTip="Remove Item"
+                                                Style="{StaticResource MaterialDesignFlatButton}"
+                                                Foreground="{DynamicResource MaterialDesignBody}"
+                                                Padding="4" Margin="0,4" Height="32" Width="32"
+                                                Visibility="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource InvertableBooleanToVisibilityConverter}, ConverterParameter=Inverted}">
+                                            <materialDesign:PackIcon Kind="DeleteForever" Height="20" Width="20"/>
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <DockPanel DockPanel.Dock="Top" Name="GroupFile" Visibility="Collapsed" Margin="0,10,0,0">
+                    <Border DockPanel.Dock="Top" MinHeight="40"
+                            Background="{DynamicResource MaterialDesignToolBarBackground}" Padding="10,0">
+                        <TextBlock Text="File Preview" FontWeight="Bold" VerticalAlignment="Center" />
+                    </Border>
+                    <controls:FileView x:Name="FileView" DockPanel.Dock="Top" />
                 </DockPanel>
+
 
                 <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Height="1" BorderThickness="0,0,0,1"
                         BorderBrush="{StaticResource MaterialDesignDivider}" />

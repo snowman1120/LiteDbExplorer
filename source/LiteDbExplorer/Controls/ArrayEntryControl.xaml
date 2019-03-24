@@ -63,7 +63,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <ScrollViewer x:Name="ScrollViewer" Padding="5" VerticalScrollBarVisibility="Disabled">
-                <ItemsControl Name="ItemsItems">
+                <ItemsControl Name="ItemsItems" Margin="15,0,80,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="5">
@@ -76,12 +76,13 @@
                                            VerticalAlignment="Top" />
                                 <ContentPresenter Grid.Column="1" Content="{Binding Control}"
                                                   MinHeight="32" Margin="10,0,10,0" VerticalAlignment="Top" />
-                                <Button Grid.Column="2" DockPanel.Dock="Right" Tag="{Binding Value}"
-                                        Click="ButtonRemove_Click" Margin="5,0,0,0" ToolTip="Remove Item"
+                                <Button Grid.Column="2" Tag="{Binding Value}"
+                                        Click="ButtonRemove_Click" ToolTip="Remove Item"
                                         Style="{StaticResource MaterialDesignFlatButton}"
-                                        Padding="4" Height="32" Width="32"
+                                        Foreground="{DynamicResource MaterialDesignBody}"
+                                        Padding="4" Margin="0,4" Height="32" Width="32"
                                         Visibility="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource InvertableBooleanToVisibilityConverter}, ConverterParameter=Inverted}">
-                                    <Image Source="/Images/deleteitem.png" Width="16" />
+                                    <materialDesign:PackIcon Kind="DeleteForever" Height="20" Width="20"/>
                                 </Button>
                             </Grid>
                         </DataTemplate>

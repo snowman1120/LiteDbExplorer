@@ -15,8 +15,9 @@
 
                 <ResourceDictionary Source="pack://application:,,,/LiteDbExplorer.Wpf;component/Themes/Styles.xaml"/>
 
-                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml" />
-                
+                <!--<ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml" />-->
+                <ResourceDictionary Source="Themes/MaterialDesignTheme.Dragablz.xaml"/>
+
                 <!-- Local Styles -->
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.Window.xaml" />
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.AppToolBar.xaml" />
@@ -35,6 +36,8 @@
             <!-- Dragablz Material Design -->
             <Style TargetType="{x:Type dragablz:TabablzControl}"
                    BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
+            <!--<Style TargetType="{x:Type dragablz:TabablzControl}"
+                   BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />-->
 
         </ResourceDictionary>
     </Application.Resources>

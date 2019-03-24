@@ -116,7 +116,12 @@ namespace LiteDbExplorer.Modules.Main
 
             base.ActivateItem(item);
 
-            item?.Activate();
+            if (item != null)
+            {
+                item.Activate();
+
+                item.IsSelected = true;
+            }
 
             InvalidateDisplayGroup();
 

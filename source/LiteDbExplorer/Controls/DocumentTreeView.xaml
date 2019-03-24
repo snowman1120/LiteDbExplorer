@@ -16,12 +16,12 @@
         <HierarchicalDataTemplate x:Key="FieldNodeTemplate" 
                                   DataType="{x:Type local:DocumentFieldNode}" 
                                   ItemsSource="{Binding Path=Nodes}">
-            <Grid>
+            <Grid MaxWidth="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type TreeView}}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap">
+                <TextBlock TextTrimming="None" TextWrapping="WrapWithOverflow">
                     <Run Text="{Binding Key}" FontWeight="Medium"/>
                     <Run Text=": " FontWeight="Medium"/>
                     <Run Text="{Binding DisplayValue}" 
@@ -66,6 +66,7 @@
                   ItemTemplate="{StaticResource FieldNodeTemplate}"
                   VirtualizingStackPanel.IsVirtualizing="True"
                   VirtualizingStackPanel.VirtualizationMode="Standard"
-                  ScrollViewer.IsDeferredScrollingEnabled="True"/>
+                  ScrollViewer.IsDeferredScrollingEnabled="True"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
     </Grid>
 </UserControl>
