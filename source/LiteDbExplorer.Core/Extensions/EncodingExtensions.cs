@@ -40,8 +40,8 @@ namespace LiteDbExplorer.Extensions
 
             return Regex.Replace(
                 value,
-                @"\\u(?<Value>[a-zA-Z0-9]{4})",
-                m => ((char) int.Parse(m.Groups["Value"].Value, NumberStyles.HexNumber)).ToString());
+                @"\\u(?<Value>[a-fA-F0-9]{4})",//if it hex value then we should check only a-f or parse would crash
+                m => ((char)int.Parse(m.Groups["Value"].Value, NumberStyles.HexNumber)).ToString());
         }
     }
 }
