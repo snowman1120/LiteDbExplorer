@@ -11,21 +11,13 @@
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:framework="clr-namespace:LiteDbExplorer.Framework;assembly=LiteDbExplorer.Wpf"
     xmlns:converters="clr-namespace:LiteDbExplorer.Wpf.Converters;assembly=LiteDbExplorer.Wpf"
-    xmlns:behaviors="clr-namespace:LiteDbExplorer.Wpf.Behaviors;assembly=LiteDbExplorer.Wpf"
-    xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
-    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:themes="clr-namespace:Dragablz.Themes;assembly=Dragablz"
     x:Class="LiteDbExplorer.Modules.Main.DocumentSetView"
     mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <local:InterTabClient x:Key="InterTabClient" />
-        <system:String x:Key="Partition">MainPartition</system:String>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <framework:DataContextProxy x:Key="DataContextProxy" Data="{Binding}" />
-        <converters:BrushToContrastForegroundConverter x:Key="BrushToContrastForegroundConverter" />
-
-
+        
         <DataTemplate x:Key="TabHeaderDataTemplate">
             <Grid Margin="8,0">
                 <Grid.Resources>
@@ -82,7 +74,6 @@
             <Setter Property="ItemContainerStyle" Value="{StaticResource DocSetTabItemStyle}" />
             <Setter Property="HeaderItemTemplate" Value="{StaticResource TabHeaderDataTemplate}" />
             <Setter Property="BorderThickness" Value="0" />
-            <!--<Setter Property="HeaderMemberPath" Value="DisplayName" />-->
             <Setter Property="ShowDefaultCloseButton" Value="True" />
             <Setter Property="ShowDefaultAddButton" Value="False" />
             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
@@ -103,11 +94,6 @@
                                  Style="{StaticResource DocSetTabablzControlStyle}"
                                  ItemsSource="{Binding Items}"
                                  SelectedItem="{Binding ActiveLayoutItem}">
-
-            <!--<dragablz:TabablzControl.InterTabController>
-                <dragablz:InterTabController
-                    InterTabClient="{Binding Current, Source={StaticResource InterTabClient}}" />
-            </dragablz:TabablzControl.InterTabController>-->
         </dragablz:TabablzControl>
 
         <!--<TabControl x:Name="Items" HorizontalContentAlignment="Center" Padding="0">

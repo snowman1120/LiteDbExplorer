@@ -222,7 +222,7 @@ namespace LiteDbExplorer
         public string DirectoryPath { get; set; }
 
         [JsonIgnore]
-        public bool FileNotFound { get; set; }
+        public bool? FileNotFound { get; set; }
 
         [JsonIgnore]
         public bool IsFixed => FixedAt.HasValue;

@@ -61,7 +61,7 @@ namespace LiteDbExplorer.Modules.Database
         {
             _database.Shrink();
         }
-
+        
         [UsedImplicitly]
         public void SetPassword()
         {

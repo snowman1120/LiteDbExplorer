@@ -235,12 +235,20 @@ namespace LiteDbExplorer.Controls
         {
             var maybeFieldName = await InputDialogView.Show("DocumentEntryDialogHost", "Enter name of new field.",
                 "New field name");
+
             if (maybeFieldName.HasNoValue)
             {
                 return;
             }
 
-            var fieldName = maybeFieldName.Value;
+            var fieldName = maybeFieldName.Value.Trim();
+
+            if (fieldName.Any(Char.IsWhiteSpace))
+            {
+                MessageBox.Show("Field name can not contain white spaces.", "", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
 
             if (_currentDocument.Keys.Contains(fieldName))
             {

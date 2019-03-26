@@ -1,6 +1,8 @@
-﻿namespace LiteDbExplorer.Modules.DbDocument
+﻿using Caliburn.Micro;
+
+namespace LiteDbExplorer.Modules.DbDocument
 {
-    public interface IDocumentPreview
+    public interface IDocumentPreview : IScreen
     {
         void ActivateDocument(DocumentReference document);
         bool HasDocument { get; }

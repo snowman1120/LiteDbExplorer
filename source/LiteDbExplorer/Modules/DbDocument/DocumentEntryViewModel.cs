@@ -18,5 +18,13 @@ namespace LiteDbExplorer.Modules.DbDocument
         }
 
         public DocumentReference Document { get; private set; }
+
+        protected override void OnDeactivate(bool close)
+        {
+            if (close)
+            {
+                Document = null;
+            }
+        }
     }
 }

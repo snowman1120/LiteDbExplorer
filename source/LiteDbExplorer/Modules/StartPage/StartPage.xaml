@@ -146,7 +146,7 @@
                                             <ColumnDefinition Width="40" />
                                         </Grid.ColumnDefinitions>
 
-                                        <TextBlock Grid.Column="1" Grid.Row="1"
+                                        <TextBlock x:Name="FileNameTextBlock" Grid.Column="1" Grid.Row="1"
                                                    Text="{Binding FileName}"
                                                    TextTrimming="CharacterEllipsis"
                                                    Style="{StaticResource MaterialDesignBody2TextBlock}" />
@@ -217,6 +217,12 @@
 
                                     <DataTrigger Binding="{Binding Path=IsFixed}" Value="True">
                                         <Setter TargetName="PinedItemButton" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=FileNotFound}" Value="True">
+                                        <Setter TargetName="OpenRecentButton" Property="Opacity" Value="0.5" />
+                                        <Setter TargetName="OpenRecentButton" Property="ToolTip" Value="File not found" />
+                                        <Setter TargetName="FileNameTextBlock" Property="TextDecorations" Value="Strikethrough"/>
                                     </DataTrigger>
 
                                 </DataTemplate.Triggers>

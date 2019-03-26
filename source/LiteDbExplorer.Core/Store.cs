@@ -113,7 +113,7 @@ namespace LiteDbExplorer
             }
 
             databaseReference?.BeforeDispose();
-
+            
             Databases.Remove(databaseReference);
 
             databaseReference?.Dispose();

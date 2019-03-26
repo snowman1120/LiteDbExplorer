@@ -51,6 +51,7 @@ namespace LiteDbExplorer.Controls
         private GridViewColumnHeader _lastHeaderClicked;
         private ListSortDirection _lastDirection;
         private bool _stopDoubleClick;
+        private bool _listLoaded;
 
         public CollectionListView()
         {
@@ -76,6 +77,7 @@ namespace LiteDbExplorer.Controls
                         col.Width = col.ActualWidth > maxWidth ? maxWidth : Math.Max(100, col.ActualWidth);
                     }
                 }));
+                _listLoaded = true;
             };
         }
 
@@ -171,7 +173,7 @@ namespace LiteDbExplorer.Controls
         
         public void UpdateGridColumns(BsonDocument dbItem)
         {
-            var headers = GridCollectionData.Columns.Select(a => (a.Header as GridViewColumnHeader)?.Name).ToArray();
+            var headers = GridCollectionData.Columns.Select(a => ((GridViewColumnHeader) a.Header).Tag.ToString()).ToArray();
             var keys = CollectionReference.GetDistinctKeys(App.Settings.FieldSortOrder);
             
             foreach (var key in headers.Except(keys))
@@ -272,13 +274,12 @@ namespace LiteDbExplorer.Controls
 
         private void AddGridColumn(string key)
         {
-            GridCollectionData.Columns.Add(new GridViewColumn
+            var column = new GridViewColumn
             {
                 Header = new GridViewColumnHeader
                 {
                     Content = key,
                     Tag = key,
-                    Name = key,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     HorizontalContentAlignment = HorizontalAlignment.Stretch
                 },
@@ -289,7 +290,19 @@ namespace LiteDbExplorer.Controls
                     Converter = _bsonValueToStringConverter
                 },
                 HeaderTemplate = Resources["HeaderTemplate"] as DataTemplate
-            });
+            };
+            
+            GridCollectionData.Columns.Add(column);
+
+            if (_listLoaded)
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action) (() =>
+                {
+                    var maxWidth = Math.Max(600, ListCollectionData.ActualWidth) / Math.Min(3, GridCollectionData.Columns.Count + 1);
+                    column.Width = column.ActualWidth > maxWidth ? maxWidth : Math.Max(100, column.ActualWidth);
+
+                }));
+            }
         }
         
         private void RemoveGridColumn(string key)
@@ -328,7 +341,7 @@ namespace LiteDbExplorer.Controls
                         direction = _lastDirection == ListSortDirection.Ascending ? ListSortDirection.Descending : ListSortDirection.Ascending;
                     }
 
-                    var sortBy = headerClicked.Name;
+                    var sortBy = headerClicked.Tag.ToString();
 
                     Sort(sortBy, direction);
 

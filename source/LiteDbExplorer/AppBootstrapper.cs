@@ -12,6 +12,7 @@ using Caliburn.Micro;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Framework.Services;
 using LiteDbExplorer.Framework.Shell;
+using LiteDbExplorer.Modules;
 
 namespace LiteDbExplorer
 {
@@ -85,6 +86,10 @@ namespace LiteDbExplorer
                 AppUpdateManager.Current.CheckForUpdates(false).ConfigureAwait(false);
             });
 #endif
+
+            var pipeServiceBootstrapper = _container.GetExportedValueOrDefault<PipeServiceBootstrapper>();
+            
+            pipeServiceBootstrapper?.Init();
         }
 
         private void RegisterApplicationCommandHandlers()

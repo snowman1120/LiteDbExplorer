@@ -52,9 +52,19 @@ namespace LiteDbExplorer.Modules.StartPage
                 return;
             }
 
+            if (recentFileInfo.FileNotFound.HasValue && recentFileInfo.FileNotFound == true)
+            {
+                var message = $"File {recentFileInfo.FullPath} not found.\n\nRemove from list?";
+                if (_viewInteractionResolver.ShowConfirm(message, "File not found!"))
+                {
+                    RemoveFromList(recentFileInfo);
+                }
+                return;
+            }
+
             _databaseInteractions.OpenDatabase(recentFileInfo.FullPath);
         }
-
+        
         [UsedImplicitly]
         public void OpenIssuePage()
         {

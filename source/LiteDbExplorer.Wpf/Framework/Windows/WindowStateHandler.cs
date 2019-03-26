@@ -8,7 +8,7 @@ namespace LiteDbExplorer
     {
         public static void AttachPositionHandler(this Window window, IWindowStateStore store, string windowName)
         {
-            var handler = new WindowStateHandler(store, window, windowName, true);
+            var unused = new WindowStateHandler(store, window, windowName, true);
         }
     }
 

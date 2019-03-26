@@ -115,6 +115,13 @@ namespace LiteDbExplorer.Modules.Database
         public void CloseDatabase()
         {
             _databaseInteractions.CloseDatabase(SelectedDatabase);
+
+            if (SelectedCollection?.Database == SelectedDatabase)
+            {
+                SelectedCollection = null;
+            }
+
+            SelectedDatabase = null;
         }
 
         [UsedImplicitly]
@@ -195,6 +202,8 @@ namespace LiteDbExplorer.Modules.Database
         public void DropCollection()
         {
             _databaseInteractions.DropCollection(SelectedCollection);
+
+            SelectedCollection = null;
         }
 
         [UsedImplicitly]

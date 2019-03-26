@@ -16,7 +16,10 @@
         </Grid.RowDefinitions>
         <TextBox x:Name="ValueTextBox" 
                  materialDesign:HintAssist.Hint="{Binding Hint}"
+                 materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
+                 materialDesign:HintAssist.FloatingScale="1.50"
                  Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
+                 FontSize="16"
                  Margin="0 6 0 8"
                  Grid.Row="0" />
         <TextBlock Grid.Row="1" Text="{Binding Message}" Style="{StaticResource MaterialDesignCaptionTextBlock}"/>

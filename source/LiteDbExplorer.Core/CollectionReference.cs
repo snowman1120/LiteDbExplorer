@@ -8,7 +8,7 @@ using LiteDB;
 
 namespace LiteDbExplorer
 {
-    public class CollectionReference : ReferenceNode<CollectionReference>
+    public class CollectionReference : ReferenceNode<CollectionReference>, IDisposable
     {
         private ObservableCollection<DocumentReference> _items;
         private string _name;
@@ -202,6 +202,12 @@ namespace LiteDbExplorer
         protected virtual void OnDocumentsCollectionChanged(ReferenceNodeChangeAction action, IEnumerable<DocumentReference> items)
         {
             DocumentsCollectionChanged?.Invoke(this, new CollectionReferenceChangedEventArgs<DocumentReference>(action, items));
+        }
+
+        public void Dispose()
+        {
+            Items = null;
+            Database = null;
         }
     }
 }

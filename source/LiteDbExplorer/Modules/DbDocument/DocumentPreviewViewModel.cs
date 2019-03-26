@@ -18,11 +18,9 @@ namespace LiteDbExplorer.Modules.DbDocument
         private IDocumentDetailView _view;
 
         [ImportingConstructor]
-        public DocumentPreviewViewModel(IEventAggregator eventAggregator)
+        public DocumentPreviewViewModel()
         {
             OpenAsDocumentCommand = new RelayCommand(OpenAsDocument, _ => CanOpenAsDocument);
-
-            eventAggregator.Subscribe(this);
         }
         
         public override object IconContent => new PackIcon { Kind = PackIconKind.Json, Height = 16 };
@@ -110,10 +108,11 @@ namespace LiteDbExplorer.Modules.DbDocument
         {
             if (close && _document != null)
             {
-                _document.ReferenceChanged -= OnDocumentReferenceChanged;
+                FileInfo = null;
+                Document = null;
             }
         }
-
+        
         #region Handles
         
         private void OnDocumentReferenceChanged(object sender, ReferenceChangedEventArgs<DocumentReference> e)

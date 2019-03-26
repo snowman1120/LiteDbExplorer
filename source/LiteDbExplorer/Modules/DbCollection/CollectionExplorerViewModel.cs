@@ -9,7 +9,6 @@ using JetBrains.Annotations;
 using LiteDbExplorer.Core;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Modules.DbDocument;
-using LiteDbExplorer.Presentation;
 using MaterialDesignThemes.Wpf;
 
 namespace LiteDbExplorer.Modules.DbCollection
@@ -26,9 +25,7 @@ namespace LiteDbExplorer.Modules.DbCollection
         private ICollectionReferenceListView _view;
         private bool _showDocumentPreview = true;
         private CollectionReference _collectionReference;
-
-        // public override string InstanceId => CollectionReference?.InstanceId;
-
+        
         [ImportingConstructor]
         public CollectionExplorerViewModel(
             IEventAggregator eventAggregator, 
@@ -40,8 +37,6 @@ namespace LiteDbExplorer.Modules.DbCollection
             _databaseInteractions = databaseInteractions;
 
             DocumentPreview = IoC.Get<IDocumentPreview>();
-
-            // eventAggregator.Subscribe(this);
         }
         
         public override void Init(CollectionReference value)
@@ -175,6 +170,7 @@ namespace LiteDbExplorer.Modules.DbCollection
             
             if (close)
             {
+                DocumentPreview?.TryClose();
                 ShowDocumentPreview = false;
                 SelectedDocuments = null;
                 SelectedDocument = null;

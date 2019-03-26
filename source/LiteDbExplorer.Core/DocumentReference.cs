@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LiteDB;
 
 namespace LiteDbExplorer
@@ -16,7 +17,7 @@ namespace LiteDbExplorer
         File = 1
     }
 
-    public class DocumentReference : ReferenceNode<DocumentReference>
+    public class DocumentReference : ReferenceNode<DocumentReference>, IDisposable
     {
         private BsonDocument _liteDocument;
         private CollectionReference _collection;
@@ -66,6 +67,12 @@ namespace LiteDbExplorer
         public void RemoveSelf()
         {
             Collection?.RemoveItem(this);
+        }
+
+        public void Dispose()
+        {
+            LiteDocument = null;
+            Collection = null;
         }
     }
 }

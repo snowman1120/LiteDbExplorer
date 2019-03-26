@@ -252,6 +252,7 @@
     </Compile>
     <Compile Include="Modules\Main\ShellViewModel.cs" />
     <Compile Include="Modules\Main\TabablzControlHolder.cs" />
+    <Compile Include="Modules\PipeServiceBootstrapper.cs" />
     <Compile Include="Modules\StartPage\StartPage.xaml.cs">
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>

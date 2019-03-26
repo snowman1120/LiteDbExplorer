@@ -115,7 +115,7 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}"
-                                                   TextAlignment="Right" Margin="3,11,6,3"
+                                                   TextAlignment="Right" Margin="3,11,6,3" MinWidth="70"
                                                    VerticalAlignment="Top" TextTrimming="CharacterEllipsis" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
