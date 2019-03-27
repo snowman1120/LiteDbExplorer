@@ -1,8 +1,18 @@
 
-# <img src="https://github.com/JosefNemec/LiteDbExplorer/blob/master/source/LiteDbExplorer/Images/icon.png" width="32">  LiteDb Explorer
+# <img src="https://github.com/julianpaulozzi/LiteDbExplorer/blob/master/source/LiteDbExplorer/Images/icon.png" width="32">  LiteDb Explorer
 Graphical editor for [LiteDB](https://github.com/mbdavid/LiteDB) databases. Written in .NET and WPF.
 
-### Features in current pre-release:
+## Important Notes
+
+**This is a pre-release.** We'll point out that this release is identified as non-production ready.
+
+The main purpose of keeping this fork is to meet my LiteDB use cases, refresh WPF knowledge, and share some improvements with the community.
+
+I have seen some LiteBD use cases that go far beyond any that would have with this database. If you use LiteBD to store a large volume of data, large texts and many files ... this project currently will not meet your needs and is outside my current contribution scope. Any contribution is welcome, so before opening a issue mainly related to this topic collaborate and submit a pull request or use [other alternatives](https://github.com/mbdavid/LiteDB#3rd-party-tools-for-litedb).
+
+
+
+## Features in current pre-release:
 * View and edit existing documents
 * Add new items to database including files
 * Preview files (images and text files)
