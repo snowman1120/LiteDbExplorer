@@ -39,7 +39,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="1"
-                    Orientation="Horizontal" Margin="0,50,0,25">
+                    Orientation="Horizontal" Margin="8,50,0,25">
             <Image Source="/Images/icon.png" Height="42" Stretch="Uniform"
                    RenderOptions.BitmapScalingMode="HighQuality" Margin="4,0,4,0" />
             <TextBlock FontWeight="Light" FontSize="34"
@@ -67,14 +67,15 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Border BorderThickness="0,0,0,0" Padding="0,16"
+                <Border BorderThickness="0,0,0,0" Padding="8,16"
                         BorderBrush="{StaticResource MaterialDesignDivider}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="56" />
+                            <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <materialDesign:PackIcon Kind="History" Height="22" VerticalAlignment="Center" />
+                        <materialDesign:PackIcon Kind="History" Height="22" Width="22" 
+                                                 VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         <TextBlock Grid.Column="1" Text="Open recent"
                                    VerticalAlignment="Center"
                                    Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
@@ -90,7 +91,7 @@
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         CommandParameter="{Binding}"
                                         cal:Message.Attach="OpenRecentItem($dataContext)"
-                                        Height="65"
+                                        Height="65" Padding="8"
                                         VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
                                     <Button.ContextMenu>
                                         <ContextMenu
@@ -134,12 +135,12 @@
                                     </Button.ContextMenu>
                                     <Grid>
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="8" />
+                                            <RowDefinition Height="5" />
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="40" />
+                                            <ColumnDefinition Width="50" />
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="20" />
                                             <ColumnDefinition Width="Auto" MinWidth="100" />
@@ -247,14 +248,15 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Border BorderThickness="0,0,0,0" Padding="0,16"
+                <Border BorderThickness="0,0,0,0" Padding="8,16"
                         BorderBrush="{StaticResource MaterialDesignDivider}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="56" />
+                            <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <materialDesign:PackIcon Kind="Database" Height="22" VerticalAlignment="Center" />
+                        <materialDesign:PackIcon Kind="Database" Height="22" Width="22" 
+                                                 VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         <TextBlock Grid.Column="1"
                                    Text="Get started"
                                    VerticalAlignment="Center"
@@ -269,7 +271,7 @@
                             <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                             <Setter Property="VerticalContentAlignment" Value="Center" />
-                            <Setter Property="Padding" Value="7" />
+                            <Setter Property="Padding" Value="8" />
                             <Setter Property="Height" Value="Auto" />
                             <Setter Property="MinHeight" Value="65" />
                             <Setter Property="Margin" Value="0,0,0,10" />
@@ -289,7 +291,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <materialDesign:PackIcon Kind="FolderOpen" Height="26" Width="26" Grid.RowSpan="2"
-                                                     VerticalAlignment="Top" />
+                                                     VerticalAlignment="Top" HorizontalAlignment="Center"/>
                             <TextBlock Grid.Row="0" Grid.Column="1"
                                        Text="Open"
                                        TextTrimming="CharacterEllipsis"
@@ -312,7 +314,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <materialDesign:PackIcon Kind="DatabasePlus" Height="26" Width="26" Grid.RowSpan="2"
-                                                     VerticalAlignment="Top" />
+                                                     VerticalAlignment="Top" HorizontalAlignment="Center"/>
                             <TextBlock Grid.Row="0" Grid.Column="1"
                                        Text="New"
                                        TextTrimming="CharacterEllipsis"
@@ -335,7 +337,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <materialDesign:PackIcon Kind="Help" Height="26" Width="26" Grid.RowSpan="2"
-                                                     VerticalAlignment="Top" />
+                                                     VerticalAlignment="Top" HorizontalAlignment="Center"/>
                             <TextBlock Grid.Row="0" Grid.Column="1"
                                        Text="Docs"
                                        TextTrimming="CharacterEllipsis"

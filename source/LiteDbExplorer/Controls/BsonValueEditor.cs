@@ -235,6 +235,9 @@ namespace LiteDbExplorer.Controls
                     IsReadOnly = readOnly,
                     AcceptsReturn = true,
                     VerticalAlignment = VerticalAlignment.Center,
+                    MaxHeight = 200,
+                    MaxLength = 1024,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 };
 
                 stringEditor.SetBinding(TextBox.TextProperty, binding);
@@ -267,6 +270,9 @@ namespace LiteDbExplorer.Controls
             var defaultEditor = new TextBox
             {
                 VerticalAlignment = VerticalAlignment.Center,
+                MaxHeight = 200,
+                MaxLength = 1024,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
             };
             defaultEditor.SetBinding(TextBox.TextProperty, binding);
             return defaultEditor;

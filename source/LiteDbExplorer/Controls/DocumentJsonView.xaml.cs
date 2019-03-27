@@ -1,12 +1,19 @@
-﻿using System.Text;
+﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
 using System.Xml;
+using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Indentation;
+using ICSharpCode.AvalonEdit.Rendering;
 using LiteDbExplorer.Controls.Editor;
 using LiteDbExplorer.Controls.JsonViewer;
 using LiteDbExplorer.Extensions;
@@ -30,12 +37,17 @@ namespace LiteDbExplorer.Controls
             jsonEditor.ShowLineNumbers = true;
             jsonEditor.Encoding = Encoding.UTF8;
             
+            jsonEditor.Options.EnableEmailHyperlinks = false;
+            jsonEditor.Options.EnableHyperlinks = false;
+            
             _foldingManager = FoldingManager.Install(jsonEditor.TextArea);
             _foldingStrategy = new BraceFoldingStrategy();
             _searchReplacePanel = SearchReplacePanel.Install(jsonEditor);
             _searchReplacePanel.IsFindOnly = true;
 
+            jsonEditor.TextArea.MaxWidth = 1024;
             jsonEditor.TextArea.IndentationStrategy = new DefaultIndentationStrategy();
+            jsonEditor.TextArea.TextView.ElementGenerators.Add(new TruncateLongLines(1024));
 
             SetTheme();
             
@@ -120,15 +132,61 @@ namespace LiteDbExplorer.Controls
 
         private void SetJson(DocumentReference documentReference)
         {
-            jsonEditor.Document.Text = documentReference.LiteDocument.SerializeDecoded(true);
+            ThreadPool.QueueUserWorkItem(o => {
+                var content = documentReference.LiteDocument.SerializeDecoded(true);
+                // var doc = new TextDocument(content);
+                // doc.SetOwnerThread(Application.Current.Dispatcher.Thread);
+                
+                
+                Dispatcher.BeginInvoke((Action) (() =>
+                {
+                    jsonEditor.Document.Text = content;
+                    _foldingStrategy.UpdateFoldings(_foldingManager, jsonEditor.Document);   
 
-            _foldingStrategy.UpdateFoldings(_foldingManager, jsonEditor.Document);
+                }), DispatcherPriority.Normal);
+            });
+            
         }
 
         private void ResetJson()
         {
             jsonEditor.Document.Text = string.Empty;
             _foldingStrategy.UpdateFoldings(_foldingManager, jsonEditor.Document);
+        }
+
+        private class TruncateLongLines : VisualLineElementGenerator
+        {
+            private readonly int _maxLength;
+            const string Ellipsis = " ... ";
+
+            public TruncateLongLines(int? maxLength = null)
+            {
+                _maxLength = maxLength ?? 10000;
+            }
+
+            public override int GetFirstInterestedOffset(int startOffset)
+            {
+                var line = CurrentContext.VisualLine.LastDocumentLine;
+                if (line.Length > _maxLength)
+                {
+                    var ellipsisOffset = line.Offset + _maxLength - Ellipsis.Length;
+                    if (startOffset <= ellipsisOffset)
+                    {
+                        return ellipsisOffset;
+                    }
+                }
+                return -1;
+            }
+
+            public override VisualLineElement ConstructElement(int offset)
+            {
+                var formattedTextElement = new FormattedTextElement(Ellipsis, CurrentContext.VisualLine.LastDocumentLine.EndOffset - offset)
+                {
+                    BackgroundBrush = new SolidColorBrush(Color.FromArgb(153, 238, 144, 144))
+                };
+                
+                return formattedTextElement;
+            }
         }
     }
 }

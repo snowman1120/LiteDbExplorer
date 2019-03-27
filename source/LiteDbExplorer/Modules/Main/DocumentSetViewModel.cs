@@ -1,11 +1,14 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Windows.Media;
 using Caliburn.Micro;
+using Dragablz;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Presentation;
 using LiteDbExplorer.Wpf.Framework;
+using Action = Caliburn.Micro.Action;
 
 namespace LiteDbExplorer.Modules.Main
 {
@@ -17,11 +20,23 @@ namespace LiteDbExplorer.Modules.Main
         private bool _closing;
 #pragma warning restore 649
 
+        [Import(RequiredCreationPolicy=CreationPolicy.Shared)]
+        private CompositionContainer container;
+
         public DocumentSetViewModel()
         {
             DisplayName = $"LiteDB Explorer {Versions.CurrentVersion}";
 
             NewDocumentFactory = NewDocumentFactoryHandler;
+
+            ClosingItemCallback = args =>
+            {
+                var document = args.DragablzItem.DataContext as IDocument;
+                
+                this.CloseItem(document);
+
+                args.DragablzItem.DataContext = null;
+            };
         }
 
         public Guid Id { get; } = Guid.NewGuid();
@@ -29,6 +44,8 @@ namespace LiteDbExplorer.Modules.Main
         public string ContentId => Id.ToString();
 
         public Func<IDocument> NewDocumentFactory { get; }
+
+        public ItemActionCallback ClosingItemCallback { get; }
 
         public IObservableCollection<IDocument> Documents => Items;
 
@@ -86,6 +103,7 @@ namespace LiteDbExplorer.Modules.Main
             }
             
             model.Init(init);
+
             OpenDocument(model);
 
             return model;
@@ -146,7 +164,7 @@ namespace LiteDbExplorer.Modules.Main
             
             RaiseActiveDocumentChanged();
         }
-
+        
         protected override void OnActivationProcessed(IDocument item, bool success)
         {
             if (!ReferenceEquals(ActiveLayoutItem, item))

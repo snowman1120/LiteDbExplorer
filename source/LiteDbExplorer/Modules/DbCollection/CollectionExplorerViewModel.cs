@@ -30,13 +30,14 @@ namespace LiteDbExplorer.Modules.DbCollection
         public CollectionExplorerViewModel(
             IEventAggregator eventAggregator, 
             IViewInteractionResolver viewInteractionResolver,
-            IDatabaseInteractions databaseInteractions)
+            IDatabaseInteractions databaseInteractions,
+            IDocumentPreview documentPreview)
         {
             _eventAggregator = eventAggregator;
             _viewInteractionResolver = viewInteractionResolver;
             _databaseInteractions = databaseInteractions;
 
-            DocumentPreview = IoC.Get<IDocumentPreview>();
+            DocumentPreview = documentPreview;
         }
         
         public override void Init(CollectionReference value)

@@ -143,6 +143,8 @@ namespace LiteDbExplorer.Controls
 
     public class DocumentFieldNode : INotifyPropertyChanged
     {
+        public const int MaxLength = 1024;
+
         private bool _isExpanded;
 
         private readonly Func<BsonDocument, ObservableCollection<DocumentFieldNode>> _loadNodes;
@@ -170,6 +172,8 @@ namespace LiteDbExplorer.Controls
 
         public bool IsSelected { get; set; }
 
+        public bool ExceededMaxLength { get; private set; }
+
         public BsonType? ValueType { get; set; }
         
         public SolidColorBrush Foreground { get; set; }
@@ -192,13 +196,18 @@ namespace LiteDbExplorer.Controls
             Value = value;
 
             // Improve performance by removing converters
-            DisplayValue = value.ToDisplayValue();
+            DisplayValue = value.ToDisplayValue(MaxLength);
             Foreground = BsonValueForeground.GetBsonValueForeground(value);
 
             // TODO: Infer Null value type to handle
             if (Value != null)
             {
                 ValueType = Value.Type;
+            }
+
+            if (value != null && ValueType == BsonType.String && value.AsString.Length > MaxLength)
+            {
+                ExceededMaxLength = true;
             }
 
             if (value is BsonDocument document)

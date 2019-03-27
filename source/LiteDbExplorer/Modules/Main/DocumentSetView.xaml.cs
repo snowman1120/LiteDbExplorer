@@ -15,6 +15,6 @@ namespace LiteDbExplorer.Modules.Main
             InitializeComponent();
         }
 
-        public TabablzControl TabsControl => null; //TabablzControl;
+        public TabablzControl TabsControl => TabablzControl;
     }
 }
