@@ -22,5 +22,29 @@ namespace LiteDbExplorer.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowStartPageOnOpen {
+            get {
+                return ((bool)(this["ShowStartPageOnOpen"]));
+            }
+            set {
+                this["ShowStartPageOnOpen"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowStartOnCloseAll {
+            get {
+                return ((bool)(this["ShowStartOnCloseAll"]));
+            }
+            set {
+                this["ShowStartOnCloseAll"] = value;
+            }
+        }
     }
 }

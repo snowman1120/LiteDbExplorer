@@ -104,10 +104,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\BindableTreeViewSelectedItemBehavior.cs" />
     <Compile Include="Behaviors\BubbleScrollEvent.cs" />
     <Compile Include="Behaviors\FocusActiveGroup.cs" />
     <Compile Include="Behaviors\KeepSelectedItem.cs" />
     <Compile Include="Behaviors\MouseDoubleClick.cs" />
+    <Compile Include="Behaviors\TreeViewHelper.cs" />
+    <Compile Include="Behaviors\WindowOptionsBehavior.cs" />
     <Compile Include="Controls\ExceptionViewer.xaml.cs">
       <DependentUpon>ExceptionViewer.xaml</DependentUpon>
     </Compile>
@@ -118,6 +121,7 @@
     <Compile Include="Converters\BrushToContrastForegroundConverter.cs" />
     <Compile Include="Converters\ConverterBase.cs" />
     <Compile Include="Converters\InverseVisibilityConverter.cs" />
+    <Compile Include="Converters\LeftMarginMultiplierConverter.cs" />
     <Compile Include="Converters\NegateConverter.cs" />
     <Compile Include="Converters\NullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Extensions\VisualTreeExtensions.cs" />
@@ -139,6 +143,8 @@
     <Compile Include="Framework\Shell\IShellMenu.cs" />
     <Compile Include="Framework\Shell\IShellRightMenu.cs" />
     <Compile Include="Framework\Shell\IShellStatusBar.cs" />
+    <Compile Include="Framework\Win32\NativeMethods.cs" />
+    <Compile Include="Framework\WindowBase.cs" />
     <Compile Include="Framework\Windows\BaseDialogWindow.xaml.cs">
       <DependentUpon>BaseDialogWindow.xaml</DependentUpon>
     </Compile>
@@ -150,6 +156,11 @@
     <Compile Include="Framework\Windows\WindowPosition.cs" />
     <Compile Include="Framework\Windows\WindowStateHandler.cs" />
     <Compile Include="LocalPaletteHelper.cs" />
+    <Compile Include="Modules\Settings\ISettingsEditor.cs" />
+    <Compile Include="Modules\Settings\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\Settings\SettingsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -163,6 +174,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="WpfModulesAssemblyCatalog.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -188,6 +200,14 @@
     <Page Include="Framework\Windows\BaseWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Modules\Settings\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Aero2.TreeViewFullRow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\Controls.SearchableTextControl.xaml">
       <Generator>MSBuild:Compile</Generator>

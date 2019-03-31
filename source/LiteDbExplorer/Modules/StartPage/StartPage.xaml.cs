@@ -46,6 +46,40 @@ namespace LiteDbExplorer.Modules.StartPage
                 contentGrid.ColumnDefinitions[0].Width = GridLength.Auto;
                 contentGrid.ColumnDefinitions[2].Width = GridLength.Auto;
             }
+            
+            if (ActualWidth < 699)
+            {
+                Grid.SetColumn(PART_Left, 0);
+                Grid.SetColumnSpan(PART_Left, 3);
+                Grid.SetRow(PART_Left, 1);
+                Grid.SetRowSpan(PART_Left, 1);
+
+                Grid.SetColumn(PART_Right, 0);
+                Grid.SetColumnSpan(PART_Right, 3);
+                Grid.SetRow(PART_Right, 0);
+                Grid.SetRowSpan(PART_Right, 1);
+                
+                PART_Right.MaxWidth = double.PositiveInfinity;
+
+                PART_Info.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                Grid.SetColumn(PART_Left, 0);
+                Grid.SetColumnSpan(PART_Left, 1);
+                Grid.SetRow(PART_Left, 0);
+                Grid.SetRowSpan(PART_Left, 2);
+
+
+                Grid.SetColumn(PART_Right, 2);
+                Grid.SetColumnSpan(PART_Right, 1);
+                Grid.SetRow(PART_Right, 0);
+                Grid.SetRowSpan(PART_Right, 2);
+                
+                PART_Right.MaxWidth = 400;
+
+                PART_Info.Visibility = Visibility.Visible;
+            }
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)

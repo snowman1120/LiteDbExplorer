@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -13,12 +14,16 @@ using LiteDbExplorer.Framework;
 using LiteDbExplorer.Framework.Services;
 using LiteDbExplorer.Framework.Shell;
 using LiteDbExplorer.Modules;
+using LiteDbExplorer.Modules.Main;
+using LiteDbExplorer.Wpf;
+using LiteDbExplorer.Wpf.Modules.Settings;
 
 namespace LiteDbExplorer
 {
     public class AppBootstrapper : BootstrapperBase
     {
         private CompositionContainer _container;
+        private Func<object, DependencyObject, object, UIElement> _coreLocateForModel;
 
         public AppBootstrapper() : base(true)
         {
@@ -28,12 +33,14 @@ namespace LiteDbExplorer
         
         protected override void Configure()
         {
-            _container = new CompositionContainer(
-                new AggregateCatalog(
-                    catalogs: AssemblySource.Instance
-                        .Select(x => new AssemblyCatalog(x)).OfType<ComposablePartCatalog>()
-                )
+            var aggregateCatalog = new AggregateCatalog(
+                catalogs: AssemblySource.Instance
+                    .Select(x => new AssemblyCatalog(x)).OfType<ComposablePartCatalog>()
             );
+
+            aggregateCatalog.Catalogs.Add(LiteDbExplorerWpfCatalog.AssemblyCatalog);
+
+            _container = new CompositionContainer(aggregateCatalog);
 
             var batch = new CompositionBatch();
 
@@ -48,6 +55,8 @@ namespace LiteDbExplorer
             _container.Compose(batch);
             
             AddCustomConventions();
+
+            AddCustomViewLocator();
         }
         
         protected override object GetInstance(Type serviceType, string key)
@@ -91,6 +100,14 @@ namespace LiteDbExplorer
             pipeServiceBootstrapper?.Init();
         }
 
+        protected override IEnumerable<Assembly> SelectAssemblies()
+        {
+            return new[] {
+                LiteDbExplorerWpfCatalog.Assembly,
+                Assembly.GetExecutingAssembly()
+            };
+        }
+
         private void RegisterApplicationCommandHandlers()
         {
             var handlers = _container.GetExportedValues<IApplicationCommandHandler>();
@@ -100,6 +117,21 @@ namespace LiteDbExplorer
                 {
                     CommandManager.RegisterClassCommandBinding(typeof(Window), binding);
                 });
+        }
+
+        private void AddCustomViewLocator()
+        {
+            _coreLocateForModel = ViewLocator.LocateForModel;
+            ViewLocator.LocateForModel = (model, displayLocation, context) =>
+            {
+                var element = _coreLocateForModel(model, displayLocation, context);
+                if ((element == null || element is TextBlock) && model is IAutoGenSettingsView)
+                {
+                    element = new AutoSettingsView();
+                }
+
+                return element;
+            };
         }
 
         private void AddCustomConventions()

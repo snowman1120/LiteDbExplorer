@@ -102,13 +102,19 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.6.0\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.6.1\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Onova, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Onova.2.4.2\lib\net46\Onova.dll</HintPath>
     </Reference>
     <Reference Include="PropertyChanged, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\packages\PropertyChanged.Fody.2.6.0\lib\net452\PropertyChanged.dll</HintPath>
+    </Reference>
+    <Reference Include="PropertyTools, Version=2.0.1.0, Culture=neutral, PublicKeyToken=ea0c9f2b460934d0, processorArchitecture=MSIL">
+      <HintPath>..\packages\PropertyTools.Wpf.2.0.1\lib\net45\PropertyTools.dll</HintPath>
+    </Reference>
+    <Reference Include="PropertyTools.Wpf, Version=2.0.1.0, Culture=neutral, PublicKeyToken=ea0c9f2b460934d0, processorArchitecture=MSIL">
+      <HintPath>..\packages\PropertyTools.Wpf.2.0.1\lib\net45\PropertyTools.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -159,6 +165,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppConstants.cs" />
     <Compile Include="Application\CmdlineCommands.cs" />
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="Controls\CollectionListView.xaml.cs">
@@ -167,6 +174,7 @@
     <Compile Include="Controls\DocumentJsonView.xaml.cs">
       <DependentUpon>DocumentJsonView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Editor\ExtendedTextEditorOptions.cs" />
     <Compile Include="Controls\Editor\SearchReplacePanel.cs" />
     <Compile Include="Controls\InputDialogView.xaml.cs">
       <DependentUpon>InputDialogView.xaml</DependentUpon>
@@ -209,6 +217,7 @@
     <Compile Include="Modules\DbDocument\DocumentPreviewViewModel.cs" />
     <Compile Include="Modules\DbDocument\IDocumentDetailView.cs" />
     <Compile Include="Modules\DbDocument\IDocumentPreview.cs" />
+    <Compile Include="Modules\DbDocument\JsonPreviewSettingsViewModel.cs" />
     <Compile Include="Modules\DefaultCommandsHandler.cs" />
     <Compile Include="Modules\DatabaseInteractions.cs" />
     <Compile Include="Modules\Database\DatabasePropertiesView.xaml.cs">
@@ -228,13 +237,18 @@
     <Compile Include="Modules\IViewInteractionResolver.cs" />
     <Compile Include="Modules\InteractionEvents.cs" />
     <Compile Include="Modules\IoCViewInteractionResolver.cs" />
+    <Compile Include="Modules\Main\AutoSettingsView.xaml.cs">
+      <DependentUpon>AutoSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modules\Main\DocumentSetView.xaml.cs">
       <DependentUpon>DocumentSetView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\Main\DocumentSetViewModel.cs" />
     <Compile Include="Modules\Main\IDocumentExplorer.cs" />
     <Compile Include="Modules\Main\IDocumentSet.cs" />
-    <Compile Include="Modules\Main\InterTabClient.cs" />
+    <Compile Include="Modules\Main\MainSettingsViewModel.cs" />
+    <Compile Include="Modules\StartPage\StartPageSettingsViewModel.cs" />
+    <Compile Include="Presentation\Behaviors\InterTabClient.cs" />
     <Compile Include="Modules\Main\ShellMenuView.xaml.cs">
       <DependentUpon>ShellMenuView.xaml</DependentUpon>
     </Compile>
@@ -258,6 +272,7 @@
     </Compile>
     <Compile Include="Modules\StartPage\StartPageViewModel.cs" />
     <Compile Include="Presentation\Behaviors\BsonValueForeground.cs" />
+    <Compile Include="Presentation\Behaviors\TabablzControlAssist.cs" />
     <Compile Include="Presentation\Converters\GroupDisplayColorToForegloud.cs" />
     <Compile Include="Presentation\Document.cs" />
     <Compile Include="Presentation\GroupDisplayColor.cs" />
@@ -269,7 +284,6 @@
     <Compile Include="Presentation\Converters\DoubleToGridLengthConverter .cs" />
     <Compile Include="Presentation\Converters\EnumConverter.cs" />
     <Compile Include="Presentation\Converters\InvertableBooleanToVisibilityConverter.cs" />
-    <Compile Include="Presentation\Converters\LeftMarginMultiplierConverter.cs" />
     <Compile Include="Application\Paths.cs" />
     <Compile Include="Application\PipeServer.cs" />
     <Compile Include="Presentation\ThemeManager.cs" />
@@ -339,6 +353,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Modules\DbDocument\DocumentPreviewView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Modules\Main\AutoSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -455,7 +473,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SyntaxDefinitions\Json.dark.xshd" />

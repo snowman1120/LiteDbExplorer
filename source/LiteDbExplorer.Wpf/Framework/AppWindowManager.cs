@@ -19,7 +19,7 @@ namespace LiteDbExplorer.Framework
         /// <returns>The proper window</returns>
         protected override Window EnsureWindow(object model, object view, bool isDialog)
         {
-            Window window = view as BaseWindow;
+            var window = view as Window;
 
             if (window == null)
             {

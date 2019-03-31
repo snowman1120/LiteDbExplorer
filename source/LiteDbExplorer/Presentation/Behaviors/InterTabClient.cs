@@ -4,8 +4,9 @@ using System.Windows.Data;
 using Caliburn.Micro;
 using Dragablz;
 using LiteDbExplorer.Framework.Windows;
+using LiteDbExplorer.Modules.Main;
 
-namespace LiteDbExplorer.Modules.Main
+namespace LiteDbExplorer.Presentation.Behaviors
 {
     public class InterTabClient : Freezable, IInterTabClient
     {

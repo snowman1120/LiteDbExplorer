@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.Composition;
 using System.Linq;
 using Caliburn.Micro;
+using LiteDbExplorer.Framework;
 using LiteDbExplorer.Framework.Shell;
-using LogManager = NLog.LogManager;
 
 namespace LiteDbExplorer.Modules.Main
 {
@@ -10,8 +10,6 @@ namespace LiteDbExplorer.Modules.Main
     [PartCreationPolicy (CreationPolicy.Shared)]
     public sealed class ShellViewModel : Screen, IShell
     {
-        private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
-
         public ShellViewModel()
         {
             DisplayName = "LiteDB Explorer";
@@ -26,17 +24,16 @@ namespace LiteDbExplorer.Modules.Main
 
             MainContent = IoC.Get<IDocumentSet>();
 
-            var initialDocument = MainContent.NewDocumentFactory();
-            if (initialDocument != null)
+            if (Properties.Settings.Default.ShowStartPageOnOpen)
             {
-                MainContent.OpenDocument(initialDocument);
+                MainContent.OpenDocument<IStartupDocument>();
             }
             
             MainContent.ActiveDocumentChanged += (sender, args) =>
             {
-                if (!MainContent.Documents.Any() && initialDocument != null)
+                if (!MainContent.Documents.Any() && Properties.Settings.Default.ShowStartOnCloseAll)
                 {
-                    MainContent.OpenDocument(initialDocument);
+                    MainContent.OpenDocument<IStartupDocument>();
                 }
             };
         }

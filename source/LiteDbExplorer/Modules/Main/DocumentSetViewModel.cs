@@ -1,14 +1,14 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
 using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Caliburn.Micro;
 using Dragablz;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Presentation;
 using LiteDbExplorer.Wpf.Framework;
-using Action = Caliburn.Micro.Action;
 
 namespace LiteDbExplorer.Modules.Main
 {
@@ -19,34 +19,24 @@ namespace LiteDbExplorer.Modules.Main
 #pragma warning disable 649
         private bool _closing;
 #pragma warning restore 649
-
-        [Import(RequiredCreationPolicy=CreationPolicy.Shared)]
-        private CompositionContainer container;
-
+        
         public DocumentSetViewModel()
         {
             DisplayName = $"LiteDB Explorer {Versions.CurrentVersion}";
 
             NewDocumentFactory = NewDocumentFactoryHandler;
 
-            ClosingItemCallback = args =>
-            {
-                var document = args.DragablzItem.DataContext as IDocument;
-                
-                this.CloseItem(document);
-
-                args.DragablzItem.DataContext = null;
-            };
+            CloseDocumentCommand = new RelayCommand<FrameworkElement>(CloseDocument);
         }
-
+        
         public Guid Id { get; } = Guid.NewGuid();
 
         public string ContentId => Id.ToString();
 
         public Func<IDocument> NewDocumentFactory { get; }
 
-        public ItemActionCallback ClosingItemCallback { get; }
-
+        public ICommand CloseDocumentCommand { get; }
+        
         public IObservableCollection<IDocument> Documents => Items;
 
         private ILayoutItem _activeLayoutItem;
@@ -116,6 +106,14 @@ namespace LiteDbExplorer.Modules.Main
             return model;
         }
 
+        public void CloseDocument(FrameworkElement element)
+        {
+            if (element.DataContext is IDocument document)
+            {
+                CloseDocument(document);
+            }
+        }
+
         public void CloseDocument(IDocument document)
         {
             DeactivateItem(document, true);
@@ -131,16 +129,15 @@ namespace LiteDbExplorer.Modules.Main
             RaiseActiveDocumentChanging();
 
             var currentActiveItem = ActiveItem;
-
+            
             base.ActivateItem(item);
-
+            
             if (item != null)
             {
                 item.Activate();
-
                 item.IsSelected = true;
             }
-
+            
             InvalidateDisplayGroup();
 
             if (!ReferenceEquals(item, currentActiveItem))

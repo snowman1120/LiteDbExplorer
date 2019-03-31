@@ -4,7 +4,8 @@
                     xmlns:themes="clr-namespace:Dragablz.Themes;assembly=Dragablz"
                     xmlns:converters1="clr-namespace:Dragablz.Converters;assembly=Dragablz"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-                    xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz">
+                    xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
+                    xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors">
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters1:EqualityToVisibilityConverter x:Key="EqualityToVisibilityConverter" />
@@ -209,7 +210,8 @@
                                         Grid.Column="1" Margin="0,0,8,0" Opacity="0"
                                         VerticalAlignment="Center" HorizontalAlignment="Center"
                                         Style="{StaticResource MaterialDesignCloseItemCommandButtonStyle}"
-                                        Command="{x:Static dragablz:TabablzControl.CloseItemCommand}"
+                                        Command="{Binding Path=(behaviors:TabablzControlAssist.CloseItemCommand), Mode=OneWay, 
+                                                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dragablz:TabablzControl}}}"
                                         CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}">
                                     <Button.Visibility>
                                         <MultiBinding Converter="{StaticResource ShowDefaultCloseButtonConverter}">
@@ -662,6 +664,7 @@
         <Setter Property="TextElement.Foreground"
                 Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Path=(TextElement.Foreground)}" />
         <Setter Property="ItemContainerStyle" Value="{StaticResource MaterialDesignDragableTabItemStyle}" />
+        <Setter Property="behaviors:TabablzControlAssist.CloseItemCommand" Value="{x:Static dragablz:TabablzControl.CloseItemCommand}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type dragablz:TabablzControl}">

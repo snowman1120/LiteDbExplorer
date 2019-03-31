@@ -17,7 +17,7 @@ namespace LiteDbExplorer
         Dark
     }
 
-    public partial class Settings : Freezable, INotifyPropertyChanged, IWindowStateStore
+    public class Settings : Freezable, INotifyPropertyChanged, IWindowStateStore
     {
         private static readonly Lazy<Settings> _current =
             new Lazy<Settings>(Settings.LoadSettings);

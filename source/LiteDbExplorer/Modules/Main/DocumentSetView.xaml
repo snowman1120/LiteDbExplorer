@@ -12,6 +12,7 @@
     xmlns:framework="clr-namespace:LiteDbExplorer.Framework;assembly=LiteDbExplorer.Wpf"
     xmlns:converters="clr-namespace:LiteDbExplorer.Wpf.Converters;assembly=LiteDbExplorer.Wpf"
     xmlns:themes="clr-namespace:Dragablz.Themes;assembly=Dragablz"
+    xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors"
     x:Class="LiteDbExplorer.Modules.Main.DocumentSetView"
     mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800">
@@ -92,8 +93,9 @@
         <dragablz:TabablzControl x:Name="TabablzControl"
                                  Padding="0" Margin="0"
                                  Style="{StaticResource DocSetTabablzControlStyle}"
-                                 ItemsSource="{Binding Items}"
-                                 SelectedItem="{Binding ActiveLayoutItem}">
+                                 ItemsSource="{Binding Items, Mode=OneWay}"
+                                 SelectedItem="{Binding ActiveLayoutItem}"
+                                 behaviors:TabablzControlAssist.CloseItemCommand="{Binding CloseDocumentCommand}">
         </dragablz:TabablzControl>
 
         <!--<TabControl x:Name="Items" HorizontalContentAlignment="Center" Padding="0">

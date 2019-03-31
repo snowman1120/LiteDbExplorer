@@ -96,6 +96,11 @@
                 <MenuItem Command="liteDbExplorer:Commands.FindPrevious" />
             </MenuItem>
             <MenuItem Header="View" Height="35">
+                <MenuItem Header="Start Page" x:Name="OpenStartupDocument">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="Gear" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="Field sort order">
                     <MenuItem.Icon>
                         <materialDesign:PackIcon Kind="Sort" />
@@ -113,6 +118,11 @@
                               IsChecked="{Binding Path=Settings.ColorTheme, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static liteDbExplorer:ColorTheme.Light}, Source={x:Static Application.Current}}" />
                     <MenuItem Header="Dark" IsCheckable="True"
                               IsChecked="{Binding Path=Settings.ColorTheme, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static liteDbExplorer:ColorTheme.Dark}, Source={x:Static Application.Current}}" />
+                </MenuItem>
+                <MenuItem Header="Options" x:Name="OpenSettings">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="Gear" />
+                    </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Help" Height="35">

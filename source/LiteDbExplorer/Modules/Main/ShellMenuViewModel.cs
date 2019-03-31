@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using Caliburn.Micro;
 using JetBrains.Annotations;
+using LiteDbExplorer.Framework;
 using LiteDbExplorer.Framework.Shell;
+using LiteDbExplorer.Wpf.Modules.Settings;
 
 namespace LiteDbExplorer.Modules.Main
 {
@@ -12,11 +14,15 @@ namespace LiteDbExplorer.Modules.Main
     public class ShellMenuViewModel : PropertyChangedBase, IShellMenu
     {
         private readonly IDatabaseInteractions _databaseInteractions;
-        
+        private readonly IWindowManager _windowManager;
+
         [ImportingConstructor]
-        public ShellMenuViewModel(IDatabaseInteractions databaseInteractions)
+        public ShellMenuViewModel(
+            IDatabaseInteractions databaseInteractions,
+            IWindowManager windowManager)
         {
             _databaseInteractions = databaseInteractions;
+            _windowManager = windowManager;
 
             PathDefinitions = databaseInteractions.PathDefinitions;
         }
@@ -34,14 +40,28 @@ namespace LiteDbExplorer.Modules.Main
             _databaseInteractions.OpenDatabase(info.FullPath);
         }
 
+        [UsedImplicitly]
         public void OpenIssuePage()
         {
             Process.Start(Config.IssuesUrl);
         }
 
+        [UsedImplicitly]
         public void OpenHomepage()
         {
             Process.Start(Config.HomepageUrl);
+        }
+
+        [UsedImplicitly]
+        public void OpenStartupDocument()
+        {
+            IoC.Get<IDocumentSet>().OpenDocument<IStartupDocument>();
+        }
+
+        [UsedImplicitly]
+        public void OpenSettings()
+        {
+            _windowManager.ShowDialog(IoC.Get<SettingsViewModel>());
         }
     }
 }
