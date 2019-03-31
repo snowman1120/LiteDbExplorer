@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System.ComponentModel;
+using System.ComponentModel.Composition;
 using Caliburn.Micro;
 using LiteDbExplorer.Wpf.Modules.Settings;
 
@@ -20,8 +21,8 @@ namespace LiteDbExplorer.Modules.StartPage
 
         public int EditorDisplayOrder => 20;
 
-        public string DisplayName => "Startup page";
-
+        public string GroupDisplayName => "Startup page";
+        
         public object AutoGenContext => this;
 
         public bool ShowStartPageOnOpen { get; set; }

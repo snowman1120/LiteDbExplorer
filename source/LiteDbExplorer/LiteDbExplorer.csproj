@@ -174,7 +174,7 @@
     <Compile Include="Controls\DocumentJsonView.xaml.cs">
       <DependentUpon>DocumentJsonView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Editor\ExtendedTextEditorOptions.cs" />
+    <Compile Include="Controls\Editor\TextEditorOptionsMetadata.cs" />
     <Compile Include="Controls\Editor\SearchReplacePanel.cs" />
     <Compile Include="Controls\InputDialogView.xaml.cs">
       <DependentUpon>InputDialogView.xaml</DependentUpon>
@@ -210,6 +210,7 @@
       <DependentUpon>CollectionQueryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\DbCollection\CollectionQueryViewModel.cs" />
+    <Compile Include="Modules\DbCollection\CollectionSettingsViewModel.cs" />
     <Compile Include="Modules\DbCollection\ICollectionReferenceListView.cs" />
     <Compile Include="Modules\DbDocument\DocumentPreviewView.xaml.cs">
       <DependentUpon>DocumentPreviewView.xaml</DependentUpon>
@@ -475,6 +476,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SyntaxDefinitions\Json.dark.xshd" />
     <EmbeddedResource Include="Controls\SyntaxDefinitions\Json.xshd" />

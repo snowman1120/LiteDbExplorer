@@ -3,18 +3,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:pt="http://propertytools.org/wpf"
+             xmlns:framework="clr-namespace:LiteDbExplorer.Framework;assembly=LiteDbExplorer.Wpf"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type pt:PropertyGrid}" BasedOn="{StaticResource {x:Type pt:PropertyGrid}}">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type pt:PropertyGrid}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <TabControl x:Name="PART_Tabs"
+                                            SelectedIndex="{Binding Path=SelectedTabIndex, RelativeSource={RelativeSource TemplatedParent}}"
+                                            TabStripPlacement="{TemplateBinding TabStripPlacement}" Focusable="false"
+                                            AutomationProperties.AutomationId="Tabs" />
+                                <ScrollViewer x:Name="PART_ScrollViewer"
+                                              Focusable="false"
+                                              AutomationProperties.AutomationId="ScrollViewer" CanContentScroll="False"
+                                              VerticalScrollBarVisibility="Disabled"
+                                              HorizontalScrollBarVisibility="Disabled">
+                                    <!--ignore, ScrollViewer is handled by parent (remove cause error)-->
+                                </ScrollViewer>
+                                <StackPanel x:Name="PART_Panel" />
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="{Binding DisplayName}" FontWeight="Bold" Margin="6,0,0,1" />
-        <pt:PropertyGrid Grid.Row="1" SelectedObject="{Binding AutoGenContext}"
+        <pt:PropertyGrid x:Name="propertyGrid"
+                         SelectedObject="{Binding AutoGenContext}"
                          ShowReadOnlyProperties="False"
-                         TabVisibility="VisibleIfMoreThanOne" 
-                         Margin="0,0,8,0" ShowDeclaredOnly="True" />
+                         TabVisibility="VisibleIfMoreThanOne"
+                         Margin="0,0,8,0" ShowDeclaredOnly="True"
+                         CategoryControlType="Template">
+        </pt:PropertyGrid>
     </Grid>
 </UserControl>

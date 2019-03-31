@@ -77,5 +77,14 @@ namespace LiteDbExplorer.Properties {
                 return ResourceManager.GetString("SettingsPageGeneral", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _View.
+        /// </summary>
+        public static string SettingsPageView {
+            get {
+                return ResourceManager.GetString("SettingsPageView", resourceCulture);
+            }
+        }
     }
 }

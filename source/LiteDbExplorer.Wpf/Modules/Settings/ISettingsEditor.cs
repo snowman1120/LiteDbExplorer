@@ -4,7 +4,7 @@ namespace LiteDbExplorer.Wpf.Modules.Settings
 {
     public interface IAutoGenSettingsView
     {
-        string DisplayName { get; }
+        string GroupDisplayName { get; }
         object AutoGenContext { get; }
     }
 

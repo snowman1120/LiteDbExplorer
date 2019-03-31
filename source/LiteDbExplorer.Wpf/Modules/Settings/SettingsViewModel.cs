@@ -64,7 +64,7 @@ namespace LiteDbExplorer.Wpf.Modules.Settings
                 .OrderBy(p => p.SettingsPagePath)
                 .ThenBy(p => p.SettingsPageName);
             
-            foreach (ISettingsEditor settingsEditor in _settingsEditors.OrderBy(p => p.EditorDisplayOrder))
+            foreach (ISettingsEditor settingsEditor in _settingsEditors.OrderBy(p => p.EditorDisplayOrder).ThenBy(p => p.SettingsPageName))
             {
                 var parentCollection = GetParentCollection(settingsEditor, pages);
 

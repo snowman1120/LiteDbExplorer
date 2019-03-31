@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:local="clr-namespace:LiteDbExplorer.Wpf.Modules.Settings"
         xmlns:behaviors="clr-namespace:LiteDbExplorer.Wpf.Behaviors"
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
@@ -25,15 +24,22 @@
                     Source="/PresentationFramework.Aero2, 
                     Version=4.0.0.0, Culture=neutral, 
                     PublicKeyToken=31bf3856ad364e35, 
-                    ProcessorArchitecture=MSIL;component/themes/aero2.normalcolor.xaml" />
-                <ResourceDictionary Source="../../Themes/Aero2.TreeViewFullRow.xaml" />-->
-                <ResourceDictionary
-                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                    ProcessorArchitecture=MSIL;component/themes/aero2.normalcolor.xaml" />-->
+                
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <!--<ResourceDictionary Source="../../Themes/Aero2.TreeViewFullRow.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
 
-            <!--<SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black"/>
-            <SolidColorBrush x:Key="{x:Static SystemColors.WindowTextBrushKey}" Color="Black"/>
+            <Style TargetType="Control" BasedOn="{StaticResource {x:Type Control}}">
+                <Setter Property="Background" Value="White"/>
+            </Style>
 
+            <!--
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black"/>
+            <SolidColorBrush x:Key="{x:Static SystemColors.WindowTextBrushKey}" Color="Black"/>
+            -->
+            
+            <!--
             <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
             </Style>
@@ -92,7 +98,9 @@
                           BorderBrush="{x:Null}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <ContentControl cal:View.Model="{Binding}" />
+                        <ContentControl cal:View.Model="{Binding}" 
+                                        ScrollViewer.VerticalScrollBarVisibility="Disabled" 
+                                        ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.Template>
@@ -114,7 +122,7 @@
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0 15 0 0" HorizontalAlignment="Right"
               IsSharedSizeScope="True">
             <Grid.Resources>
-                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
                     <Setter Property="Margin" Value="9 0 0 0" />
                     <Setter Property="MinHeight" Value="24" />
                     <Setter Property="MinWidth" Value="85" />

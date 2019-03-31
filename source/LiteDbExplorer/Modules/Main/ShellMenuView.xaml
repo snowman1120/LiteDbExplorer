@@ -98,7 +98,7 @@
             <MenuItem Header="View" Height="35">
                 <MenuItem Header="Start Page" x:Name="OpenStartupDocument">
                     <MenuItem.Icon>
-                        <materialDesign:PackIcon Kind="Gear" />
+                        <materialDesign:PackIcon Kind="Home" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="Field sort order">

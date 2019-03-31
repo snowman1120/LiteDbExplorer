@@ -14,24 +14,24 @@ namespace LiteDbExplorer.Controls.Editor
 {
     [Serializable]
     [System.ComponentModel.DisplayName("Editor Options")]
-    public partial class ExtendedTextEditorOptions : TextEditorOptions
+    public partial class TextEditorOptionsMetadata : TextEditorOptions
     {
         private string _fontFamilyName = "Consolas";
         private double _fontSize = 12;
         private bool _showLineNumbers = true;
 
-        public ExtendedTextEditorOptions()
+        public TextEditorOptionsMetadata()
         {
             HighlightCurrentLine = true;
             ConvertTabsToSpaces = true;
         }
 
-        public ExtendedTextEditorOptions(ExtendedTextEditorOptions options)
+        public TextEditorOptionsMetadata(TextEditorOptionsMetadata options)
             : base(options)
         {
             // get all the fields in the class
             var fields =
-                typeof (ExtendedTextEditorOptions).GetFields(BindingFlags.NonPublic | BindingFlags.Public |
+                typeof (TextEditorOptionsMetadata).GetFields(BindingFlags.NonPublic | BindingFlags.Public |
                                                              BindingFlags.Instance);
 
             // copy each value over to 'this'
@@ -286,10 +286,10 @@ namespace LiteDbExplorer.Controls.Editor
                 24.0
             };
 
-        public ExtendedTextEditorOptions CopyFrom(ExtendedTextEditorOptions options)
+        public TextEditorOptionsMetadata CopyFrom(TextEditorOptionsMetadata options)
         {
             var fields =
-                typeof (ExtendedTextEditorOptions).GetProperties(BindingFlags.Instance | BindingFlags.Public |
+                typeof (TextEditorOptionsMetadata).GetProperties(BindingFlags.Instance | BindingFlags.Public |
                                                                  BindingFlags.SetProperty);
             foreach (var field in fields)
             {

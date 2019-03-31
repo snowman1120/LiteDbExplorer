@@ -12,26 +12,26 @@ namespace LiteDbExplorer.Modules.DbDocument
         public JsonPreviewSettingsViewModel()
         {
             // JsonPreviewOptions = new ExtendedTextEditorOptions(Settings.Default.TextEditor_JsonPreviewOptions);
-            JsonPreviewOptions = new ExtendedTextEditorOptions();
+            JsonPreviewOptions = new TextEditorOptionsMetadata();
         }
         
-        public string SettingsPagePath => "Document Preview";
+        public string SettingsPagePath => Properties.Resources.SettingsPageView;
 
-        public string SettingsPageName => "Json Editor";
+        public string SettingsPageName => "Json Preview";
 
-        public int EditorDisplayOrder => 10;
+        public int EditorDisplayOrder => 50;
 
-        public string DisplayName => string.Empty;
+        public string GroupDisplayName => SettingsPageName;
 
         public object AutoGenContext => JsonPreviewOptions;
         
         public void ResetDefault()
         {
-            JsonPreviewOptions = new ExtendedTextEditorOptions();
+            JsonPreviewOptions = new TextEditorOptionsMetadata();
             NotifyOfPropertyChange(() => JsonPreviewOptions);
         }
 
-        public ExtendedTextEditorOptions JsonPreviewOptions { get; private set; }
+        public TextEditorOptionsMetadata JsonPreviewOptions { get; private set; }
 
         public void ApplyChanges()
         {

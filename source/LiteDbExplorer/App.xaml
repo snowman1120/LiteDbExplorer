@@ -36,8 +36,6 @@
             <!-- Dragablz Material Design -->
             <Style TargetType="{x:Type dragablz:TabablzControl}"
                    BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
-            <!--<Style TargetType="{x:Type dragablz:TabablzControl}"
-                   BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />-->
 
         </ResourceDictionary>
     </Application.Resources>
