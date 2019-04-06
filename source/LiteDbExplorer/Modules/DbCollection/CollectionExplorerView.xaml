@@ -53,7 +53,8 @@
     </UserControl.CommandBindings>
     <Grid>
         <controls1:SplitContainer x:Name="splitContainer" 
-                                 SecondChildIsCollapsed="{Binding HideDocumentPreview, FallbackValue=True}">
+                                 SecondChildIsCollapsed="{Binding HideDocumentPreview, FallbackValue=True}"
+                                 Orientation="{Binding SplitOrientation, Mode=OneTime, FallbackValue=Horizontal}">
             <controls1:SplitContainer.FirstChild>
                 <DockPanel>
                     <ToolBarTray DockPanel.Dock="Top">
@@ -176,7 +177,8 @@
                                                  CollectionReference="{Binding Path=CollectionReference}"
                                                  SelectedItem="{Binding Path=SelectedDocument}"
                                                  SelectedItems="{Binding Path=SelectedDocuments}"
-                                                 DoubleClickCommand="liteDbExplorer:Commands.Edit">
+                                                 DoubleClickCommand="{Binding ItemDoubleClickCommand}"
+                                                 ContentMaxLength="{Binding ContentMaxLength}">
                         <controls:CollectionListView.ListViewContextMenu>
                             <ContextMenu>
                                 <MenuItem Command="liteDbExplorer:Commands.Add"

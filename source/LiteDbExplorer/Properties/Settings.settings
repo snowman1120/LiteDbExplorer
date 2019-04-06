@@ -8,5 +8,23 @@
     <Setting Name="ShowStartOnCloseAll" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="CollectionExplorer_SplitOrientation" Type="System.Windows.Controls.Orientation" Scope="User">
+      <Value Profile="(Default)">Horizontal</Value>
+    </Setting>
+    <Setting Name="CollectionExplorer_ShowPreview" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="CollectionExplorer_ContentMaxLength" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1024</Value>
+    </Setting>
+    <Setting Name="CollectionExplorer_DoubleClickAction" Type="LiteDbExplorer.Modules.DbCollection.CollectionItemDoubleClickAction" Scope="User">
+      <Value Profile="(Default)">EditDocument</Value>
+    </Setting>
+    <Setting Name="DocumentPreview_SplitOrientation" Type="System.Windows.Controls.Orientation" Scope="User">
+      <Value Profile="(Default)">Vertical</Value>
+    </Setting>
+    <Setting Name="DocumentPreview_ContentMaxLength" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1024</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

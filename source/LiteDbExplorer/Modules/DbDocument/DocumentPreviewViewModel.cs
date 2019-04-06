@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using System.Windows.Controls;
 using Caliburn.Micro;
 using JetBrains.Annotations;
 using LiteDbExplorer.Core;
@@ -21,8 +22,15 @@ namespace LiteDbExplorer.Modules.DbDocument
         public DocumentPreviewViewModel()
         {
             OpenAsDocumentCommand = new RelayCommand(OpenAsDocument, _ => CanOpenAsDocument);
+
+            SplitOrientation = Properties.Settings.Default.DocumentPreview_SplitOrientation;
+            ContentMaxLength = Properties.Settings.Default.DocumentPreview_ContentMaxLength;
         }
-        
+
+        public int ContentMaxLength { get; }
+
+        public Orientation SplitOrientation { get; }
+
         public override object IconContent => new PackIcon { Kind = PackIconKind.Json, Height = 16 };
 
         public DocumentReference Document

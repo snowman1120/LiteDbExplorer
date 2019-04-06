@@ -5,7 +5,7 @@ using LiteDbExplorer.Wpf.Modules.Settings;
 
 namespace LiteDbExplorer.Modules.DbDocument
 {
-    [Export(typeof(ISettingsEditor))]
+    /*[Export(typeof(ISettingsEditor))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class JsonPreviewSettingsViewModel : PropertyChangedBase, ISettingsEditor, IAutoGenSettingsView
     {
@@ -46,5 +46,5 @@ namespace LiteDbExplorer.Modules.DbDocument
             // TODO
         }
         
-    }
+    }*/
 }

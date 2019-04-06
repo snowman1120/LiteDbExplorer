@@ -206,12 +206,14 @@
       <DependentUpon>CollectionExplorerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\DbCollection\CollectionExplorerViewModel.cs" />
+    <Compile Include="Modules\DbCollection\CollectionItemDoubleClickAction.cs" />
     <Compile Include="Modules\DbCollection\CollectionQueryView.xaml.cs">
       <DependentUpon>CollectionQueryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\DbCollection\CollectionQueryViewModel.cs" />
     <Compile Include="Modules\DbCollection\CollectionSettingsViewModel.cs" />
     <Compile Include="Modules\DbCollection\ICollectionReferenceListView.cs" />
+    <Compile Include="Modules\DbDocument\DocumentPreviewSettingsViewModel.cs" />
     <Compile Include="Modules\DbDocument\DocumentPreviewView.xaml.cs">
       <DependentUpon>DocumentPreviewView.xaml</DependentUpon>
     </Compile>

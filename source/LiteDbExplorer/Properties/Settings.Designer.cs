@@ -46,5 +46,77 @@ namespace LiteDbExplorer.Properties {
                 this["ShowStartOnCloseAll"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Horizontal")]
+        public global::System.Windows.Controls.Orientation CollectionExplorer_SplitOrientation {
+            get {
+                return ((global::System.Windows.Controls.Orientation)(this["CollectionExplorer_SplitOrientation"]));
+            }
+            set {
+                this["CollectionExplorer_SplitOrientation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CollectionExplorer_ShowPreview {
+            get {
+                return ((bool)(this["CollectionExplorer_ShowPreview"]));
+            }
+            set {
+                this["CollectionExplorer_ShowPreview"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1024")]
+        public int CollectionExplorer_ContentMaxLength {
+            get {
+                return ((int)(this["CollectionExplorer_ContentMaxLength"]));
+            }
+            set {
+                this["CollectionExplorer_ContentMaxLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("EditDocument")]
+        public global::LiteDbExplorer.Modules.DbCollection.CollectionItemDoubleClickAction CollectionExplorer_DoubleClickAction {
+            get {
+                return ((global::LiteDbExplorer.Modules.DbCollection.CollectionItemDoubleClickAction)(this["CollectionExplorer_DoubleClickAction"]));
+            }
+            set {
+                this["CollectionExplorer_DoubleClickAction"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Vertical")]
+        public global::System.Windows.Controls.Orientation DocumentPreview_SplitOrientation {
+            get {
+                return ((global::System.Windows.Controls.Orientation)(this["DocumentPreview_SplitOrientation"]));
+            }
+            set {
+                this["DocumentPreview_SplitOrientation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1024")]
+        public int DocumentPreview_ContentMaxLength {
+            get {
+                return ((int)(this["DocumentPreview_ContentMaxLength"]));
+            }
+            set {
+                this["DocumentPreview_ContentMaxLength"] = value;
+            }
+        }
     }
 }

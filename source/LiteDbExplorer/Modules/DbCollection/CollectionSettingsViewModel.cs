@@ -15,13 +15,18 @@ namespace LiteDbExplorer.Modules.DbCollection
         public CollectionSettingsViewModel()
         {
             CollectionExplorer_FieldSortOrder = Settings.Current.FieldSortOrder;
+
+            CollectionExplorer_SplitOrientation = Properties.Settings.Default.CollectionExplorer_SplitOrientation;
+            CollectionExplorer_ShowPreview = Properties.Settings.Default.CollectionExplorer_ShowPreview;
+            CollectionExplorer_ContentMaxLength = Properties.Settings.Default.CollectionExplorer_ContentMaxLength;
+            CollectionExplorer_DoubleClickAction = Properties.Settings.Default.CollectionExplorer_DoubleClickAction;
         }
 
         public string SettingsPagePath => Properties.Resources.SettingsPageView;
         
         public string SettingsPageName => "_Collections";
         
-        public int EditorDisplayOrder => 20;
+        public int EditorDisplayOrder => 25;
 
         public string GroupDisplayName => "Options";
 
@@ -33,7 +38,7 @@ namespace LiteDbExplorer.Modules.DbCollection
         
         [Category("Collection Explorer")]
         [DisplayName("Double Click Action")]
-        public DocumentItemClickAction CollectionExplorer_DoubleClickAction { get; set; }
+        public CollectionItemDoubleClickAction CollectionExplorer_DoubleClickAction { get; set; }
 
         [Category("Collection Explorer")]
         [DisplayName("Split Orientation")]
@@ -45,22 +50,20 @@ namespace LiteDbExplorer.Modules.DbCollection
 
         [Category("Collection Explorer")]
         [DisplayName("Content Max Length")]
-        [Spinnable(1, 1, 120, 1024), Width(80)]
-        public int CollectionExplorer_ContentMaxLength { get; set; } = 1024;
+        [Spinnable(1, 1, 64, 1024), Width(80)]
+        public int CollectionExplorer_ContentMaxLength { get; set; }
         
-        [Category("Document Preview")]
-        [DisplayName("Split Orientation")]
-        public Orientation DocumentPreview_SplitOrientation { get; set; }
-
-        [Category("Document Preview")]
-        [DisplayName("Content Max Length")]
-        [Spinnable(1, 1, 120, 1024), Width(80)]
-        public int DocumentPreview_ContentMaxLength { get; set; } = 1024;
-
         public void ApplyChanges()
         {
             Settings.Current.FieldSortOrder = CollectionExplorer_FieldSortOrder;
             Settings.Current.SaveSettings();
+
+            Properties.Settings.Default.CollectionExplorer_SplitOrientation = CollectionExplorer_SplitOrientation;
+            Properties.Settings.Default.CollectionExplorer_ShowPreview = CollectionExplorer_ShowPreview;
+            Properties.Settings.Default.CollectionExplorer_ContentMaxLength = CollectionExplorer_ContentMaxLength;
+            Properties.Settings.Default.CollectionExplorer_DoubleClickAction = CollectionExplorer_DoubleClickAction;
+
+            Properties.Settings.Default.Save();
         }
 
         public void DiscardChanges()
@@ -68,14 +71,5 @@ namespace LiteDbExplorer.Modules.DbCollection
             // Ignore
         }
         
-    }
-
-    public enum DocumentItemClickAction
-    {
-        [System.ComponentModel.Description("Edit document")]
-        EditDocument,
-
-        [System.ComponentModel.Description("Open preview in tab")]
-        OpenPreview
     }
 }

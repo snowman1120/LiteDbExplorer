@@ -24,10 +24,19 @@ namespace LiteDbExplorer.Controls
             InitializeComponent();
         }
 
+        public static readonly DependencyProperty ContentMaxLengthProperty = DependencyProperty.Register(
+            nameof(ContentMaxLength), typeof(int), typeof(DocumentTreeView), new PropertyMetadata(1024));
+
+        public int ContentMaxLength
+        {
+            get => (int) GetValue(ContentMaxLengthProperty);
+            set => SetValue(ContentMaxLengthProperty, value);
+        }
+
         public static readonly DependencyProperty DocumentSourceProperty = DependencyProperty.Register(
-            nameof(DocumentSource), 
-            typeof(DocumentReference), 
-            typeof(DocumentTreeView), 
+            nameof(DocumentSource),
+            typeof(DocumentReference),
+            typeof(DocumentTreeView),
             new PropertyMetadata(null, propertyChangedCallback: OnDocumentSourceChanged));
 
         private static void OnDocumentSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -61,7 +70,9 @@ namespace LiteDbExplorer.Controls
 
         public void UpdateDocument()
         {
-            ItemsSource = DocumentSource != null ? new DocumentTreeItemsSource(DocumentSource) : null;
+            ItemsSource = DocumentSource != null
+                ? new DocumentTreeItemsSource(DocumentSource) {ValueMaxLength = ContentMaxLength}
+                : null;
         }
 
         public void InvalidateItemsSource(object item)
@@ -92,6 +103,8 @@ namespace LiteDbExplorer.Controls
 
         public string InstanceId { get; }
 
+        public int ValueMaxLength { get; set; } = 1024;
+
         public ObservableCollection<DocumentFieldNode> Nodes { get; set; }
 
         public ObservableCollection<DocumentFieldNode> GetNodes(BsonDocument document)
@@ -103,13 +116,16 @@ namespace LiteDbExplorer.Controls
                 var bsonValue = document[key];
 
                 Func<BsonDocument, ObservableCollection<DocumentFieldNode>> loadAction = null;
-                
+
                 if (bsonValue != null && (bsonValue.IsArray || bsonValue.IsDocument))
                 {
                     loadAction = GetNodes;
                 }
 
-                var fieldNode = new DocumentFieldNode(key, bsonValue, loadAction);
+                var fieldNode = new DocumentFieldNode(key, bsonValue, loadAction)
+                {
+                    ValueMaxLength = ValueMaxLength
+                };
 
                 nodes.Add(fieldNode);
             }
@@ -143,8 +159,6 @@ namespace LiteDbExplorer.Controls
 
     public class DocumentFieldNode : INotifyPropertyChanged
     {
-        public const int MaxLength = 1024;
-
         private bool _isExpanded;
 
         private readonly Func<BsonDocument, ObservableCollection<DocumentFieldNode>> _loadNodes;
@@ -152,20 +166,23 @@ namespace LiteDbExplorer.Controls
         private DocumentFieldNode()
         {
         }
-        
-        public DocumentFieldNode(string key, BsonValue value, Func<BsonDocument, ObservableCollection<DocumentFieldNode>> loadNodes)
+
+        public DocumentFieldNode(string key, BsonValue value,
+            Func<BsonDocument, ObservableCollection<DocumentFieldNode>> loadNodes)
         {
             _loadNodes = loadNodes;
 
             Initialize(key, value);
         }
 
+        public int ValueMaxLength { get; set; } = 1024;
+
         public int? NodesCount { get; set; }
 
         public string NodesCountText { get; set; }
 
         public string Key { get; set; }
-        
+
         public BsonValue Value { get; set; }
 
         public string DisplayValue { get; set; }
@@ -175,7 +192,7 @@ namespace LiteDbExplorer.Controls
         public bool ExceededMaxLength { get; private set; }
 
         public BsonType? ValueType { get; set; }
-        
+
         public SolidColorBrush Foreground { get; set; }
 
         public bool IsExpanded
@@ -187,16 +204,16 @@ namespace LiteDbExplorer.Controls
                 OnNodeExpanded();
             }
         }
-        
+
         public ObservableCollection<DocumentFieldNode> Nodes { get; set; }
-        
+
         protected void Initialize(string key, BsonValue value)
         {
             Key = key;
             Value = value;
 
             // Improve performance by removing converters
-            DisplayValue = value.ToDisplayValue(MaxLength);
+            DisplayValue = value.ToDisplayValue(ValueMaxLength);
             Foreground = BsonValueForeground.GetBsonValueForeground(value);
 
             // TODO: Infer Null value type to handle
@@ -205,7 +222,7 @@ namespace LiteDbExplorer.Controls
                 ValueType = Value.Type;
             }
 
-            if (value != null && ValueType == BsonType.String && value.AsString.Length > MaxLength)
+            if (value != null && ValueType == BsonType.String && value.AsString.Length > ValueMaxLength)
             {
                 ExceededMaxLength = true;
             }
@@ -225,7 +242,7 @@ namespace LiteDbExplorer.Controls
                 var suffix = NodesCount == 1 ? "Item" : "Items";
                 NodesCountText = $" {NodesCount} {suffix}";
             }
-            
+
             if (_loadNodes != null)
             {
                 // Add Dummy load node
@@ -235,10 +252,10 @@ namespace LiteDbExplorer.Controls
                 };
             }
         }
-        
+
         private void OnNodeExpanded()
         {
-            if(IsExpanded == false)
+            if (IsExpanded == false)
             {
                 return;
             }
@@ -262,7 +279,7 @@ namespace LiteDbExplorer.Controls
                     {
                         nodes.Add(new DocumentFieldNode(index.ToString(), arrayDoc, null));
                     }
-                    
+
                     index++;
                 }
 
@@ -279,5 +296,4 @@ namespace LiteDbExplorer.Controls
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
 }

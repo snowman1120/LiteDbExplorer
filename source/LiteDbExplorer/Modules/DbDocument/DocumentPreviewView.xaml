@@ -20,7 +20,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <controls1:SplitContainer x:Name="splitContainer" 
-                                 Orientation="Vertical"
+                                 Orientation="{Binding SplitOrientation, Mode=OneTime, FallbackValue=Vertical}"
                                  SecondChildIsCollapsed="{Binding HideFileInfo}">
             <controls1:SplitContainer.FirstChild>
                 <DockPanel>
@@ -58,11 +58,13 @@
                         </TabControl.ItemContainerStyle>
                         <TabItem>
                             <controls:DocumentTreeView x:Name="documentTreeView"
-                                                       DocumentSource="{Binding Path=Document, Mode=OneWay}" />
+                                                       DocumentSource="{Binding Path=Document, Mode=OneWay}" 
+                                                       ContentMaxLength="{Binding ContentMaxLength, Mode=OneWay}"/>
                         </TabItem>
                         <TabItem>
                             <controls:DocumentJsonView x:Name="documentJsonView"
-                                                       DocumentSource="{Binding Path=Document, Mode=OneWay}" />
+                                                       DocumentSource="{Binding Path=Document, Mode=OneWay}" 
+                                                       LineMaxLength="{Binding ContentMaxLength, Mode=OneWay}"/>
                         </TabItem>
                     </TabControl>
                 </DockPanel>

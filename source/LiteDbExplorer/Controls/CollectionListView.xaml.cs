@@ -20,7 +20,7 @@ namespace LiteDbExplorer.Controls
     /// </summary>
     public partial class CollectionListView : UserControl
     {
-        private static readonly BsonValueToStringConverter _bsonValueToStringConverter = new BsonValueToStringConverter { MaxLength = 200 };
+        private BsonValueToStringConverter _bsonValueToStringConverter = new BsonValueToStringConverter { MaxLength = 200 };
 
         public static readonly DependencyProperty CollectionReferenceProperty = DependencyProperty.Register(
             nameof(CollectionReference),
@@ -45,6 +45,16 @@ namespace LiteDbExplorer.Controls
             nameof(DoubleClickCommand), typeof(ICommand), typeof(CollectionListView),
             new PropertyMetadata(default(ICommand)));
 
+
+        public static readonly DependencyProperty ContentMaxLengthProperty = DependencyProperty.Register(
+            nameof(ContentMaxLength), typeof(int), typeof(CollectionListView), new PropertyMetadata(200));
+
+        public int ContentMaxLength
+        {
+            get => (int) GetValue(ContentMaxLengthProperty);
+            set => SetValue(ContentMaxLengthProperty, value);
+        }
+
         private bool _modelHandled;
         private bool _viewHandled;
 
@@ -56,6 +66,8 @@ namespace LiteDbExplorer.Controls
         public CollectionListView()
         {
             InitializeComponent();
+
+            _bsonValueToStringConverter = new BsonValueToStringConverter { MaxLength = ContentMaxLength };
 
             ListCollectionData.MouseDoubleClick += ListCollectionDataOnMouseDoubleClick;
             ListCollectionData.SelectionChanged += OnListViewSelectionChanged;

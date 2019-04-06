@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Security;
 using System.Windows;
+using System.Windows.Controls;
 using Caliburn.Micro;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using LiteDbExplorer.Core;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Modules.DbDocument;
+using LiteDbExplorer.Modules.Main;
 using MaterialDesignThemes.Wpf;
 
 namespace LiteDbExplorer.Modules.DbCollection
@@ -38,8 +41,23 @@ namespace LiteDbExplorer.Modules.DbCollection
             _databaseInteractions = databaseInteractions;
 
             DocumentPreview = documentPreview;
+            
+            SplitOrientation = Properties.Settings.Default.CollectionExplorer_SplitOrientation;
+            ShowDocumentPreview = Properties.Settings.Default.CollectionExplorer_ShowPreview;
+            ContentMaxLength = Properties.Settings.Default.CollectionExplorer_ContentMaxLength;
+            DoubleClickAction = Properties.Settings.Default.CollectionExplorer_DoubleClickAction;
+
+            ItemDoubleClickCommand = new RelayCommand<DocumentReference>(OnItemDoubleClick);
         }
         
+        public CollectionItemDoubleClickAction DoubleClickAction { get; }
+
+        public int ContentMaxLength { get; }
+        
+        public Orientation SplitOrientation { get; }
+
+        public RelayCommand<DocumentReference> ItemDoubleClickCommand { get; }
+
         public override void Init(CollectionReference value)
         {
             if (value == null)
@@ -216,10 +234,30 @@ namespace LiteDbExplorer.Modules.DbCollection
             }
         }
         
+        protected void OnItemDoubleClick(DocumentReference documentReference)
+        {
+            if(documentReference == null)
+            {
+                return;
+            }
+
+            switch (DoubleClickAction)
+            {
+                case CollectionItemDoubleClickAction.EditDocument:
+                    _databaseInteractions.OpenEditDocument(documentReference);
+                    break;
+                case CollectionItemDoubleClickAction.OpenPreview:
+                    IoC.Get<IDocumentSet>().OpenDocument<DocumentPreviewViewModel, DocumentReference>(documentReference);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         #endregion
         
         #region Routed Commands
-
+        
         [UsedImplicitly]
         public void AddDocument()
         {

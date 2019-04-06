@@ -47,7 +47,7 @@ namespace LiteDbExplorer.Controls
 
             jsonEditor.TextArea.MaxWidth = 1024;
             jsonEditor.TextArea.IndentationStrategy = new DefaultIndentationStrategy();
-            jsonEditor.TextArea.TextView.ElementGenerators.Add(new TruncateLongLines(1024));
+            jsonEditor.TextArea.TextView.ElementGenerators.Add(new TruncateLongLines(LineMaxLength));
 
             SetTheme();
             
@@ -64,6 +64,15 @@ namespace LiteDbExplorer.Controls
         {
             get => (DocumentReference) GetValue(DocumentSourceProperty);
             set => SetValue(DocumentSourceProperty, value);
+        }
+
+        public static readonly DependencyProperty LineMaxLengthProperty = DependencyProperty.Register(
+            nameof(LineMaxLength), typeof(int), typeof(DocumentJsonView), new PropertyMetadata(1024));
+
+        public int LineMaxLength
+        {
+            get => (int) GetValue(LineMaxLengthProperty);
+            set => SetValue(LineMaxLengthProperty, value);
         }
 
         public void UpdateDocument()
