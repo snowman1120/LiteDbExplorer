@@ -15,7 +15,6 @@
 
                 <ResourceDictionary Source="pack://application:,,,/LiteDbExplorer.Wpf;component/Themes/Styles.xaml"/>
 
-                <!--<ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml" />-->
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.Dragablz.xaml"/>
 
                 <!-- Local Styles -->
@@ -23,7 +22,9 @@
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.AppToolBar.xaml" />
                 
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.Button.xaml" />
-                <ResourceDictionary Source="Themes/MaterialDesignTheme.TreeViewFullRow.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/LiteDbExplorer.Wpf;component/Themes/MaterialDesignTheme.TreeViewFullRow.xaml"/>
+
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.ListView.xaml" />
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.ButtonChrome.xaml" />
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.ButtonSpinner.xaml" />

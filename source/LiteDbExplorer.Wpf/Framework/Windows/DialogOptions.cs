@@ -3,9 +3,9 @@ using System.Windows;
 
 namespace LiteDbExplorer.Framework.Windows
 {
-    public class DialogSettings
+    public class DialogOptions
     {
-        private readonly Dictionary<string, object> _settings;
+        private readonly Dictionary<string, object> _value;
         private double _height;
         private double _width;
         private bool _isMinButtonEnabled;
@@ -14,12 +14,12 @@ namespace LiteDbExplorer.Framework.Windows
         private SizeToContent _sizeToContent;
         private WindowStyle _windowStyle;
 
-        public DialogSettings()
+        public DialogOptions()
         {
-            _settings = new Dictionary<string, object>();
+            _value = new Dictionary<string, object>();
         }
 
-        public IDictionary<string, object> Settings => _settings;
+        public IDictionary<string, object> Value => _value;
 
         public double Height
         {
@@ -27,7 +27,7 @@ namespace LiteDbExplorer.Framework.Windows
             set
             {
                 _height = value;
-                _settings[nameof(Height)] = value;
+                _value[nameof(Height)] = value;
             }
         }
 
@@ -37,7 +37,7 @@ namespace LiteDbExplorer.Framework.Windows
             set
             {
                 _width = value;
-                _settings[nameof(Width)] = value;
+                _value[nameof(Width)] = value;
             }
         }
 
@@ -47,7 +47,7 @@ namespace LiteDbExplorer.Framework.Windows
             set
             {
                 _isMinButtonEnabled = value;
-                _settings[nameof(IsMinButtonEnabled)] = value;
+                _value[nameof(IsMinButtonEnabled)] = value;
             }
         }
 
@@ -57,7 +57,7 @@ namespace LiteDbExplorer.Framework.Windows
             set
             {
                 _windowStartupLocation = value;
-                _settings[nameof(WindowStartupLocation)] = value;
+                _value[nameof(WindowStartupLocation)] = value;
             }
         }
 
@@ -67,7 +67,7 @@ namespace LiteDbExplorer.Framework.Windows
             set
             {
                 _resizeMode = value;
-                _settings[nameof(ResizeMode)] = value;
+                _value[nameof(ResizeMode)] = value;
             }
         }
 
@@ -77,7 +77,7 @@ namespace LiteDbExplorer.Framework.Windows
             set
             {
                 _sizeToContent = value;
-                _settings[nameof(SizeToContent)] = value;
+                _value[nameof(SizeToContent)] = value;
             }
         }
 
@@ -87,7 +87,7 @@ namespace LiteDbExplorer.Framework.Windows
             set
             {
                 _windowStyle = value;
-                _settings[nameof(WindowStyle)] = value;
+                _value[nameof(WindowStyle)] = value;
             }
         }
     }

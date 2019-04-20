@@ -4,7 +4,7 @@ using LiteDB;
 
 namespace LiteDbExplorer.Modules
 {
-    public interface IViewInteractionResolver
+    public interface IViewInteraction
     {
         bool OpenDatabaseProperties(DatabaseReference database);
         bool OpenEditDocument(DocumentReference document);

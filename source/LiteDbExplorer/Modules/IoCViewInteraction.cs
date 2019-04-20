@@ -13,14 +13,14 @@ using LiteDbExplorer.Windows;
 
 namespace LiteDbExplorer.Modules
 {
-    [Export(typeof(IViewInteractionResolver))]
+    [Export(typeof(IViewInteraction))]
     [PartCreationPolicy(CreationPolicy.Shared)]
-    public class IoCViewInteractionResolver : IViewInteractionResolver
+    public class IoCViewInteraction : IViewInteraction
     {
         private readonly IWindowManager _windowManager;
 
         [ImportingConstructor]
-        public IoCViewInteractionResolver(IWindowManager windowManager)
+        public IoCViewInteraction(IWindowManager windowManager)
         {
             _windowManager = windowManager;
         }
@@ -30,13 +30,13 @@ namespace LiteDbExplorer.Modules
             var vm = IoC.Get<IDatabasePropertiesView>();
             vm.Init(database);
             
-            var dialogSettings = new DialogSettings
+            var dialogOptions = new DialogOptions
             {
                 Width = 480,
                 SizeToContent = SizeToContent.Height,
                 ResizeMode = ResizeMode.NoResize
             };
-            return _windowManager.ShowDialog(vm, null, dialogSettings.Settings) == true;
+            return _windowManager.ShowDialog(vm, null, dialogOptions.Value) == true;
         }
 
         public bool OpenEditDocument(DocumentReference document)

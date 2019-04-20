@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using Caliburn.Micro;
 using CSharpFunctionalExtensions;
@@ -44,16 +42,16 @@ namespace LiteDbExplorer.Modules
     public class DatabaseInteractions : IDatabaseInteractions
     {
         private readonly IEventAggregator _eventAggregator;
-        private readonly IViewInteractionResolver _viewInteractionResolver;
+        private readonly IViewInteraction _viewInteraction;
         private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
         [ImportingConstructor]
         public DatabaseInteractions(
             IEventAggregator eventAggregator, 
-            IViewInteractionResolver viewInteractionResolver)
+            IViewInteraction viewInteraction)
         {
             _eventAggregator = eventAggregator;
-            _viewInteractionResolver = viewInteractionResolver;
+            _viewInteraction = viewInteraction;
             PathDefinitions = new Paths();
         }
 
@@ -100,7 +98,7 @@ namespace LiteDbExplorer.Modules
             catch (Exception exc)
             {
                 Logger.Error(exc, "Failed to open database: ");
-                _viewInteractionResolver.ShowError(exc,"Failed to open database: " + exc.Message);
+                _viewInteraction.ShowError(exc,"Failed to open database: " + exc.Message);
             }
         }
 
@@ -121,7 +119,7 @@ namespace LiteDbExplorer.Modules
 
             if (!File.Exists(path))
             {
-                _viewInteractionResolver.ShowError("Cannot open database, file not found.", "File not found");
+                _viewInteraction.ShowError("Cannot open database, file not found.", "File not found");
                 return;
             }
             
@@ -143,12 +141,12 @@ namespace LiteDbExplorer.Modules
             }
             catch (NotSupportedException notSupportedException)
             {
-                _viewInteractionResolver.ShowError(notSupportedException,"Failed to open database [NotSupportedException]:" + Environment.NewLine + notSupportedException.Message);
+                _viewInteraction.ShowError(notSupportedException,"Failed to open database [NotSupportedException]:" + Environment.NewLine + notSupportedException.Message);
             }
             catch (Exception e)
             {
                 Logger.Error(e, "Failed to open database: ");
-                _viewInteractionResolver.ShowError(e,"Failed to open database [Exception]:" + Environment.NewLine + e.Message);
+                _viewInteraction.ShowError(e,"Failed to open database [Exception]:" + Environment.NewLine + e.Message);
             }
         }
 
@@ -158,7 +156,7 @@ namespace LiteDbExplorer.Modules
             {
                 if (!string.IsNullOrEmpty(password))
                 {
-                    _viewInteractionResolver.ShowError(liteException,"Failed to open database [LiteException]:" + Environment.NewLine + liteException.Message);
+                    _viewInteraction.ShowError(liteException,"Failed to open database [LiteException]:" + Environment.NewLine + liteException.Message);
                 }
                     
                 OpenDatabase(path, password);
@@ -200,7 +198,7 @@ namespace LiteDbExplorer.Modules
             }
             catch (Exception exc)
             {
-                _viewInteractionResolver.ShowError(exc, "Failed to upload file:" + Environment.NewLine + exc.Message, "Database error");
+                _viewInteraction.ShowError(exc, "Failed to upload file:" + Environment.NewLine + exc.Message, "Database error");
             }
 
 
@@ -209,7 +207,7 @@ namespace LiteDbExplorer.Modules
 
         public Result RemoveDocuments(IEnumerable<DocumentReference> documents)
         {
-            if (!_viewInteractionResolver.ShowConfirm("Are you sure you want to remove items?", "Are you sure?"))
+            if (!_viewInteraction.ShowConfirm("Are you sure you want to remove items?", "Are you sure?"))
             {
                 return Result.Fail(Fails.Canceled);
             }
@@ -238,7 +236,7 @@ namespace LiteDbExplorer.Modules
             catch (Exception exc)
             {
                 var message = "Failed to add new collection:" + Environment.NewLine + exc.Message;
-                _viewInteractionResolver.ShowError(exc, message, "Database error");
+                _viewInteraction.ShowError(exc, message, "Database error");
                 return Result.Fail<CollectionReference>(message);
             }
         }
@@ -259,7 +257,7 @@ namespace LiteDbExplorer.Modules
             catch (Exception exc)
             {
                 var message = "Failed to rename collection:" + Environment.NewLine + exc.Message;
-                _viewInteractionResolver.ShowError(exc, message, "Database error");
+                _viewInteraction.ShowError(exc, message, "Database error");
                 return Result.Fail(message);
             }
         }
@@ -269,7 +267,7 @@ namespace LiteDbExplorer.Modules
             try
             {
                 var collectionName = collection.Name;
-                if (_viewInteractionResolver.ShowConfirm($"Are you sure you want to drop collection \"{collectionName}\"?", "Are you sure?"))
+                if (_viewInteraction.ShowConfirm($"Are you sure you want to drop collection \"{collectionName}\"?", "Are you sure?"))
                 {
                     collection.Database.DropCollection(collectionName);
 
@@ -283,7 +281,7 @@ namespace LiteDbExplorer.Modules
             catch (Exception exc)
             {
                 var message = "Failed to drop collection:" + Environment.NewLine + exc.Message;
-                _viewInteractionResolver.ShowError(exc, message, "Database error");
+                _viewInteraction.ShowError(exc, message, "Database error");
                 return Result.Fail<CollectionReference>(message);
             }
         }
@@ -438,7 +436,7 @@ namespace LiteDbExplorer.Modules
         
         public Maybe<DocumentReference> OpenEditDocument(DocumentReference document)
         {
-            var result = _viewInteractionResolver.OpenEditDocument(document);
+            var result = _viewInteraction.OpenEditDocument(document);
             if (result)
             {
                 _eventAggregator.PublishOnUIThread(new InteractionEvents.DocumentChange(ReferenceNodeChangeAction.Update, document));
@@ -482,7 +480,7 @@ namespace LiteDbExplorer.Modules
             {
                 var message = "Failed to import document from text content: " + e.Message;
                 Logger.Warn(e, "Cannot process clipboard data.");
-                _viewInteractionResolver.ShowError(e, message, "Import Error");
+                _viewInteraction.ShowError(e, message, "Import Error");
                 return Result.Fail<InteractionEvents.CollectionDocumentChange>(message);
             }
         }
@@ -508,7 +506,7 @@ namespace LiteDbExplorer.Modules
 
         public Result<bool> RevealInExplorer(DatabaseReference database)
         {
-            var isOpen = _viewInteractionResolver.RevealInExplorer(database.Location);
+            var isOpen = _viewInteraction.RevealInExplorer(database.Location);
 
             return Result.Ok(isOpen);
         }

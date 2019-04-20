@@ -27,6 +27,7 @@
                     ProcessorArchitecture=MSIL;component/themes/aero2.normalcolor.xaml" />-->
                 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary Source="../../Themes/MaterialDesignTheme.TreeViewFullRow.xaml" />
                 <!--<ResourceDictionary Source="../../Themes/Aero2.TreeViewFullRow.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
 
@@ -56,14 +57,14 @@
                                          ShowMinimizeBox="False"
                                          ShowMaximizeBox="False" />
     </i:Interaction.Behaviors>
-    <Grid Margin="8,9,15,15">
+    <Grid Margin="9,9,9,15">
         <Grid.Resources>
             <Style TargetType="ComboBox">
                 <Setter Property="Height" Value="23" />
             </Style>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="215" />
             <ColumnDefinition Width="15" />
             <ColumnDefinition Width="*" MinWidth="230" />
         </Grid.ColumnDefinitions>
@@ -74,7 +75,10 @@
         </Grid.RowDefinitions>
 
         <TreeView x:Name="TreeView" ItemsSource="{Binding Pages}" SelectedValuePath="Editors"
-                  Background="Transparent" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}">
+                  Background="Transparent" BorderThickness="1"
+                  BorderBrush="{x:Static SystemColors.ActiveBorderBrush}"
+                  ItemContainerStyle="{StaticResource MaterialDesignTreeViewItemFullRow}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <i:Interaction.Behaviors>
                 <behaviors:BindableTreeViewSelectedItemBehavior SelectedItem="{Binding SelectedPage, Mode=TwoWay}" />
             </i:Interaction.Behaviors>

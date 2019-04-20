@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
                     xmlns:converters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
-                    xmlns:converters2="clr-namespace:LiteDbExplorer.Presentation.Converters;assembly=LiteDbExplorer.Wpf">
+                    xmlns:converters1="clr-namespace:LiteDbExplorer.Wpf.Converters">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary>
@@ -26,7 +26,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TreeViewItem}">
                     <ControlTemplate.Resources>
-                        <converters2:LeftMarginMultiplierConverter x:Key="LengthConverter" Length="16" />
+                        <converters1:LeftMarginMultiplierConverter x:Key="LengthConverter" Length="16" />
                     </ControlTemplate.Resources>
 
                     <Grid Margin="{Binding Converter={StaticResource LengthConverter}, RelativeSource={RelativeSource TemplatedParent}}"

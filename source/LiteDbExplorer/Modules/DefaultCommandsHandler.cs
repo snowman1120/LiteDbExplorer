@@ -15,17 +15,17 @@ namespace LiteDbExplorer.Modules
         private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IDatabaseInteractions _databaseInteractions;
-        private readonly IViewInteractionResolver _viewInteractionResolver;
+        private readonly IViewInteraction _viewInteraction;
         private readonly IEventAggregator _eventAggregator;
 
         [ImportingConstructor]
         public DefaultCommandsHandler(
             IDatabaseInteractions databaseInteractions,
-            IViewInteractionResolver viewInteractionResolver,
+            IViewInteraction viewInteraction,
             IEventAggregator eventAggregator)
         {
             _databaseInteractions = databaseInteractions;
-            _viewInteractionResolver = viewInteractionResolver;
+            _viewInteraction = viewInteraction;
             _eventAggregator = eventAggregator;
 
             Add(Commands.Exit, (sender, args) =>

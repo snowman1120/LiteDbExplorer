@@ -13,13 +13,13 @@ namespace LiteDbExplorer.Modules.StartPage
     public class StartPageViewModel : Document, IStartupDocument
     {
         private readonly IDatabaseInteractions _databaseInteractions;
-        private readonly IViewInteractionResolver _viewInteractionResolver;
+        private readonly IViewInteraction _viewInteraction;
 
         [ImportingConstructor]
-        public StartPageViewModel(IDatabaseInteractions databaseInteractions, IViewInteractionResolver viewInteractionResolver)
+        public StartPageViewModel(IDatabaseInteractions databaseInteractions, IViewInteraction viewInteraction)
         {
             _databaseInteractions = databaseInteractions;
-            _viewInteractionResolver = viewInteractionResolver;
+            _viewInteraction = viewInteraction;
 
             PathDefinitions = databaseInteractions.PathDefinitions;
 
@@ -55,7 +55,7 @@ namespace LiteDbExplorer.Modules.StartPage
             if (recentFileInfo.FileNotFound.HasValue && recentFileInfo.FileNotFound == true)
             {
                 var message = $"File {recentFileInfo.FullPath} not found.\n\nRemove from list?";
-                if (_viewInteractionResolver.ShowConfirm(message, "File not found!"))
+                if (_viewInteraction.ShowConfirm(message, "File not found!"))
                 {
                     RemoveFromList(recentFileInfo);
                 }
@@ -88,7 +88,7 @@ namespace LiteDbExplorer.Modules.StartPage
         {
             if (recentFileInfo != null)
             {
-                _viewInteractionResolver.RevealInExplorer(recentFileInfo.FullPath);
+                _viewInteraction.RevealInExplorer(recentFileInfo.FullPath);
             }
         }
 
@@ -97,7 +97,7 @@ namespace LiteDbExplorer.Modules.StartPage
         {
             if (recentFileInfo != null)
             {
-                _viewInteractionResolver.PutClipboardText(recentFileInfo.FullPath);
+                _viewInteraction.PutClipboardText(recentFileInfo.FullPath);
             }
         }
 

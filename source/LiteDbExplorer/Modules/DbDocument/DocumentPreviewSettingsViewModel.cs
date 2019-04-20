@@ -33,7 +33,7 @@ namespace LiteDbExplorer.Modules.DbDocument
 
         [Category("Document Preview")]
         [DisplayName("Content Max Length")]
-        [Spinnable(1, 1, 64, 1024), Width(80)]
+        [Spinnable(1, 1, 64, 4069), Width(80)]
         public int DocumentPreview_ContentMaxLength { get; set; }
 
         public void ApplyChanges()
