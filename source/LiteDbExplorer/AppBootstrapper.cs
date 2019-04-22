@@ -23,7 +23,7 @@ namespace LiteDbExplorer
     public class AppBootstrapper : BootstrapperBase
     {
         private CompositionContainer _container;
-        private Func<object, DependencyObject, object, UIElement> _coreLocateForModel;
+        private Func<object, DependencyObject, object, UIElement> _originalLocateForModel;
 
         public AppBootstrapper() : base(true)
         {
@@ -121,10 +121,10 @@ namespace LiteDbExplorer
 
         private void AddCustomViewLocator()
         {
-            _coreLocateForModel = ViewLocator.LocateForModel;
+            _originalLocateForModel = ViewLocator.LocateForModel;
             ViewLocator.LocateForModel = (model, displayLocation, context) =>
             {
-                var element = _coreLocateForModel(model, displayLocation, context);
+                var element = _originalLocateForModel(model, displayLocation, context);
                 if ((element == null || element is TextBlock) && model is IAutoGenSettingsView)
                 {
                     element = new AutoSettingsView();

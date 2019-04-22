@@ -2,11 +2,38 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LiteDbExplorer.Controls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:LiteDbExplorer.Controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="600"
              x:Name="ExceptionViewerControl">
+    <UserControl.Resources>
+        <Style x:Key="DetailToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignFlatButton}">
+            <Setter Property="MinWidth" Value="150"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Content">
+                <Setter.Value>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ChevronDown" Width="24" Height="24"/>
+                        <TextBlock Text="Show details" Margin="5,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Content">
+                        <Setter.Value>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ChevronUp" Width="24" Height="24"/>
+                                <TextBlock Text="Hide details" Margin="5,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -28,12 +55,12 @@
                   BorderBrush="{Binding ControlsBorderBrush,ElementName=ExceptionViewerControl}"
                   BorderThickness="0"
                   Background="Transparent" Padding="2" />
-        <GridSplitter Grid.Row="0" Grid.Column="1"
+        <GridSplitter x:Name="gridSplitter" Grid.Row="0" Grid.Column="1"
                       ResizeDirection="Columns"
                       BorderBrush="{Binding ControlsBorderBrush,ElementName=ExceptionViewerControl}"
                       BorderThickness="1,0" HorizontalAlignment="Stretch" />
         <FlowDocumentScrollViewer Grid.Row="0" Grid.Column="2"
-                                  Name="docViewer"
+                                  x:Name="docViewer"
                                   HorizontalScrollBarVisibility="Auto"
                                   VerticalScrollBarVisibility="Auto"
                                   Foreground="{Binding Foreground, ElementName=ExceptionViewerControl}" 
@@ -41,25 +68,35 @@
         <Border Grid.Column="0" Grid.Row="1"
                 Grid.ColumnSpan="3" BorderThickness="0,1,0,0"
                 BorderBrush="{Binding ControlsBorderBrush,ElementName=ExceptionViewerControl}" Padding="20,15">
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-                <CheckBox Content="_Wrap text"
-                          Height="16"
-                          HorizontalAlignment="Right"
-                          Margin="0,0,23,0"
-                          Name="chkWrap"
-                          VerticalAlignment="Center"
-                          Checked="chkWrap_Checked"
-                          Unchecked="chkWrap_Unchecked"
-                          IsChecked="True"
-                          Foreground="{Binding Foreground, ElementName=ExceptionViewerControl}" />
-                <Button Content="_Copy All"
-                        Name="btnCopy"
-                        Click="btnCopy_Click"
-                        Padding="15,0"
-                        VerticalAlignment="Center"
-                        MinHeight="23" MinWidth="90" />
-            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <ToggleButton Grid.Column="0" IsChecked="{Binding Path=ShowDetails, ElementName=ExceptionViewerControl}" 
+                              Style="{StaticResource DetailToggleButtonStyle}"/>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <CheckBox Content="_Wrap text"
+                              Height="16"
+                              HorizontalAlignment="Right"
+                              Margin="0,0,23,0"
+                              Name="chkWrap"
+                              VerticalAlignment="Center"
+                              Checked="chkWrap_Checked"
+                              Unchecked="chkWrap_Unchecked"
+                              IsChecked="True"
+                              Foreground="{Binding Foreground, ElementName=ExceptionViewerControl}" />
+                    <Button Content="_Copy All"
+                            Name="btnCopy"
+                            Click="btnCopy_Click"
+                            Padding="15,0"
+                            VerticalAlignment="Center"
+                            MinHeight="23" MinWidth="90" />
+                </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

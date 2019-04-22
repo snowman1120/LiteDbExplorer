@@ -155,8 +155,12 @@ namespace LiteDbExplorer
                 Title = string.IsNullOrEmpty(caption) ? "Error" : caption,
                 Content = exceptionViewer,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                ResizeMode = ResizeMode.NoResize,
-                IsMinButtonEnabled = false
+                ResizeMode = ResizeMode.CanResizeWithGrip,
+                MinHeight = 400,
+                MinWidth = 500,
+                ShowMinButton = false,
+                ShowMaxRestoreButton = false,
+                ShowInTaskbar = false
             };
             baseDialogWindow.ShowDialog();
 

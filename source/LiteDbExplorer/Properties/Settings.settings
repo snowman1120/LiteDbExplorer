@@ -26,5 +26,11 @@
     <Setting Name="DocumentPreview_ContentMaxLength" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1024</Value>
     </Setting>
+    <Setting Name="UpdateManager_LastCheck" Type="System.Nullable&lt;System.DateTime&gt;" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UpdateManager_LastVersion" Type="System.Version" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

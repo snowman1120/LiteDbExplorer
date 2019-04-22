@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using Caliburn.Micro;
 using LiteDbExplorer.Wpf.Modules.Settings;
 

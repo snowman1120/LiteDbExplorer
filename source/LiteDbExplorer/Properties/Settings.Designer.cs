@@ -118,5 +118,27 @@ namespace LiteDbExplorer.Properties {
                 this["DocumentPreview_ContentMaxLength"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Nullable<System.DateTime> UpdateManager_LastCheck {
+            get {
+                return ((global::System.Nullable<System.DateTime>)(this["UpdateManager_LastCheck"]));
+            }
+            set {
+                this["UpdateManager_LastCheck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Version UpdateManager_LastVersion {
+            get {
+                return ((global::System.Version)(this["UpdateManager_LastVersion"]));
+            }
+            set {
+                this["UpdateManager_LastVersion"] = value;
+            }
+        }
     }
 }

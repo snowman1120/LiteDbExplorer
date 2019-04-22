@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Caliburn.Micro;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using LiteDbExplorer.Framework;
-using LiteDbExplorer.Framework.Services;
 using LiteDbExplorer.Modules.DbCollection;
 using LiteDbExplorer.Modules.Main;
 
@@ -19,7 +17,6 @@ namespace LiteDbExplorer.Modules.Database
     {
         private readonly IDatabaseInteractions _databaseInteractions;
         private readonly IViewInteraction _viewInteraction;
-        private IFileDropSource _view;
 
         [ImportingConstructor]
         public DatabasesExplorerViewModel(
@@ -238,14 +235,5 @@ namespace LiteDbExplorer.Modules.Database
         }
 
         #endregion
-        
-        protected override void OnViewLoaded(object view)
-        {
-            _view = view as IFileDropSource;
-            if (_view != null)
-            {
-                _view.FilesDropped = OpenDatabases;
-            }
-        }
     }
 }

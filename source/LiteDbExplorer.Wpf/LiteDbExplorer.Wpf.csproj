@@ -106,6 +106,7 @@
   <ItemGroup>
     <Compile Include="Behaviors\BindableTreeViewSelectedItemBehavior.cs" />
     <Compile Include="Behaviors\BubbleScrollEvent.cs" />
+    <Compile Include="Behaviors\DropBehavior.cs" />
     <Compile Include="Behaviors\FocusActiveGroup.cs" />
     <Compile Include="Behaviors\KeepSelectedItem.cs" />
     <Compile Include="Behaviors\MouseDoubleClick.cs" />

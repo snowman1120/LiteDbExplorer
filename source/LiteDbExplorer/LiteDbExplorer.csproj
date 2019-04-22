@@ -83,6 +83,12 @@
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="Markdig, Version=0.16.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Markdig.0.16.0\lib\net40\Markdig.dll</HintPath>
+    </Reference>
+    <Reference Include="Markdig.Wpf, Version=0.2.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Markdig.Wpf.0.2.8\lib\net452\Markdig.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialDesignColors, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.1.1.3\lib\net45\MaterialDesignColors.dll</HintPath>
     </Reference>
@@ -237,6 +243,10 @@
     </Compile>
     <Compile Include="Modules\DbDocument\DocumentEntryViewModel.cs" />
     <Compile Include="Modules\Fails.cs" />
+    <Compile Include="Modules\Help\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\Help\AboutViewModel.cs" />
     <Compile Include="Modules\IViewInteraction.cs" />
     <Compile Include="Modules\InteractionEvents.cs" />
     <Compile Include="Modules\IoCViewInteraction.cs" />
@@ -355,6 +365,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Modules\Help\AboutView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Modules\Main\AutoSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -380,6 +394,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Modules\StartPage\StartPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Controls.MarkdownViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -463,10 +481,12 @@
     <EmbeddedResource Include="Controls\SyntaxDefinitions\Json.dark.xshd" />
     <EmbeddedResource Include="Controls\SyntaxDefinitions\Json.xshd" />
     <None Include="LiteDbExplorer.ruleset" />
+    <EmbeddedResource Include="Modules\Help\AboutContent.md" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>

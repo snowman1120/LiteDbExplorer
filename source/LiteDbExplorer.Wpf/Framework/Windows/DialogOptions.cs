@@ -13,6 +13,11 @@ namespace LiteDbExplorer.Framework.Windows
         private ResizeMode _resizeMode;
         private SizeToContent _sizeToContent;
         private WindowStyle _windowStyle;
+        private bool _showMinButton = true;
+        private bool _showMaxRestoreButton = true;
+        private bool _showDialogsOverTitleBar;
+        private bool _showIconOnTitleBar = true;
+        private bool _showInTaskbar = true;
 
         public DialogOptions()
         {
@@ -88,6 +93,56 @@ namespace LiteDbExplorer.Framework.Windows
             {
                 _windowStyle = value;
                 _value[nameof(WindowStyle)] = value;
+            }
+        }
+
+        public bool ShowMinButton
+        {
+            get => _showMinButton;
+            set
+            {
+                _showMinButton = value;
+                _value[nameof(ShowMinButton)] = value;
+            }
+        }
+
+        public bool ShowMaxRestoreButton
+        {
+            get => _showMaxRestoreButton;
+            set
+            {
+                _showMaxRestoreButton = value;
+                _value[nameof(ShowMaxRestoreButton)] = value;
+            }
+        }
+
+        public bool ShowDialogsOverTitleBar
+        {
+            get => _showDialogsOverTitleBar;
+            set
+            {
+                _showDialogsOverTitleBar = value;
+                _value[nameof(ShowDialogsOverTitleBar)] = value;
+            }
+        }
+        
+        public bool ShowIconOnTitleBar
+        {
+            get => _showIconOnTitleBar;
+            set
+            {
+                _showIconOnTitleBar = value;
+                _value[nameof(ShowIconOnTitleBar)] = value;
+            }
+        }
+
+        public bool ShowInTaskbar
+        {
+            get => _showInTaskbar;
+            set
+            {
+                _showInTaskbar = value;
+                _value[nameof(ShowInTaskbar)] = value;
             }
         }
     }

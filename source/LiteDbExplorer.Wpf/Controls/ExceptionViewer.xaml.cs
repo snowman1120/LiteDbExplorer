@@ -39,6 +39,7 @@ namespace LiteDbExplorer.Controls
             {
                 treeCol.Width = new GridLength(treeCol.ActualWidth, GridUnitType.Pixel);
                 _chromeWidth = ActualWidth - mainGrid.ActualWidth;
+                ToggleDetails();
                 CalcMaxTreeWidth();
             };
 
@@ -104,6 +105,41 @@ namespace LiteDbExplorer.Controls
         {
             get => (Brush)GetValue(ControlsBorderBrushProperty);
             set => SetValue(ControlsBorderBrushProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowDetailsProperty = DependencyProperty.Register(
+            nameof(ShowDetails), typeof(bool), typeof(ExceptionViewer), new PropertyMetadata(false, OnShowDetailPropertyChanged));
+        
+        public bool ShowDetails
+        {
+            get => (bool) GetValue(ShowDetailsProperty);
+            set => SetValue(ShowDetailsProperty, value);
+        }
+
+        private static void OnShowDetailPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ExceptionViewer exceptionViewer)
+            {
+                exceptionViewer.ToggleDetails();
+            }
+        }
+
+        private void ToggleDetails()
+        {
+            if (ShowDetails)
+            {
+                treeView1.Visibility = Visibility.Visible;
+                gridSplitter.Visibility = Visibility.Visible;
+                Grid.SetColumn(docViewer, 2);
+                Grid.SetColumnSpan(docViewer, 0);
+            }
+            else
+            {
+                treeView1.Visibility = Visibility.Collapsed;
+                gridSplitter.Visibility = Visibility.Collapsed;
+                Grid.SetColumn(docViewer, 0);
+                Grid.SetColumnSpan(docViewer, 3);
+            }
         }
 
         /// <summary>
@@ -218,7 +254,7 @@ namespace LiteDbExplorer.Controls
             // nested exception messages.
 
             var inlines = new List<Inline>();
-            var firstItem = new TreeViewItem { Header = "All Messages" };
+            var firstItem = new TreeViewItem { Header = "Summary" };
             treeView1.Items.Add(firstItem);
 
             if (!string.IsNullOrEmpty(summaryMessage))
@@ -563,7 +599,7 @@ namespace LiteDbExplorer.Controls
             // Grid column (i.e. treeCol), but that causes the width of that column to change when the
             // window's width changes, which I don't like.
 
-            mainGrid.MaxWidth = ActualWidth - _chromeWidth;
+            // mainGrid.MaxWidth = ActualWidth - _chromeWidth;
             treeCol.MaxWidth = mainGrid.MaxWidth - textCol.MinWidth;
         }
     }

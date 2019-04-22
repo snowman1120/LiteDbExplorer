@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Caliburn.Micro;
-using Dragablz;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Presentation;
 using LiteDbExplorer.Wpf.Framework;

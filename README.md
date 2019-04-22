@@ -10,31 +10,22 @@ The main purpose of keeping this fork is to meet my LiteDB use cases, refresh WP
 
 I have seen some LiteDB use cases that go far beyond any that would have with this database. If you use LiteDB to store a large volume of data, large texts and many files ... this project currently will not meet your needs and is outside my current contribution scope. Any contribution is welcome, so before opening a issue mainly related to this topic collaborate and submit a pull request or use [other alternatives](https://github.com/mbdavid/LiteDB#3rd-party-tools-for-litedb).
 
-
-
-## Features in current pre-release:
-* View and edit existing documents
-* Add new items to database including files
-* Preview files (images and text files)
-* Export database documents (as JSON) and files
-* Change password in protected databases
-* Shrink database
-* Open multiple databases at the same time
-* Document tree
-* Portable exe (require .NET 4.6.2)
-* Material dark and white theme
 <p>
 <img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_01.png" width="880" >
 </p>
-<p>
-<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_02.png" width="880" >
-</p>
-<p>
-<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_03.png" width="880" >
-</p>
-<p>
-<img align="center" src="https://raw.githubusercontent.com/julianpaulozzi/LiteDbExplorer/master/web/screen_04.png" width="880" >
-</p>
+
+## Features in current pre-release:
+* Material dark and white theme
+* Open multiple databases at the same time
+* View and edit multiple documents with tabbed interface
+* Document details in tree or Json
+* Configurable layout options
+* Preview files (images and text files)
+* Add new items to database including files
+* Export database documents (as JSON) and files
+* Change password in protected databases
+* Shrink database
+* Portable exe (require .NET 4.6.2)
 
 # Download
 
@@ -90,3 +81,6 @@ if (true)
 # Building
 
 To build from cmdline run **build.ps1** in PowerShell. Script builds Release configuration by default into the same directory. Script accepts *Configuration*, *OutputPath*, *Portable* (creates zip package) and *SkipBuild* parameters.
+
+# License
+[MIT License](http://opensource.org/licenses/MIT).

@@ -14,6 +14,7 @@ namespace LiteDbExplorer.Modules.StartPage
     {
         private readonly IDatabaseInteractions _databaseInteractions;
         private readonly IViewInteraction _viewInteraction;
+        private bool _showStartPageOnOpen;
 
         [ImportingConstructor]
         public StartPageViewModel(IDatabaseInteractions databaseInteractions, IViewInteraction viewInteraction)
@@ -23,21 +24,42 @@ namespace LiteDbExplorer.Modules.StartPage
 
             PathDefinitions = databaseInteractions.PathDefinitions;
 
+            ShowStartPageOnOpen = Properties.Settings.Default.ShowStartPageOnOpen;
+            
             PathDefinitions.RecentFiles.CollectionChanged += (sender, args) =>
             {
                 NotifyOfPropertyChange(nameof(RecentFilesIsEmpty));
             };
         }
-
+        
         public override string DisplayName => "Start";
 
         public override object IconContent => IconProvider.GetImageIcon("/Images/icon.png", new ImageIconOptions{Height = 16});
 
         public Paths PathDefinitions { get; }
+        
+        public bool ShowStartPageOnOpen
+        {
+            get => _showStartPageOnOpen;
+            set
+            {
+                if (!Equals(_showStartPageOnOpen, value))
+                {
+                    _showStartPageOnOpen = value;
+                    SaveSettings();
+                }
+            }
+        }
 
         [UsedImplicitly]
         public bool RecentFilesIsEmpty => !PathDefinitions.RecentFiles.Any();
 
+        public void SaveSettings()
+        {
+            Properties.Settings.Default.ShowStartPageOnOpen = ShowStartPageOnOpen;
+            Properties.Settings.Default.Save();
+        }
+        
         [UsedImplicitly]
         public void OpenDatabase()
         {

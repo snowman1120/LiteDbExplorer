@@ -84,13 +84,20 @@ namespace LiteDbExplorer.Modules
                 // Check for updates
                 var result = await _updateManager.CheckForUpdatesAsync();
 
+                Properties.Settings.Default.UpdateManager_LastCheck = DateTime.UtcNow;
+                if (result.LastVersion != null)
+                {
+                    Properties.Settings.Default.UpdateManager_LastVersion = result.LastVersion;
+                }
+                Properties.Settings.Default.Save();
+
                 if (result.CanUpdate)
                 {
                     HasUpdate = true;
                     UpdateMessage = $"A new version {result.LastVersion} is available for update.";
 
                     LastVersion = result.LastVersion;
-
+                    
                     if (userInitiated && MessageBox.Show(
                             UpdateMessage + "\n\nDownload and update now?",
                             "Update available.",

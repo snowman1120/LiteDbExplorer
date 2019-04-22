@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Dragablz;
+using LiteDbExplorer.Framework.Services;
 
 namespace LiteDbExplorer.Modules.Main
 {
@@ -14,7 +16,7 @@ namespace LiteDbExplorer.Modules.Main
         {
             InitializeComponent();
         }
-
+        
         public TabablzControl TabsControl => TabablzControl;
     }
 }

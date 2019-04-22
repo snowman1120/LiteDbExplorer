@@ -7,9 +7,12 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:framework="clr-namespace:LiteDbExplorer.Framework;assembly=LiteDbExplorer.Wpf"
              xmlns:converters="clr-namespace:LiteDbExplorer.Wpf.Converters;assembly=LiteDbExplorer.Wpf"
+             xmlns:behaviors="clr-namespace:LiteDbExplorer.Wpf.Behaviors;assembly=LiteDbExplorer.Wpf"
+             xmlns:liteDbExplorer="clr-namespace:LiteDbExplorer"
              mc:Ignorable="d"
              d:DesignHeight="650" d:DesignWidth="800"
-             Background="{DynamicResource MaterialDesignToolBarBackground}">
+             Background="{DynamicResource MaterialDesignToolBarBackground}"
+             behaviors:DropBehavior.PreviewDropCommand="liteDbExplorer:Commands.FileDropped">
     <UserControl.Resources>
         <framework:DataContextProxy x:Key="DataContextProxy" Data="{Binding}" />
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -25,7 +28,7 @@
             <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
         </Style>
     </UserControl.Resources>
-    <Grid x:Name="contentGrid">
+    <Grid x:Name="contentGrid" Margin="0,0,0,15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -69,6 +72,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Border BorderThickness="0,0,0,0" Padding="8,16"
@@ -242,6 +246,10 @@
                            Visibility="{Binding Path=RecentFilesIsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}">
                     No recent items in the list
                 </TextBlock>
+
+                <CheckBox Grid.Row="2" Margin="56,5"
+                          Content="Show start page on open" 
+                          IsChecked="{Binding ShowStartPageOnOpen}"/>
             </Grid>
 
             <!-- Start row -->

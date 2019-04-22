@@ -11,7 +11,7 @@ namespace LiteDbExplorer.Modules.Database
     /// <summary>
     /// Interaction logic for DatabasesNavView.xaml
     /// </summary>
-    public partial class DatabasesExplorerView : UserControl, IFileDropSource
+    public partial class DatabasesExplorerView : UserControl
     {
         public DatabasesExplorerView()
         {
@@ -36,23 +36,6 @@ namespace LiteDbExplorer.Modules.Database
             };
         }
         
-        public Action<IEnumerable<string>> FilesDropped { get; set; }
-
-        private void DockPanel_OnDrop(object sender, DragEventArgs e)
-        {
-            try
-            {
-                if (e.Data.GetDataPresent(DataFormats.FileDrop) && e.Data.GetData(DataFormats.FileDrop, false) is string[] files)
-                {
-                    FilesDropped?.Invoke(files);
-                }
-            }
-            catch (Exception exc)
-            {
-                MessageBox.Show("Failed to open database: " + exc.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
         private void RecentItemMoreBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (OpenDatabase.ContextMenu != null)

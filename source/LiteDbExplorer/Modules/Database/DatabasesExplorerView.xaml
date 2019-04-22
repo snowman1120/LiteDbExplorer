@@ -74,7 +74,8 @@
         </Style>
     </UserControl.Style>
     <DockPanel AllowDrop="True"
-               Background="Transparent" Drop="DockPanel_OnDrop">
+               Background="Transparent" 
+               behaviors:DropBehavior.PreviewDropCommand="liteDbExplorer:Commands.FileDropped">
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar Style="{DynamicResource AppMaterialDesignToolBar}">
                 <Button x:Name="OpenDatabase" ContextMenuService.IsEnabled="False" Padding="0">

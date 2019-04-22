@@ -4,6 +4,7 @@ using Caliburn.Micro;
 using JetBrains.Annotations;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Framework.Shell;
+using LiteDbExplorer.Modules.Help;
 using LiteDbExplorer.Wpf.Modules.Settings;
 
 namespace LiteDbExplorer.Modules.Main
@@ -62,6 +63,12 @@ namespace LiteDbExplorer.Modules.Main
         public void OpenSettings()
         {
             _windowManager.ShowDialog(IoC.Get<SettingsViewModel>());
+        }
+
+        [UsedImplicitly]
+        public void OpenAbout()
+        {
+            _windowManager.ShowDialog(IoC.Get<AboutViewModel>(), null, AboutViewModel.DefaultDialogOptions.Value);
         }
     }
 }

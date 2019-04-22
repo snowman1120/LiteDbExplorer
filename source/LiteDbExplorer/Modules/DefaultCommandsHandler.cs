@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Input;
@@ -46,6 +47,26 @@ namespace LiteDbExplorer.Modules
             Add(ApplicationCommands.New, (sender, args) =>
             {
                 _databaseInteractions.CreateAndOpenDatabase();
+            });
+
+            Add(Commands.FileDropped, (sender, args) =>
+            {
+                if (!(args.Parameter is IDataObject dataObject))
+                {
+                    return;
+                }
+
+                try
+                {
+                    if (dataObject.GetDataPresent(DataFormats.FileDrop) && dataObject.GetData(DataFormats.FileDrop, false) is string[] paths)
+                    {
+                        _databaseInteractions.OpenDatabases(paths);
+                    }
+                }
+                catch (Exception exc)
+                {
+                    _viewInteraction.ShowError("Failed to open database: " + exc.Message, "Database Error");
+                }
             });
         }
 

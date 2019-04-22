@@ -146,5 +146,11 @@ namespace LiteDbExplorer
             nameof(RevealInExplorer),
             typeof(Commands)
         );
+
+        public static readonly RoutedCommand FileDropped = new RoutedCommand
+        (
+            "File Dropped",
+            typeof(Commands)
+        );
     }
 }
