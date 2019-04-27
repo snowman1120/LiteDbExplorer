@@ -5,11 +5,14 @@ using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Linq;
 using System.Reflection;
+// ReSharper disable once RedundantUsingDirective
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Caliburn.Micro;
+using Enterwell.Clients.Wpf.Notifications;
 using LiteDbExplorer.Framework;
 using LiteDbExplorer.Framework.Services;
 using LiteDbExplorer.Framework.Shell;
@@ -50,6 +53,7 @@ namespace LiteDbExplorer
 
             batch.AddExportedValue<IWindowManager>(windowManager);
             batch.AddExportedValue<IEventAggregator>(new EventAggregator());
+            batch.AddExportedValue<INotificationMessageManager>(NotificationInteraction.Manager);
             batch.AddExportedValue(_container);
 
             _container.Compose(batch);

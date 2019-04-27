@@ -16,15 +16,15 @@ namespace LiteDbExplorer.Modules.Database
     public class DatabasesExplorerViewModel : Screen, IDocumentExplorer
     {
         private readonly IDatabaseInteractions _databaseInteractions;
-        private readonly IViewInteraction _viewInteraction;
+        private readonly IApplicationInteraction _applicationInteraction;
 
         [ImportingConstructor]
         public DatabasesExplorerViewModel(
             IDatabaseInteractions databaseInteractions, 
-            IViewInteraction viewInteraction)
+            IApplicationInteraction applicationInteraction)
         {
             _databaseInteractions = databaseInteractions;
-            _viewInteraction = viewInteraction;
+            _applicationInteraction = applicationInteraction;
 
             PathDefinitions = databaseInteractions.PathDefinitions;
 
@@ -134,7 +134,7 @@ namespace LiteDbExplorer.Modules.Database
             _databaseInteractions.AddFileToDatabase(SelectedDatabase)
                 .OnSuccess(reference =>
                 {
-                    _viewInteraction.ActivateCollection(reference.CollectionReference, reference.Items);
+                    _applicationInteraction.ActivateCollection(reference.CollectionReference, reference.Items);
                 });
         }
 
@@ -150,7 +150,7 @@ namespace LiteDbExplorer.Modules.Database
             _databaseInteractions.AddCollection(SelectedDatabase)
                 .OnSuccess(reference =>
                 {
-                    _viewInteraction.ActivateCollection(reference);
+                    _applicationInteraction.ActivateCollection(reference);
                 });
         }
 
@@ -225,7 +225,7 @@ namespace LiteDbExplorer.Modules.Database
         [UsedImplicitly]
         public void EditDbProperties()
         {
-            _viewInteraction.OpenDatabaseProperties(SelectedDatabase);
+            _applicationInteraction.OpenDatabaseProperties(SelectedDatabase);
         }
 
         [UsedImplicitly]

@@ -62,11 +62,14 @@
     <Reference Include="Costura, Version=3.3.3.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
       <HintPath>..\packages\Costura.Fody.3.3.3\lib\net40\Costura.dll</HintPath>
     </Reference>
-    <Reference Include="CSharpFunctionalExtensions, Version=1.18.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSharpFunctionalExtensions.1.18.0\lib\net461\CSharpFunctionalExtensions.dll</HintPath>
+    <Reference Include="CSharpFunctionalExtensions, Version=1.18.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSharpFunctionalExtensions.1.18.1\lib\net461\CSharpFunctionalExtensions.dll</HintPath>
     </Reference>
     <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
+    </Reference>
+    <Reference Include="Enterwell.Clients.Wpf.Notifications, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Enterwell.Clients.Wpf.Notifications.1.4.2\lib\net451\Enterwell.Clients.Wpf.Notifications.dll</HintPath>
     </Reference>
     <Reference Include="Humanizer, Version=2.6.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
       <HintPath>..\packages\Humanizer.Core.2.6.2\lib\netstandard2.0\Humanizer.dll</HintPath>
@@ -105,10 +108,13 @@
       <HintPath>..\packages\Microsoft.WindowsAPICodePack.Shell.1.1.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.6.2\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Octokit, Version=0.32.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octokit.0.32.0\lib\net45\Octokit.dll</HintPath>
     </Reference>
     <Reference Include="Onova, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Onova.2.4.2\lib\net46\Onova.dll</HintPath>
@@ -247,9 +253,13 @@
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\Help\AboutViewModel.cs" />
-    <Compile Include="Modules\IViewInteraction.cs" />
+    <Compile Include="Modules\Help\ReleaseNotesView.xaml.cs">
+      <DependentUpon>ReleaseNotesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\Help\ReleaseNotesViewModel.cs" />
+    <Compile Include="Modules\IApplicationInteraction.cs" />
     <Compile Include="Modules\InteractionEvents.cs" />
-    <Compile Include="Modules\IoCViewInteraction.cs" />
+    <Compile Include="Modules\ApplicationInteraction.cs" />
     <Compile Include="Modules\Main\AutoSettingsView.xaml.cs">
       <DependentUpon>AutoSettingsView.xaml</DependentUpon>
     </Compile>
@@ -260,6 +270,7 @@
     <Compile Include="Modules\Main\IDocumentExplorer.cs" />
     <Compile Include="Modules\Main\IDocumentSet.cs" />
     <Compile Include="Modules\Main\MainSettingsViewModel.cs" />
+    <Compile Include="Modules\NotificationInteraction.cs" />
     <Compile Include="Modules\StartPage\StartPageSettingsViewModel.cs" />
     <Compile Include="Presentation\Behaviors\InterTabClient.cs" />
     <Compile Include="Modules\Main\ShellMenuView.xaml.cs">
@@ -301,7 +312,6 @@
     <Compile Include="Application\PipeServer.cs" />
     <Compile Include="Presentation\ThemeManager.cs" />
     <Compile Include="Application\Settings.cs" />
-    <Compile Include="Application\Update.cs" />
     <Compile Include="Application\Versions.cs" />
     <Compile Include="Windows\DialogWindow.xaml.cs">
       <DependentUpon>DialogWindow.xaml</DependentUpon>
@@ -366,6 +376,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Modules\Help\AboutView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Modules\Help\ReleaseNotesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -4,18 +4,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:LiteDbExplorer.Modules.Main"
-    xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
-    xmlns:system="clr-namespace:System;assembly=mscorlib"
-    xmlns:dockablz="http://dragablz.net/winfx/xaml/dockablz"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:cal="http://www.caliburnproject.org"
-    xmlns:framework="clr-namespace:LiteDbExplorer.Framework"
     xmlns:converters="clr-namespace:LiteDbExplorer.Presentation.Converters"
+    xmlns:enterwell="clr-namespace:Enterwell.Clients.Wpf.Notifications.Controls;assembly=Enterwell.Clients.Wpf.Notifications"
+    xmlns:modules="clr-namespace:LiteDbExplorer.Modules"
     x:Class="LiteDbExplorer.Modules.Main.ShellView"
     mc:Ignorable="d"
     d:DesignHeight="200" d:DesignWidth="600">
     <UserControl.Resources>
         <converters:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
+        <modules:NotificationInteractionProxy x:Key="NotificationInteractionProxy"/>
     </UserControl.Resources>
 
     <DockPanel>
@@ -39,6 +38,18 @@
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
 
             <ContentControl Grid.Column="2" Grid.Row="0" x:Name="MainContent" cal:View.Model="{Binding MainContent}" />
+
+            <Grid Grid.Column="0" Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="3*" MaxWidth="600" MinWidth="450"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <enterwell:NotificationMessageContainer Grid.Column="1" 
+                                                        x:Name="notificationMessageContainer" 
+                                                        Manager="{Binding Path=Manager, Source={StaticResource NotificationInteractionProxy}}"/>
+            </Grid>
+
         </Grid>
 
     </DockPanel>

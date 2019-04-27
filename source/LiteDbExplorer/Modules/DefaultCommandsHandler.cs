@@ -16,17 +16,17 @@ namespace LiteDbExplorer.Modules
         private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IDatabaseInteractions _databaseInteractions;
-        private readonly IViewInteraction _viewInteraction;
+        private readonly IApplicationInteraction _applicationInteraction;
         private readonly IEventAggregator _eventAggregator;
 
         [ImportingConstructor]
         public DefaultCommandsHandler(
             IDatabaseInteractions databaseInteractions,
-            IViewInteraction viewInteraction,
+            IApplicationInteraction applicationInteraction,
             IEventAggregator eventAggregator)
         {
             _databaseInteractions = databaseInteractions;
-            _viewInteraction = viewInteraction;
+            _applicationInteraction = applicationInteraction;
             _eventAggregator = eventAggregator;
 
             Add(Commands.Exit, (sender, args) =>
@@ -65,7 +65,7 @@ namespace LiteDbExplorer.Modules
                 }
                 catch (Exception exc)
                 {
-                    _viewInteraction.ShowError("Failed to open database: " + exc.Message, "Database Error");
+                    _applicationInteraction.ShowError("Failed to open database: " + exc.Message, "Database Error");
                 }
             });
         }

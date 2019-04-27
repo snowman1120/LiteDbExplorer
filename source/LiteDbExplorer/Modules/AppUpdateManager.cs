@@ -8,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Caliburn.Micro;
+using Enterwell.Clients.Wpf.Notifications;
 using JetBrains.Annotations;
 using LiteDbExplorer.Framework;
 using Onova;
@@ -15,7 +17,7 @@ using Onova.Services;
 
 namespace LiteDbExplorer.Modules
 {
-    public class AppUpdateManager : Freezable, INotifyPropertyChanged
+    public class AppUpdateManager : Freezable
     {
         private readonly UpdateManager _updateManager;
         private bool _hasUpdate;
@@ -29,7 +31,7 @@ namespace LiteDbExplorer.Modules
         public AppUpdateManager()
         {
             _updateManager = new UpdateManager(
-                new GithubPackageResolver(@"julianpaulozzi", "LiteDbExplorer", "*.zip"), 
+                new GithubPackageResolver(AppConstants.Github.RepositoryOwner, AppConstants.Github.RepositoryName, "*.zip"), 
                 new LocalZipPackageExtractor());
 
             UpdateActionText = "Update";
@@ -89,6 +91,7 @@ namespace LiteDbExplorer.Modules
                 {
                     Properties.Settings.Default.UpdateManager_LastVersion = result.LastVersion;
                 }
+
                 Properties.Settings.Default.Save();
 
                 if (result.CanUpdate)
@@ -97,26 +100,19 @@ namespace LiteDbExplorer.Modules
                     UpdateMessage = $"A new version {result.LastVersion} is available for update.";
 
                     LastVersion = result.LastVersion;
-                    
-                    if (userInitiated && MessageBox.Show(
-                            UpdateMessage + "\n\nDownload and update now?",
-                            "Update available.",
-                            MessageBoxButton.YesNo,
-                            MessageBoxImage.Question
-                        ) == MessageBoxResult.Yes)
-                    {
-                        await DoUpdate();
-                    }
 
-                    IsBusy = false;
-
-                    return;
+                    NotificationInteraction.Default()
+                        .HasMessage(UpdateMessage)
+                        .Dismiss().WithButton("Download and install", async button => { await DoUpdate(); })
+                        .WithButton("Release notes",
+                            button => { IoC.Get<IApplicationInteraction>().ShowReleaseNotes(result.LastVersion); })
+                        .Dismiss().WithButton("Later", button => { })
+                        .Queue();
                 }
 
                 if (userInitiated)
                 {
-                    MessageBox.Show("There are currently no updates available.",
-                        $"LiteDB Explorer {Versions.CurrentVersion}");
+                    NotificationInteraction.Alert("There are currently no updates available.");
                 }
             }
             catch (Exception exception)
@@ -124,12 +120,13 @@ namespace LiteDbExplorer.Modules
                 Console.WriteLine(exception);
                 if (userInitiated)
                 {
-                    MessageBox.Show("Unable to check for updates.", $"LiteDB Explorer {Versions.CurrentVersion}");
+                    NotificationInteraction.Alert("Unable to check for updates.");
                 }
             }
-
-            HasUpdate = false;
-            IsBusy = false;
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         public async Task DoUpdate()

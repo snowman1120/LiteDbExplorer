@@ -104,7 +104,7 @@
                                       Style="{StaticResource MaterialDesignToolToggleButton}"
                                       IsChecked="{Binding ShowDocumentPreview}"
                                       ToolTip="Show Document Preview">
-                            <materialDesign:PackIcon Kind="Collage" />
+                            <materialDesign:PackIcon Kind="EyeOutline" />
                         </ToggleButton>
 
                         <ListBox DockPanel.Dock="Right"

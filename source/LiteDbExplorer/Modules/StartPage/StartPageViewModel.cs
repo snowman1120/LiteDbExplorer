@@ -13,14 +13,14 @@ namespace LiteDbExplorer.Modules.StartPage
     public class StartPageViewModel : Document, IStartupDocument
     {
         private readonly IDatabaseInteractions _databaseInteractions;
-        private readonly IViewInteraction _viewInteraction;
+        private readonly IApplicationInteraction _applicationInteraction;
         private bool _showStartPageOnOpen;
 
         [ImportingConstructor]
-        public StartPageViewModel(IDatabaseInteractions databaseInteractions, IViewInteraction viewInteraction)
+        public StartPageViewModel(IDatabaseInteractions databaseInteractions, IApplicationInteraction applicationInteraction)
         {
             _databaseInteractions = databaseInteractions;
-            _viewInteraction = viewInteraction;
+            _applicationInteraction = applicationInteraction;
 
             PathDefinitions = databaseInteractions.PathDefinitions;
 
@@ -77,7 +77,7 @@ namespace LiteDbExplorer.Modules.StartPage
             if (recentFileInfo.FileNotFound.HasValue && recentFileInfo.FileNotFound == true)
             {
                 var message = $"File {recentFileInfo.FullPath} not found.\n\nRemove from list?";
-                if (_viewInteraction.ShowConfirm(message, "File not found!"))
+                if (_applicationInteraction.ShowConfirm(message, "File not found!"))
                 {
                     RemoveFromList(recentFileInfo);
                 }
@@ -110,7 +110,7 @@ namespace LiteDbExplorer.Modules.StartPage
         {
             if (recentFileInfo != null)
             {
-                _viewInteraction.RevealInExplorer(recentFileInfo.FullPath);
+                _applicationInteraction.RevealInExplorer(recentFileInfo.FullPath);
             }
         }
 
@@ -119,7 +119,7 @@ namespace LiteDbExplorer.Modules.StartPage
         {
             if (recentFileInfo != null)
             {
-                _viewInteraction.PutClipboardText(recentFileInfo.FullPath);
+                _applicationInteraction.PutClipboardText(recentFileInfo.FullPath);
             }
         }
 

@@ -16,14 +16,17 @@ namespace LiteDbExplorer.Modules.Main
     {
         private readonly IDatabaseInteractions _databaseInteractions;
         private readonly IWindowManager _windowManager;
+        private readonly IApplicationInteraction _applicationInteraction;
 
         [ImportingConstructor]
         public ShellMenuViewModel(
             IDatabaseInteractions databaseInteractions,
-            IWindowManager windowManager)
+            IWindowManager windowManager,
+            IApplicationInteraction applicationInteraction)
         {
             _databaseInteractions = databaseInteractions;
             _windowManager = windowManager;
+            _applicationInteraction = applicationInteraction;
 
             PathDefinitions = databaseInteractions.PathDefinitions;
         }
@@ -68,7 +71,13 @@ namespace LiteDbExplorer.Modules.Main
         [UsedImplicitly]
         public void OpenAbout()
         {
-            _windowManager.ShowDialog(IoC.Get<AboutViewModel>(), null, AboutViewModel.DefaultDialogOptions.Value);
+            _applicationInteraction.ShowAbout();
+        }
+
+        [UsedImplicitly]
+        public void ShowReleaseNotes()
+        {
+            _applicationInteraction.ShowReleaseNotes();
         }
     }
 }

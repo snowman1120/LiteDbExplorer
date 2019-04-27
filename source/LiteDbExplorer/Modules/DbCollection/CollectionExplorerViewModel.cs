@@ -21,7 +21,7 @@ namespace LiteDbExplorer.Modules.DbCollection
     public class CollectionExplorerViewModel : Document<CollectionReference>
     {
         private readonly IEventAggregator _eventAggregator;
-        private readonly IViewInteraction _viewInteraction;
+        private readonly IApplicationInteraction _applicationInteraction;
         private readonly IDatabaseInteractions _databaseInteractions;
         private DocumentReference _selectedDocument;
         private IList<DocumentReference> _selectedDocuments;
@@ -32,12 +32,12 @@ namespace LiteDbExplorer.Modules.DbCollection
         [ImportingConstructor]
         public CollectionExplorerViewModel(
             IEventAggregator eventAggregator, 
-            IViewInteraction viewInteraction,
+            IApplicationInteraction applicationInteraction,
             IDatabaseInteractions databaseInteractions,
             IDocumentPreview documentPreview)
         {
             _eventAggregator = eventAggregator;
-            _viewInteraction = viewInteraction;
+            _applicationInteraction = applicationInteraction;
             _databaseInteractions = databaseInteractions;
 
             DocumentPreview = documentPreview;
@@ -264,7 +264,7 @@ namespace LiteDbExplorer.Modules.DbCollection
             _databaseInteractions.CreateItem(CollectionReference)
                 .OnSuccess(reference =>
                 {
-                    _viewInteraction.ActivateCollection(reference.CollectionReference, reference.Items);
+                    _applicationInteraction.ActivateCollection(reference.CollectionReference, reference.Items);
                     _eventAggregator.PublishOnUIThread(reference);
                 });
         }
@@ -355,7 +355,7 @@ namespace LiteDbExplorer.Modules.DbCollection
         [UsedImplicitly]
         public void EditDbProperties()
         {
-            _viewInteraction.OpenDatabaseProperties(CollectionReference.Database);
+            _applicationInteraction.OpenDatabaseProperties(CollectionReference.Database);
         }
 
         [UsedImplicitly]

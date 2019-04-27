@@ -22,7 +22,7 @@
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.AppToolBar.xaml" />
                 
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.Button.xaml" />
-
+                <ResourceDictionary Source="/Enterwell.Clients.Wpf.Notifications;component/Themes/Generic.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/LiteDbExplorer.Wpf;component/Themes/MaterialDesignTheme.TreeViewFullRow.xaml"/>
 
                 <ResourceDictionary Source="Themes/MaterialDesignTheme.ListView.xaml" />

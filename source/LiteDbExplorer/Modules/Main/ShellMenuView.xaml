@@ -136,6 +136,11 @@
                         <materialDesign:PackIcon Kind="GithubCircle" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem x:Name="ShowReleaseNotes" Header="Release Notes">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="NewReleases" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem x:Name="CheckUpdates" Header="Check for updates..."
                           Command="{Binding Path=Current.CheckForUpdatesCommand, Source={StaticResource AppUpdateManager}}">
                     <MenuItem.Icon>

@@ -7,10 +7,18 @@ Any question or contribution you can check the [issues page](https://github.com/
 
 Following codes / libraries make it happen, thanks for their work.
 
+
+
 ### [JosefNemec/LiteDbExplorer](https://github.com/JosefNemec/LiteDbExplorer)
+
+
+### [gemini](https://github.com/tgjones/gemini)
+
 
 ### [AvalonEdit](http://avalonedit.net/)
 [MIT License](http://opensource.org/licenses/MIT).
+
+
 
 ### [Caliburn.Micro](https://caliburnmicro.com/)
 The MIT License
@@ -35,6 +43,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
+
+
 ### [ControlzEx](https://github.com/ControlzEx/ControlzEx)
 The MIT License (MIT)
 
@@ -58,8 +68,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+
+
 ### [Costura](https://github.com/Fody/Costura)
 [MIT License](https://licenses.nuget.org/MIT).
+
+
 
 ### [CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions)
 The MIT License (MIT)
@@ -82,6 +96,8 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
 
 ### [Dragablz](https://dragablz.net/)
 The MIT License (MIT)
@@ -107,20 +123,51 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
+
+### [Enterwell Client WPF - Notifications](https://github.com/Enterwell/Wpf.Notifications)
+MIT License
+
+Copyright (c) 2017 Enterwell
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+
 ### [wpftoolkit](https://github.com/xceedsoftware/wpftoolkit)
 [MS-PL License](https://licenses.nuget.org/MS-PL).
+
 
 
 ### [Fody](https://github.com/Fody/Fody)
 [MIT License](https://licenses.nuget.org/MIT).
 
 
+
 ### [Humanizer](https://github.com/Humanizr/Humanizer)
 [MIT License](https://licenses.nuget.org/MIT).
 
 
+
 ### [JetBrains.Annotations](https://www.jetbrains.com/help/resharper/Code_Analysis__Code_Annotations.html)
 [MIT License](https://licenses.nuget.org/MIT).
+
+
 
 ### [LiteDB](https://www.litedb.org/)
 The MIT License (MIT)
@@ -144,6 +191,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
 
 ### [MahApps.Metro](https://github.com/MahApps/MahApps.Metro)
 MIT License (MIT)
@@ -169,11 +218,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
+
 ### [markdig](https://github.com/lunet-io/markdig)
 [BSD-2-Clause](https://licenses.nuget.org/BSD-2-Clause).
 
+
+
 ### [markdig.wpf](https://github.com/Kryptos-FR/markdig.wpf)
 [MIT License](https://licenses.nuget.org/MIT).
+
 
 
 ### [MaterialDesignInXamlToolkit](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit)
@@ -200,8 +253,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
+
 ### [Json.NET](https://www.newtonsoft.com/json)
 [MIT License](https://licenses.nuget.org/MIT).
+
 
 
 ### [NLog](https://nlog-project.org/)
@@ -237,6 +292,30 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 THE POSSIBILITY OF SUCH DAMAGE.
 
 
+
+### [Octokit](https://github.com/octokit/octokit.net)
+MIT License
+
+Copyright (c) 2017 GitHub, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the "Software"), to deal in 
+the Software without restriction, including without limitation the rights to 
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so, 
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
 ### [Onova](https://github.com/Tyrrrz/Onova)
 Onova
 Copyright (C) 2018-2019 Alexey Golub
@@ -253,8 +332,12 @@ GNU Lesser General Public License for more details.
 
 [GNU Lesser General Public License](http://www.gnu.org/licenses/)
 
+
+
 ### [PropertyChanged](https://github.com/Fody/PropertyChanged)
 [MIT License](https://licenses.nuget.org/MIT).
+
+
 
 ### [PropertyTools](https://github.com/PropertyTools/PropertyTools)
 The MIT License (MIT)

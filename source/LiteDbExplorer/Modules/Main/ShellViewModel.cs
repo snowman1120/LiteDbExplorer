@@ -7,13 +7,13 @@ using LiteDbExplorer.Framework.Shell;
 namespace LiteDbExplorer.Modules.Main
 {
     [Export(typeof(IShell))]
-    [PartCreationPolicy (CreationPolicy.Shared)]
+    [PartCreationPolicy(CreationPolicy.Shared)]
     public sealed class ShellViewModel : Screen, IShell
     {
         public ShellViewModel()
         {
             DisplayName = "LiteDB Explorer";
-            
+
             WindowMenu = IoC.Get<IShellMenu>();
 
             WindowRightMenu = IoC.Get<IShellRightMenu>();
@@ -28,7 +28,7 @@ namespace LiteDbExplorer.Modules.Main
             {
                 MainContent.OpenDocument<IStartupDocument>();
             }
-            
+
             MainContent.ActiveDocumentChanged += (sender, args) =>
             {
                 if (!MainContent.Documents.Any() && Properties.Settings.Default.ShowStartOnCloseAll)
@@ -45,7 +45,7 @@ namespace LiteDbExplorer.Modules.Main
         public object StatusBarContent { get; set; }
 
         public object LeftContent { get; }
-        
+
         public IDocumentSet MainContent { get; }
     }
 }

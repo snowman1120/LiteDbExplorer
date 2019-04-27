@@ -8,19 +8,20 @@ using LiteDbExplorer.Controls;
 using LiteDbExplorer.Framework.Windows;
 using LiteDbExplorer.Modules.Database;
 using LiteDbExplorer.Modules.DbCollection;
+using LiteDbExplorer.Modules.Help;
 using LiteDbExplorer.Modules.Main;
 using LiteDbExplorer.Windows;
 
 namespace LiteDbExplorer.Modules
 {
-    [Export(typeof(IViewInteraction))]
+    [Export(typeof(IApplicationInteraction))]
     [PartCreationPolicy(CreationPolicy.Shared)]
-    public class IoCViewInteraction : IViewInteraction
+    public class ApplicationInteraction : IApplicationInteraction
     {
         private readonly IWindowManager _windowManager;
 
         [ImportingConstructor]
-        public IoCViewInteraction(IWindowManager windowManager)
+        public ApplicationInteraction(IWindowManager windowManager)
         {
             _windowManager = windowManager;
         }
@@ -153,5 +154,17 @@ namespace LiteDbExplorer.Modules
             baseDialogWindow.ShowDialog();
         }
 
+
+        public void ShowAbout()
+        {
+            _windowManager.ShowDialog(IoC.Get<AboutViewModel>(), null, AboutViewModel.DefaultDialogOptions.Value);
+        }
+
+        public void ShowReleaseNotes(Version version = null)
+        {
+            var viewModel = IoC.Get<ReleaseNotesViewModel>();
+            viewModel.FilterVersion(version);
+            _windowManager.ShowDialog(viewModel, null, ReleaseNotesViewModel.DefaultDialogOptions.Value);
+        }
     }
 }

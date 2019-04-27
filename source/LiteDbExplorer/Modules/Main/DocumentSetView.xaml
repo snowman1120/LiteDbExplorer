@@ -8,24 +8,22 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:themes="clr-namespace:Dragablz.Themes;assembly=Dragablz"
     xmlns:behaviors="clr-namespace:LiteDbExplorer.Presentation.Behaviors"
-    xmlns:behaviors1="clr-namespace:LiteDbExplorer.Wpf.Behaviors;assembly=LiteDbExplorer.Wpf"
+    xmlns:appBehaviors="clr-namespace:LiteDbExplorer.Wpf.Behaviors;assembly=LiteDbExplorer.Wpf"
     xmlns:liteDbExplorer="clr-namespace:LiteDbExplorer"
     x:Class="LiteDbExplorer.Modules.Main.DocumentSetView"
     mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800"
-    behaviors1:DropBehavior.PreviewDropCommand="liteDbExplorer:Commands.FileDropped">
+    appBehaviors:DropBehavior.PreviewDropCommand="liteDbExplorer:Commands.FileDropped">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        
+
         <DataTemplate x:Key="TabHeaderDataTemplate">
             <Grid Margin="8,0">
                 <Grid.Resources>
-                    <Style TargetType="materialDesign:PackIcon" >
-                        <!--<Setter Property="MinWidth" Value="14" />-->
-                        <!--<Setter Property="MinHeight" Value="14" />-->
-                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Style TargetType="materialDesign:PackIcon">
+                        <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="HorizontalAlignment" Value="Center" />
                     </Style>
                 </Grid.Resources>
                 <Grid.ColumnDefinitions>
@@ -65,6 +63,22 @@
                BasedOn="{StaticResource MaterialDesignDragableTabItemStyle}">
             <Setter Property="themes:MaterialDesignAssist.IndicatorBrush"
                     Value="{Binding Path=GroupDisplayBackground, FallbackValue={StaticResource MaterialDesignToolBarBackground}}" />
+            <Setter Property="ToolTip">
+                <Setter.Value>
+                    <ToolTip Style="{StaticResource MaterialDesignToolTip}">
+                        <StackPanel Margin="4,0" Orientation="Vertical">
+                            <TextBlock Text="{Binding DisplayName}"
+                                       Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+                                       VerticalAlignment="Center"
+                                       FontSize="14" />
+                            <TextBlock Visibility="{Binding GroupDisplayNameIsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       Text="{Binding GroupDisplayName}"
+                                       Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+                                       FontSize="14" Opacity="0.8"/>
+                        </StackPanel>
+                    </ToolTip>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="DocSetTabablzControlStyle"
@@ -81,7 +95,7 @@
             <Setter Property="ContentTemplate">
                 <Setter.Value>
                     <DataTemplate>
-                        <ContentControl cal:View.Model="{Binding}"/>
+                        <ContentControl cal:View.Model="{Binding}" />
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
@@ -93,119 +107,6 @@
                                  Style="{StaticResource DocSetTabablzControlStyle}"
                                  ItemsSource="{Binding Items, Mode=OneWay}"
                                  SelectedItem="{Binding ActiveLayoutItem}"
-                                 behaviors:TabablzControlAssist.CloseItemCommand="{Binding CloseDocumentCommand}">
-        </dragablz:TabablzControl>
-
-        <!--<TabControl x:Name="Items" HorizontalContentAlignment="Center" Padding="0">
-            <TabControl.Resources>
-                <Style TargetType="TabItem">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="TabItem">
-                                <Grid Name="Panel" Margin="1,0,0,0">
-                                    <ContentPresenter x:Name="ContentSite"
-                                                      VerticalAlignment="Center"
-                                                      HorizontalAlignment="Center"
-                                                      ContentSource="Header"
-                                                      MinHeight="45" />
-                                </Grid>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Panel" Property="Background"
-                                                Value="{DynamicResource MaterialDesignToolBarBackground}" />
-                                    </Trigger>
-                                    <Trigger Property="IsSelected" Value="False">
-                                        <Setter TargetName="Panel" Property="Background" Value="Transparent" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-                <Style TargetType="materialDesign:PackIcon" >
-                    <Setter Property="Width" Value="20" />
-                    <Setter Property="Height" Value="14" />
-                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                </Style>
-            </TabControl.Resources>
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <Grid Background="Transparent" IsHitTestVisible="True">
-                        <Border x:Name="PART_BgDisplayGroup"
-                                Background="{Binding Path=GroupDisplayBackground, FallbackValue={StaticResource MaterialDesignToolBarBackground}}" Opacity="0.5" 
-                                VerticalAlignment="Bottom" Height="3"/>
-                        <Grid Margin="8,0" MinWidth="100">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" MinWidth="20" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0"
-                                            Content="{Binding IconContent}"
-                                            VerticalContentAlignment="Center"
-                                            HorizontalContentAlignment="Center"
-                                            MaxHeight="40" MaxWidth="40"
-                                            Margin="4,0" />
-                            <StackPanel Margin="4,0" Grid.Column="2" Orientation="Horizontal">
-                                <TextBlock x:Name="Part_DisplayName" 
-                                           Text="{Binding DisplayName}"
-                                           Style="{StaticResource MaterialDesignSubheadingTextBlock}"
-                                           Foreground="{DynamicResource MaterialDesignBody}"
-                                           TextTrimming="CharacterEllipsis"
-                                           VerticalAlignment="Center"
-                                           FontSize="14" />
-                                <TextBlock x:Name="PART_GroupDisplayName" 
-                                           Padding="8,0,0,0" MaxWidth="125" Opacity="0.7"
-                                           Visibility="{Binding GroupDisplayNameIsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                           Text="{Binding GroupDisplayName}"
-                                           Style="{StaticResource MaterialDesignSubheadingTextBlock}"
-                                           Foreground="{DynamicResource MaterialDesignBody}"
-                                           TextTrimming="CharacterEllipsis"
-                                           VerticalAlignment="Center"
-                                           FontSize="14" />
-                            </StackPanel>
-                            <Button Grid.Column="3"
-                                    x:Name="PART_CloseButton"
-                                    ToolTip="Close"
-                                    Margin="4,0"
-                                    VerticalAlignment="Center"
-                                    Width="16" Height="16"
-                                    Command="{Binding CloseCommand}"
-                                    Foreground="{DynamicResource MaterialDesignBody}"
-                                    Visibility="Hidden">
-                                <Button.Template>
-                                    <ControlTemplate>
-                                        <Grid>
-                                            <Ellipse x:Name="Bg" Fill="#FFA6A6A6" Opacity="0" StrokeThickness="0" />
-                                            <materialDesign:PackIcon Kind="WindowClose" Width="14" Height="14"
-                                                                     HorizontalAlignment="Center"
-                                                                     VerticalAlignment="Center" />
-                                        </Grid>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="Bg" Property="Opacity" Value="1" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
-                        </Grid>
-                    </Grid>
-                    <DataTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PART_CloseButton" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="PART_BgDisplayGroup" Property="Opacity" Value="1" />
-                        </Trigger>
-                        <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
-                            <Setter TargetName="PART_CloseButton" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="PART_BgDisplayGroup" Property="Opacity" Value="1" />
-                        </DataTrigger>
-                    </DataTemplate.Triggers>
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-        </TabControl>-->
+                                 behaviors:TabablzControlAssist.CloseItemCommand="{Binding CloseDocumentCommand}" />
     </DockPanel>
 </UserControl>
